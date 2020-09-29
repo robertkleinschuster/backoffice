@@ -7,6 +7,7 @@ namespace Backoffice\Database;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterAwareInterface;
 use Laminas\Db\Adapter\AdapterAwareTrait;
+use Laminas\Db\Sql\Delete;
 use Laminas\Db\Sql\Insert;
 use Laminas\Db\Sql\Update;
 use NiceshopsDev\Bean\AbstractBaseBean;
@@ -71,6 +72,34 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
 
 
     /**
+     * @param BeanInterface $bean
+     * @return bool
+     */
+    protected function deleteBean(BeanInterface $bean): bool
+    {
+        if ($bean instanceof DatabaseBeanInterface) {
+            if ($bean->hasPrimaryKeyValue()) {
+                $result_List = [];
+                $tableList = $this->getTableList();
+                $tableList = array_reverse($tableList);
+                foreach ($tableList as $table) {
+                    $primaryKeys = $bean->getDatabaseFieldName_Map($bean::COLUMN_TYPE_PRIMARY_KEY);
+                    if (count($primaryKeys)) {
+                        $delete = new Delete($table);
+                        foreach ($primaryKeys as $dataName => $dbColumn) {
+                            $delete->where("$table.$dbColumn = {$bean->getData($dataName)}");
+                        }
+                        $result = $this->adapter->query($delete->getSqlString($this->adapter->getPlatform()))->execute();
+                        $result_List[] = $result->getAffectedRows() > 0;
+                    }
+                }
+                return !in_array(false, $result_List, true) && count($result_List) > 0;
+            }
+        }
+        return false;
+    }
+
+    /**
      * @param $value
      * @param string $type
      * @return false|string
@@ -130,7 +159,7 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
                 $result_List[] = $result->getAffectedRows() > 0;
             }
         }
-        return !in_array(false, $result_List, true);
+        return !in_array(false, $result_List, true) && count($result_List) > 0;
     }
 
     /**
@@ -159,7 +188,8 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
                 $result_List[] = $result->getAffectedRows() > 0;
             }
         }
-        return !in_array(false, $result_List, true);
+        return !in_array(false, $result_List, true) && count($result_List) > 0;
     }
+
 
 }

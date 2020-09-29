@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Backoffice;
 
+use Backoffice\Authentication\AuthenticationMiddleware;
+use Backoffice\Authentication\AuthenticationMiddlewareFactory;
+use Backoffice\Authentication\Bean\UserBeanFactory;
+use Backoffice\Authentication\Bean\UserBeanFinder;
+use Backoffice\Authentication\UserRepositoryFactory;
 use Backoffice\Mvc\Controller\AuthenticationController;
 use Backoffice\Mvc\Controller\IndexController;
 use Backoffice\Mvc\Controller\UserController;
@@ -12,6 +17,10 @@ use Backoffice\Mvc\Model\IndexModel;
 use Backoffice\Mvc\Model\UserModel;
 use Backoffice\Session\Cache\FilesystemCachePoolFactory;
 use Laminas\ServiceManager\Factory\InvokableFactory;
+use Mezzio\Authentication\AuthenticationInterface;
+use Mezzio\Authentication\Session\PhpSession;
+use Mezzio\Authentication\UserInterface;
+use Mezzio\Authentication\UserRepositoryInterface;
 use Mezzio\Session\Cache\CacheSessionPersistence;
 use Mezzio\Session\SessionPersistenceInterface;
 
@@ -58,7 +67,7 @@ class ConfigProvider
 
                 // The name of the session cookie. This name must comply with
                 // the syntax outlined in https://tools.ietf.org/html/rfc6265.html
-                'cookie_name' => 'PHPSESSION',
+                'cookie_name' => 'Backoffice-Session',
 
                 // The (sub)domain that the cookie is available to. Setting this
                 // to a subdomain (such as 'www.example.com') will make the cookie
@@ -108,7 +117,7 @@ class ConfigProvider
 
                 // When the cache and the cookie should expire, in seconds. Defaults
                 // to 180 minutes.
-                'cache_expire' => 10800,
+                'cache_expire' => 86400,
 
                 // An integer value indicating when the resource to which the session
                 // applies was last modified. If not provided, it uses the last
@@ -128,7 +137,12 @@ class ConfigProvider
                 // session instance's `persistSessionFor(int $duration)` method. When
                 // that method has been called, the engine will use that value even if
                 // the below flag is toggled off.
-                'persistent' => false,
+                'persistent' => true,
+            ],
+            'authentication' => [
+                'redirect' => '/auth/login',
+                'username' => 'User_Username',
+                'password' => 'User_Password'
             ],
         ];
     }
@@ -141,8 +155,10 @@ class ConfigProvider
         return [
             'aliases' => [
                 SessionPersistenceInterface::class => CacheSessionPersistence::class,
+                AuthenticationInterface::class => PhpSession::class,
             ],
             'invokables' => [
+
             ],
             'factories'  => [
                 'SessionCache' => FilesystemCachePoolFactory::class,
@@ -152,6 +168,9 @@ class ConfigProvider
                 AuthenticationController::class => InvokableFactory::class,
                 UserController::class => InvokableFactory::class,
                 UserModel::class => InvokableFactory::class,
+                AuthenticationMiddleware::class => AuthenticationMiddlewareFactory::class,
+                UserRepositoryInterface::class => UserRepositoryFactory::class,
+                UserInterface::class => UserBeanFactory::class,
             ],
         ];
     }

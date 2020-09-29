@@ -55,6 +55,7 @@
         "mezzio/mezzio-authentication-session": "^1.0",
         "mezzio/mezzio-csrf": "^1.0",
         "mezzio/mezzio-fastroute": "^3.0.3",
+        "mezzio/mezzio-flash": "^1.0",
         "mezzio/mezzio-helpers": "^5.3",
         "mezzio/mezzio-mvc": "dev-main",
         "mezzio/mezzio-platesrenderer": "^2.2",

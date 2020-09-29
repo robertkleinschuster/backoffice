@@ -13,8 +13,14 @@ use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
 class UserBeanProcessor extends AbstractBeanProcessor
 {
 
+    /**
+     * @var ValidationHelper
+     */
     private $validationHelper;
 
+    /**
+     * @var Adapter
+     */
     private $adapter;
 
     /**
@@ -38,7 +44,12 @@ class UserBeanProcessor extends AbstractBeanProcessor
         return $this->validationHelper;
     }
 
-    protected function validate(BeanInterface $bean): bool
+    /**
+     * @param BeanInterface $bean
+     * @return bool
+     * @throws \NiceshopsDev\Bean\BeanException
+     */
+    protected function validateForSave(BeanInterface $bean): bool
     {
         if ($bean->hasData('User_Username') && strlen(trim($bean->getData('User_Username')))) {
             $finder = new UserBeanFinder($this->adapter);
@@ -63,15 +74,39 @@ class UserBeanProcessor extends AbstractBeanProcessor
         if (!$bean->hasData('Person_Lastname') || !strlen(trim($bean->getData('Person_Lastname')))) {
             $this->getValidationHelper()->addError('Person_Lastname', 'Der Nachname darf nicht leer sein.');
         }
+        if ($bean->hasData('User_Password') && $bean->getData('User_Password') == '') {
+            $bean->removeData("User_Password");
+        }
         if ($bean->hasData('User_Password')) {
             if (strlen($bean->getData('User_Password')) < 5) {
                 $this->getValidationHelper()->addError('User_Password','Das Passwort muss länger als 5 Zeichen sein.');
             }
-        } else {
+        } elseif (!$bean->hasData('Person_ID')) {
             $this->getValidationHelper()->addError('User_Password', 'Das Passwort darf nicht leer sein.');
         }
         return !$this->getValidationHelper()->hasError();
     }
 
+    /**
+     * @param BeanInterface $bean
+     * @return bool
+     */
+    protected function validateForDelete(BeanInterface $bean): bool
+    {
+        return $bean->hasData('Person_ID');
+    }
+
+    /**
+     * @param BeanInterface $bean
+     */
+    public function beforeSave(BeanInterface $bean) {
+        if ($bean->hasData('User_Password')) {
+            $password = $bean->getData('User_Password');
+            $info = password_get_info($password);
+            if ($info['algo'] === 0 ) {
+                $bean->setData('User_Password', password_hash($password, PASSWORD_BCRYPT));
+            }
+        }
+    }
 
 }

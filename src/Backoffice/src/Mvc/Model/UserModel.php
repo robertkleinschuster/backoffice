@@ -19,6 +19,14 @@ use Laminas\Db\Sql\Delete;
 
 class UserModel extends BaseModel
 {
+
+    public function init()
+    {
+        $this->setFinder(new UserBeanFinder($this->getDbAdpater()));
+        $this->setProcessor(new UserBeanProcessor($this->getDbAdpater()));
+    }
+
+
     public function initUserTable() {
             $metadata = new Metadata($this->getDbAdpater());
             $tableNames = $metadata->getTableNames();
@@ -49,72 +57,6 @@ class UserModel extends BaseModel
             }
     }
 
-    /**
-     * @return \Backoffice\Authentication\Bean\UserBeanList
-     * @throws \NiceshopsDev\Bean\BeanException
-     */
-    public function getUserBeanList() {
-        $factory = new UserBeanFinder($this->getDbAdpater());
-        $factory->find();
-        return $factory->getBeanList();
-    }
 
-    /**
-     * @param array $idMap
-     * @return \Backoffice\Authentication\Bean\UserBean
-     * @throws \NiceshopsDev\Bean\BeanException
-     */
-    public function getUserBean(array $idMap = null) {
-        $finder = new UserBeanFinder($this->getDbAdpater());
-        if (null !== $idMap) {
-            $finder->getLoader()->initByIdMap($idMap);
-            $finder->find();
-            return $finder->getBean();
-        } else {
-            $bean = $finder->getFactory()->createBean();
-            return $bean;
-        }
-
-    }
-
-    /**
-     * @param array $attribute_Map
-     * @param array|null $idMap
-     * @throws \NiceshopsDev\Bean\BeanException
-     */
-    public function submitUser(array $attribute_Map, array $idMap = null)
-    {
-        if (trim($attribute_Map['User_Password']) == '') {
-            unset($attribute_Map['User_Password']);
-        } else {
-            $attribute_Map['User_Password'] = password_hash($attribute_Map['User_Password'], PASSWORD_BCRYPT);
-        }
-
-        $bean = $this->getUserBean($idMap);
-        $bean->setFromArray($attribute_Map);
-
-        $finder = new UserBeanFinder($this->getDbAdpater());
-        $beanList = $finder->getFactory()->createBeanList();
-        $beanList->addBean($bean);
-
-        $processor = new UserBeanProcessor($this->getDbAdpater());
-        $processor->setBeanList($beanList);
-        $result = $processor->process();
-        $this->getValidationHelper()->addErrorFieldMap($processor->getValidationHelper()->getErrorFieldMap());
-        return $result;
-    }
-
-    /**
-     * @param array $idMap
-     * @return int
-     * @throws \NiceshopsDev\Bean\BeanException
-     */
-    public function deleteUser(array $idMap) {
-        $bean = $this->getUserBean($idMap);
-        $delete = new Delete('User');
-        $delete->where(["Person_ID" => $bean->getData('Person_ID')]);
-        $result = $this->adapter->query($delete->getSqlString($this->adapter->getPlatform()))->execute();
-        return $result->getAffectedRows();
-    }
 
 }

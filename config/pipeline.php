@@ -24,9 +24,9 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
     $app->pipe(ErrorHandler::class);
     $app->pipe(ServerUrlMiddleware::class);
     $app->pipe(\Mezzio\Session\SessionMiddleware::class);
+    $app->pipe(\Mezzio\Flash\FlashMessageMiddleware::class);
     $app->pipe(\Mezzio\Csrf\CsrfMiddleware::class);
 
-    $app->pipe(\Backoffice\Database\DatabaseMiddleware::class);
 
     // Pipe more middleware here that you want to execute on every request:
     // - bootstrapping

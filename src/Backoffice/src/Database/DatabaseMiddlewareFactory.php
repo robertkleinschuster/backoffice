@@ -9,6 +9,7 @@ use Psr\Container\ContainerInterface;
 
 class DatabaseMiddlewareFactory
 {
+
     public function __invoke(ContainerInterface $container) : DatabaseMiddleware
     {
         return new DatabaseMiddleware($container->get(AdapterInterface::class));

@@ -119,13 +119,15 @@ class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
      */
     public function initByIdMap(array $idMap) {
         foreach ($idMap as $key => $value) {
-            $explode = explode('.', $key);
-            if (count($explode) == 1) {
-                $this->addWhere($explode[0], $value);
-            } elseif (count($explode) == 2) {
-                $this->addWhere($explode[1], $value, $explode[0]);
-            } else {
-                throw new \Exception('Invalid key');
+            if ($value) {
+                $explode = explode('.', $key);
+                if (count($explode) == 1) {
+                    $this->addWhere($explode[0], $value);
+                } elseif (count($explode) == 2) {
+                    $this->addWhere($explode[1], $value, $explode[0]);
+                } else {
+                    throw new \Exception('Invalid key');
+                }
             }
         }
     }
