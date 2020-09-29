@@ -6,6 +6,8 @@ namespace Backoffice\Mvc\Controller;
 
 use Backoffice\Database\DatabaseMiddleware;
 use Backoffice\Mvc\Model\BaseModel;
+use Mezzio\Csrf\CsrfGuardInterface;
+use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Mvc\Controller\AbstractController;
 use Mezzio\Mvc\Controller\ErrorController;
 use Mezzio\Mvc\View\ComponentDataBean;
@@ -33,11 +35,11 @@ abstract class BaseController extends AbstractController
     public function init()
     {
         $this->getModel()->setDbAdapter($this->getControllerRequest()->getServerRequest()->getAttribute(DatabaseMiddleware::ADAPTER_ATTRIBUTE));
-
         // Set Global Template vars
         $this->setTemplateVariable('logoutLink', '/auth/logout');
         $this->setTemplateVariable('logoutLabel', 'Logout');
         $this->setTemplateVariable('searchAction', '/index/search');
+        $this->setTemplateVariable('searchLabel', 'Suchen');
 
         $this->setView(new View('Backoffice', new ViewModel()));
         $this->getView()->setLayout('layout/dashboard');
@@ -52,6 +54,23 @@ abstract class BaseController extends AbstractController
             )
         );
         $this->getView()->getViewModel()->addNavigation($navigation);
+    }
+
+    public function getGuard(): CsrfGuardInterface
+    {
+        return $this->getControllerRequest()->getServerRequest()->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);
+    }
+
+    /**
+     * @return bool
+     * @throws \NiceshopsDev\NiceCore\Exception
+     */
+    public function validateToken(): bool
+    {
+        $token = $this->getControllerRequest()->getAttribute('token');
+        $valid =  $this->getGuard()->validateToken($token ?? '');
+        $this->getModel()->getValidationHelper()->addError('', 'Session ist ungültig.');
+        return $valid;
     }
 
     /**
@@ -85,6 +104,7 @@ abstract class BaseController extends AbstractController
             $alert->getComponentModel()->setComponentDataBean(new ComponentDataBean());
             $this->getView()->addComponent($alert, true);
         }
+        $this->setTemplateVariable('token', $this->getGuard()->generateToken());
     }
 
     /**

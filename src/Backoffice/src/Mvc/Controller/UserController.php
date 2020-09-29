@@ -97,7 +97,7 @@ class UserController extends BaseController
     public function createAction()
     {
         $this->getView()->getViewModel()->setTitle('Benutzer erstellen');
-        if ($this->getControllerRequest()->hasAttribute('submitUser')) {
+        if ($this->getControllerRequest()->hasAttribute('submitUser') && $this->validateToken()) {
             if ($this->getModel()->submitUser($this->getControllerRequest()->getAttributes())) {
                 $this->getControllerResponse()->setRedirect($this->getPathHelper()->setAction('overview')->getPath());
                 return;
@@ -129,7 +129,7 @@ class UserController extends BaseController
     public function editAction()
     {
         $this->getView()->getViewModel()->setTitle('Benutzer bearbeiten');
-        if ($this->getControllerRequest()->hasAttribute('submitUser')) {
+        if ($this->getControllerRequest()->hasAttribute('submitUser') && $this->validateToken()) {
             if ($this->getModel()->submitUser($this->getControllerRequest()->getAttributes(), $this->getControllerRequest()->getViewIdMap())) {
                 $this->getControllerResponse()->setRedirect($this->getPathHelper()->setAction('overview')->getPath());
                 return;
@@ -154,7 +154,7 @@ class UserController extends BaseController
     public function deleteAction() {
         $this->getView()->getViewModel()->setTitle('Benutzer löschen');
 
-        if ($this->getControllerRequest()->hasAttribute('deleteUser')) {
+        if ($this->getControllerRequest()->hasAttribute('deleteUser') && $this->validateToken()) {
             if ($this->getModel()->deleteUser($this->getControllerRequest()->getViewIdMap())) {
                 $this->getControllerResponse()->setRedirect($this->getPathHelper()->setAction('overview')->getPath());
             }
