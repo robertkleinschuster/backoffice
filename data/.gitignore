@@ -1,5 +1,6 @@
 *
 !cache
 !cache/.gitkeep
+!session/.gitkeep
 !.gitignore
 sqlite.db
