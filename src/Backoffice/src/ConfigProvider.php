@@ -141,8 +141,8 @@ class ConfigProvider
             ],
             'authentication' => [
                 'redirect' => '/auth/login',
-                'username' => 'User_Username',
-                'password' => 'User_Password'
+                'username' => 'login_username',
+                'password' => 'login_password'
             ],
         ];
     }

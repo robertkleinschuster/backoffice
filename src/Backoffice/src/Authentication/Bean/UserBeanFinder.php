@@ -41,10 +41,11 @@ class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterfa
     public function authenticate(string $credential, string $password = null): ?UserInterface
     {
         $this->getLoader()->addWhere('User_Username', $credential);
-        $this->find();
-        $bean = $this->getBean();
-        if (password_verify($password, $bean->getData('User_Password'))) {
-            return $bean;
+        if ($this->find()) {
+            $bean = $this->getBean();
+            if (password_verify($password, $bean->getData('User_Password'))) {
+                return $bean;
+            }
         }
         return null;
     }

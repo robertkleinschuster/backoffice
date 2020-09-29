@@ -19,19 +19,20 @@ class AuthenticationController extends BaseController
             $this->getControllerResponse()->setRedirect($this->getPathHelper()->setController('index')->setAction('index')->getPath());
             return;
         }
-        $this->getView()->getViewModel()->setTitle('Login');
+        $this->getView()->getViewModel()->setTitle('Anmelden');
         $this->getView()->setLayout('layout/default');
         $componentModel = new ComponentModel();
         $componentDataBean = new ComponentDataBean();
-        $componentDataBean->setData('User_Username', '');
-        $componentDataBean->setData('User_Password', '');
+        $componentDataBean->setData('login_username', '');
+        $componentDataBean->setData('login_password', '');
         $componentDataBean->setFromArray($this->getControllerRequest()->getAttributes());
         $componentModel->setComponentDataBean($componentDataBean);
         $editComponent = new Edit('', $componentModel);
-        $editComponent->addText('Benutzername', 'User_Username')->setType(Text::TYPE_TEXT)->setRequired();
-        $editComponent->addText('Passwort', 'User_Password')->setType(Text::TYPE_PASSWORD)->setRequired();
-        $editComponent->addSubmit('Login', 'login');
+        $editComponent->addText('Benutzername', 'login_username')->setType(Text::TYPE_TEXT)->setRequired();
+        $editComponent->addText('Passwort', 'login_password')->setType(Text::TYPE_PASSWORD)->setRequired();
+        $editComponent->addSubmit('Anmelden', 'login');
         $editComponent->addAttribute(ControllerRequest::ATTRIBUTE_REDIRECT, $this->getPathHelper()->setController('index')->setAction('index')->getPath());
+        $editComponent->getComponentModel()->getValidationHelper()->addErrorFieldMap($this->getValidationErrorMap());
         $this->getView()->addComponent($editComponent);
 
     }

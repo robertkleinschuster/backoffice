@@ -31,15 +31,35 @@ use Mezzio\Session\SessionMiddleware;
  */
 abstract class BaseController extends AbstractController
 {
-    protected function getUser(): UserBean
-    {
-       return $this->getControllerRequest()->getServerRequest()->getAttribute(UserInterface::class) ?? new UserBean();
-    }
-
     protected function handleValidationError(ValidationHelper $validationHelper)
     {
         $this->getFlashMessanger()->flash('previousAttributes', $this->getControllerRequest()->getAttributes());
         $this->getFlashMessanger()->flash('validationErrorMap', $validationHelper->getErrorFieldMap());
+    }
+
+    /**
+     * @return bool
+     * @throws \NiceshopsDev\NiceCore\Exception
+     */
+    protected function handleSubmitSecurity(): bool
+    {
+        return $this->getGuard()->validateToken($this->getControllerRequest()->getAttribute('token') ?? '');
+    }
+
+    /**
+     * @return CsrfGuardInterface
+     */
+    public function getGuard(): CsrfGuardInterface
+    {
+        return $this->getControllerRequest()->getServerRequest()->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);
+    }
+
+    /**
+     * @return FlashMessagesInterface
+     */
+    public function getFlashMessanger(): FlashMessagesInterface
+    {
+        return $this->getControllerRequest()->getServerRequest()->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
     }
 
     protected function getValidationErrorMap(): array
@@ -55,6 +75,11 @@ abstract class BaseController extends AbstractController
     protected function getSession(): LazySession
     {
         return $this->getControllerRequest()->getServerRequest()->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
+    }
+
+    protected function getUser(): UserBean
+    {
+        return $this->getControllerRequest()->getServerRequest()->getAttribute(UserInterface::class) ?? new UserBean();
     }
 
     protected function initView()
@@ -90,8 +115,6 @@ abstract class BaseController extends AbstractController
         $this->getModel()->init();
     }
 
-
-
     /**
      * @return mixed|void
      */
@@ -126,33 +149,6 @@ abstract class BaseController extends AbstractController
         $alert->getComponentModel()->getComponentDataBean()->setData('trace', implode('<br>', $trace));
 
         $this->getView()->addComponent($alert);
-    }
-
-    public function getGuard(): CsrfGuardInterface
-    {
-        return $this->getControllerRequest()->getServerRequest()->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);
-    }
-
-    /**
-     * @return FlashMessagesInterface
-     */
-    public function getFlashMessanger(): FlashMessagesInterface
-    {
-        return $this->getControllerRequest()->getServerRequest()->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
-    }
-
-    /**
-     * @return bool
-     * @throws \NiceshopsDev\NiceCore\Exception
-     */
-    public function validateToken(): bool
-    {
-        $token = $this->getControllerRequest()->getAttribute('token');
-        $valid =  $this->getGuard()->validateToken($token ?? '');
-        if (!$valid) {
-            $this->getModel()->getValidationHelper()->addError('', 'Session ist ungültig.');
-        }
-        return $valid;
     }
 
     /**
