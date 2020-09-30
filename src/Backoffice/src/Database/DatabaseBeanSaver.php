@@ -9,6 +9,7 @@ use Laminas\Db\Adapter\AdapterAwareInterface;
 use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\Db\Sql\Delete;
 use Laminas\Db\Sql\Insert;
+use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Update;
 use NiceshopsDev\Bean\AbstractBaseBean;
 use NiceshopsDev\Bean\BeanInterface;
@@ -149,10 +150,11 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
                 }
             }
             if (count($insertdata)) {
-                $insert = new Insert($table);
+                $sql    = new Sql($this->adapter);
+                $insert = $sql->insert($table);
                 $insert->columns(array_keys($insertdata));
                 $insert->values(array_values($insertdata));
-                $result = $this->adapter->query($insert->getSqlString($this->adapter->getPlatform()))->execute();
+                $result = $this->adapter->query($sql->buildSqlString($insert), $this->adapter::QUERY_MODE_EXECUTE);
                 if (!$bean->hasPrimaryKeyValue()) {
                     $bean->setPrimaryKeyValue($result->getGeneratedValue());
                 }
@@ -179,12 +181,13 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
                 }
             }
             if (count($insertdata)) {
-                $update = new Update($table);
+                $sql    = new Sql($this->adapter);
+                $update = $sql->update($table);
                 foreach ($bean->getDatabaseFieldName_Map($bean::COLUMN_TYPE_PRIMARY_KEY) as $dataName => $dbColumn) {
                     $update->where("$table.$dbColumn = {$bean->getData($dataName)}");
                 }
                 $update->set($insertdata);
-                $result = $this->adapter->query($update->getSqlString($this->adapter->getPlatform()))->execute();
+                $result = $this->adapter->query($sql->buildSqlString($update), $this->adapter::QUERY_MODE_EXECUTE);
                 $result_List[] = $result->getAffectedRows() > 0;
             }
         }

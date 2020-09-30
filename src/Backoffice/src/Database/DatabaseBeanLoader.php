@@ -11,6 +11,7 @@ use Laminas\Db\Adapter\Driver\StatementInterface;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Predicate\Predicate;
 use Laminas\Db\Sql\Select;
+use Laminas\Db\Sql\Sql;
 use NiceshopsDev\Bean\AbstractBaseBean;
 use NiceshopsDev\Bean\BeanFinder\BeanLoaderInterface;
 use NiceshopsDev\Bean\BeanInterface;
@@ -254,7 +255,8 @@ class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
      */
     protected function buildSelect(): Select
     {
-        $select = new Select($this->getTable());
+        $sql = new Sql($this->adapter);
+        $select = $sql->select($this->getTable());
         $this->handleJoins($select);
         $this->handleWhere($select);
         return $select;
@@ -266,6 +268,7 @@ class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
      */
     protected function getPreparedStatement(Select $select)
     {
-        return $this->adapter->query($select->getSqlString($this->adapter->getPlatform()));
+        $sql = new Sql($this->adapter);
+        return $this->adapter->query($sql->buildSqlString($select));
     }
 }

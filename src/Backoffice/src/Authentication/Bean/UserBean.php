@@ -11,6 +11,8 @@ use NiceshopsDev\Bean\Database\AbstractDatabaseBean;
 class UserBean extends AbstractDatabaseBean implements ComponentDataBeanInterface, UserInterface
 {
 
+    public const STATE_ACTIVE = 'active';
+
     /**
      * UserBean constructor.
      */
@@ -22,6 +24,7 @@ class UserBean extends AbstractDatabaseBean implements ComponentDataBeanInterfac
         $this->setDatabaseField('User_Username', self::DATA_TYPE_STRING);
         $this->setDatabaseField('User_Displayname', self::DATA_TYPE_STRING);
         $this->setDatabaseField('User_Password', self::DATA_TYPE_STRING);
+        $this->setDatabaseField('UserState_Code', self::DATA_TYPE_STRING, [self::COLUMN_TYPE_FOREIGN_KEY]);
     }
 
     public function getIdentity(): string

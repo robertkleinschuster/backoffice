@@ -3,16 +3,10 @@
 
 namespace Backoffice\Authentication;
 
-
-use Laminas\Diactoros\UriFactory;
-use Mezzio\Csrf\CsrfGuardInterface;
+use Mezzio\Authentication\AuthenticationInterface;
+use Mezzio\Authentication\UserInterface;
 use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Flash\FlashMessageMiddleware;
-use Mezzio\Flash\FlashMessagesInterface;
-use Mezzio\Mvc\Helper\PathHelper;
-use Mezzio\Mvc\Helper\PathHelperFactory;
-use Mezzio\Mvc\Helper\ValidationHelper;
-use Mezzio\Session\SessionMiddleware;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -25,11 +19,17 @@ class AuthenticationMiddleware implements MiddlewareInterface
     private $container;
 
     /**
+     * @var AuthenticationInterface
+     */
+    private $auth;
+
+    /**
      * AuthenticationMiddleware constructor.
      */
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+        $this->auth = $container->get(AuthenticationInterface::class);
     }
 
     /**
@@ -42,36 +42,25 @@ class AuthenticationMiddleware implements MiddlewareInterface
         $guard = $request->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);
         $flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
         $config = $this->container->get('config');
-        if ($request->getUri()->getPath() === $config['authentication']['redirect']) {
-            if ($request->getMethod() === 'GET') {
-                return $handler->handle($request);
-            } elseif ($request->getMethod() === 'POST') {
-                $token = $request->getParsedBody()['token'];
-                if((!$token || !$guard->validateToken($token)) && $request->getMethod() === 'POST') {
-                    $flash->flash('validationErrorMap', $this->getErrorFieldMap($config));
-                    return $handler->handle($request)->withHeader(
-                        'Location',
-                        $config['authentication']['redirect'])
-                        ->withStatus(302);
-                }
+        // Allow GET to Auth Controller
+        if ($request->getUri()->getPath() === $config['authentication']['redirect'] && $request->getMethod() === 'GET') {
+            return $handler->handle($request);
+        }
+        $user = null;
+        // Validation CSRF Token
+        if ($request->getMethod() === 'POST') {
+            if ($guard->validateToken($request->getParsedBody()['login_token'] ?? '', 'login_token')) {
+                $user = $this->auth->authenticate($request);
             }
+        } else {
+            $user = $this->auth->authenticate($request);
         }
-        $authenticationMiddleware = $this->container->get(
-            \Mezzio\Authentication\AuthenticationMiddleware::class
-        );
-        $response = $authenticationMiddleware->process($request, $handler);
-        if ($response->getStatusCode() == 302 && $request->getMethod() === 'POST') {
-            $flash->flash('validationErrorMap', $this->getErrorFieldMap($config));
+        if (null !== $user) {
+            return $handler->handle($request->withAttribute(UserInterface::class, $user));
+        } elseif ($request->getUri()->getPath() === $config['authentication']['redirect']) {
+            $flash->flash('login_error', 'Ungültiger Benutzername oder Passwort.');
         }
-        return $response;
-    }
-
-    protected function getErrorFieldMap($config)
-    {
-        $validationHelper = new ValidationHelper();
-        $validationHelper->addError($config['authentication']['username'], 'Ungültiger Benutzername oder Passwort.');
-        $validationHelper->addError($config['authentication']['password'], 'Ungültiger Benutzername oder Passwort.');
-        return $validationHelper->getErrorFieldMap();
+        return $this->auth->unauthorizedResponse($request);
     }
 
 }

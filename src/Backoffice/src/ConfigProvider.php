@@ -11,9 +11,11 @@ use Backoffice\Authentication\Bean\UserBeanFinder;
 use Backoffice\Authentication\UserRepositoryFactory;
 use Backoffice\Mvc\Controller\AuthenticationController;
 use Backoffice\Mvc\Controller\IndexController;
+use Backoffice\Mvc\Controller\UpdateController;
 use Backoffice\Mvc\Controller\UserController;
 use Backoffice\Mvc\Model\AuthenticationModel;
 use Backoffice\Mvc\Model\IndexModel;
+use Backoffice\Mvc\Model\UpdateModel;
 use Backoffice\Mvc\Model\UserModel;
 use Backoffice\Session\Cache\FilesystemCachePoolFactory;
 use Laminas\ServiceManager\Factory\InvokableFactory;
@@ -43,19 +45,26 @@ class ConfigProvider
             'dependencies' => $this->getDependencies(),
             'templates'    => $this->getTemplates(),
             'db' => [
-                'driver'   => 'Pdo_Sqlite',
-                'database' => __DIR__ . '/../../../data/sqlite.db',
+              #  'driver'   => 'Pdo_Sqlite',
+              #  'database' => __DIR__ . '/../../../data/sqlite.db',
+                'driver' => 'Pdo_Mysql',
+                'database' => 'backoffice',
+                'username' => 'backoffice',
+                'password' => 'backoffice',
+                'hostname' => '127.0.0.1'
             ],
             'mvc' => [
                 'controllers' => [
                     'index' => IndexController::class,
                     'auth' => AuthenticationController::class,
                     'user' => UserController::class,
+                    'update' => UpdateController::class,
                 ],
                 'models' => [
                     'index' => IndexModel::class,
                     'auth' => AuthenticationModel::class,
                     'user' => UserModel::class,
+                    'update' => UpdateModel::class,
                 ],
             ],
             'mezzio-session-cache' => [
@@ -171,6 +180,8 @@ class ConfigProvider
                 AuthenticationMiddleware::class => AuthenticationMiddlewareFactory::class,
                 UserRepositoryInterface::class => UserRepositoryFactory::class,
                 UserInterface::class => UserBeanFactory::class,
+                UpdateController::class => InvokableFactory::class,
+                UpdateModel::class => InvokableFactory::class
             ],
         ];
     }

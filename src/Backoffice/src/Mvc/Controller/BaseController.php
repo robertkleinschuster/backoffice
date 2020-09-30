@@ -96,6 +96,17 @@ abstract class BaseController extends AbstractController
                     ->getPath()
             )
         );
+
+        $navigation->addElement(
+            new Element(
+                'Update',
+                $this->getPathHelper()
+                    ->setController('update')
+                    ->setAction('index')
+                    ->getPath()
+            )
+        );
+
         $this->getView()->getViewModel()->addNavigation($navigation);
 
         // Set Global Template vars
