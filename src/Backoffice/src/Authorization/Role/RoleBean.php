@@ -9,9 +9,10 @@ class RoleBean extends AbstractDatabaseBean implements ComponentDataBeanInterfac
 {
     public function __construct()
     {
-        $this->setDatabaseField('UserRole_Code', self::DATA_TYPE_STRING, [self::COLUMN_TYPE_PRIMARY_KEY]);
-        $this->setDatabaseField('UserRole_Active', self::DATA_TYPE_BOOL);
-        $this->setDatabaseField('Permissions', self::DATA_TYPE_ARRAY);
+        $this->setDataType('UserRole_ID', self::DATA_TYPE_INT, true);
+        $this->setDataType('UserRole_Code', self::DATA_TYPE_STRING, true);
+        $this->setDataType('UserRole_Active', self::DATA_TYPE_BOOL, true);
+        $this->setDataType('Permissions', self::DATA_TYPE_ARRAY, true);
     }
 
 }

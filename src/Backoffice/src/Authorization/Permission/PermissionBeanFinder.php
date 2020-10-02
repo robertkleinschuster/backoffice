@@ -13,7 +13,12 @@ class PermissionBeanFinder extends AbstractBeanFinder
 
     public function __construct(Adapter $adapter)
     {
-        parent::__construct(new DatabaseBeanLoader($adapter, 'UserPermission'), new PermissionBeanFactory());
+        $loader = new DatabaseBeanLoader($adapter, 'UserPermission');
+        $loader->setFieldColumnMap([
+            'UserPermission_Code' => 'UserPermission_Code',
+            'UserPermission_Active' => 'UserPermission_Active',
+        ]);
+        parent::__construct($loader, new PermissionBeanFactory());
     }
 
 }

@@ -30,19 +30,32 @@ class DataUpdater extends AbstractUpdater
     {
         $data_Map = [];
         $data_Map[] = [
-            'UserPermission_Code' => 'default',
+            'UserPermission_Code' => 'user.view',
             'UserPermission_Active' => true,
         ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'user.create',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'user.edit',
+            'UserPermission_Active' => true,
+        ];
+
+        $data_Map[] = [
+            'UserPermission_Code' => 'role.view',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'role.create',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'role.edit',
+            'UserPermission_Active' => true,
+        ];
+
         return $this->saveDataMap('UserPermission', 'UserPermission_Code', $data_Map);
     }
 
-    public function updateDataUserRole()
-    {
-        $data_Map = [];
-        $data_Map[] = [
-            'UserRole_Code' => 'default',
-            'UserRole_Active' => true,
-        ];
-        return $this->saveDataMap('UserRole', 'UserRole_Code', $data_Map);
-    }
 }

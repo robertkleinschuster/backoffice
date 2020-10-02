@@ -8,10 +8,7 @@ use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterAwareInterface;
 use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\Db\Sql\Delete;
-use Laminas\Db\Sql\Insert;
 use Laminas\Db\Sql\Sql;
-use Laminas\Db\Sql\Update;
-use NiceshopsDev\Bean\AbstractBaseBean;
 use NiceshopsDev\Bean\BeanInterface;
 use NiceshopsDev\Bean\BeanProcessor\AbstractBeanSaver;
 use NiceshopsDev\Bean\Database\DatabaseBeanInterface;
@@ -25,6 +22,16 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
      * @var string[]
      */
     protected $table_List;
+
+    /**
+     * @var string[]
+     */
+    private $fieldColumn_Map;
+
+    /**
+     * @var string[]
+     */
+    private $primaryKey_List;
 
     /**
      * DatabaseBeanSaver constructor.
@@ -53,7 +60,48 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
         $this->table_List = $table_List;
     }
 
+    /**
+     * @return string[]
+     * @throws \Exception
+     */
+    public function getFieldColumnMap(): array
+    {
+        if (null == $this->fieldColumn_Map) {
+            throw new \Exception('Field column map not initialized.');
+        }
+        return $this->fieldColumn_Map;
+    }
 
+    /**
+     * @param string[] $fieldColumn_Map
+     * @return $this
+     */
+    public function setFieldColumnMap(array $fieldColumn_Map)
+    {
+        $this->fieldColumn_Map = $fieldColumn_Map;
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getPrimaryKeyList(): array
+    {
+        if (null == $this->primaryKey_List) {
+            throw new \Exception('Primary key list not initialized.');
+        }
+        return $this->primaryKey_List;
+    }
+
+    /**
+     * @param string[] $primaryKey_List
+     * @return DatabaseBeanSaver
+     */
+    public function setPrimaryKeyList(array $primaryKey_List)
+    {
+        $this->primaryKey_List = $primaryKey_List;
+        return $this;
+    }
 
     /**
      * @param BeanInterface $bean
@@ -61,14 +109,16 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
      */
     protected function saveBean(BeanInterface $bean): bool
     {
-        if ($bean instanceof DatabaseBeanInterface) {
-            if ($bean->hasPrimaryKeyValue()) {
-                return $this->update($bean);
-            } else {
-                return $this->insert($bean);
-            }
+        $keys = [];
+        foreach ($this->getPrimaryKeyList() as $item) {
+            $keys[] = $bean->hasData($item);
         }
-        return false;
+        $hasPrimaryKey = !in_array(false, $keys) && count($keys) > 0;
+        if ($hasPrimaryKey) {
+            return $this->update($bean);
+        } else {
+            return $this->insert($bean);
+        }
     }
 
 
@@ -101,52 +151,21 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
     }
 
     /**
-     * @param $value
-     * @param string $type
-     * @return false|string
-     * @throws \Exception
-     */
-    protected function convertValueToDatabase($value, string $type)
-    {
-        if ($value === null) {
-            return "NULL";
-        }
-        switch ($type) {
-            case AbstractBaseBean::DATA_TYPE_FLOAT:
-            case AbstractBaseBean::DATA_TYPE_INT:
-            case AbstractBaseBean::DATA_TYPE_STRING:
-                return strval($value);
-            case AbstractBaseBean::DATA_TYPE_BOOL:
-                if ($value) {
-                    return 'true';
-                } else {
-                    return 'false';
-                }
-            case AbstractBaseBean::DATA_TYPE_ARRAY:
-                return json_encode($value);
-            case AbstractBaseBean::DATA_TYPE_DATE:
-            case AbstractBaseBean::DATA_TYPE_DATETIME_PHP:
-                if ($value instanceof \DateTime) {
-                    return $value->format('Y-m-d H:i:s');
-                }
-        }
-        throw new \Exception("Unabled to convert $type to db.");
-    }
-
-    /**
      * @param DatabaseBeanInterface $bean
      * @return bool
      */
-    protected function insert(DatabaseBeanInterface $bean): bool
+    protected function insert(BeanInterface $bean): bool
     {
+        $formatter = new DatabaseBeanFormatter();
         $metadata = \Laminas\Db\Metadata\Source\Factory::createSourceFromAdapter($this->adapter);
         $result_List = [];
         foreach ($this->getTableList() as $table) {
             $tableColumn_List = $metadata->getColumnNames($table, $this->adapter->getCurrentSchema());
             $insertdata = [];
-            foreach ($bean->getDatabaseFieldName_Map() as $dataName => $dbColumn) {
+
+            foreach ($this->getFieldColumnMap() as $dataName => $dbColumn) {
                 if ($bean->hasData($dataName) && in_array($dbColumn, $tableColumn_List)) {
-                    $insertdata[$dbColumn] = $this->convertValueToDatabase($bean->getData($dataName), $bean->getDataType($dataName));
+                    $insertdata[$dbColumn] = $formatter->format($bean)->getValue($dataName);
                 }
             }
             if (count($insertdata)) {
@@ -168,22 +187,24 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
      * @param DatabaseBeanInterface $bean
      * @return bool
      */
-    protected function update(DatabaseBeanInterface $bean): bool
+    protected function update(BeanInterface $bean): bool
     {
+        $formatter = new DatabaseBeanFormatter();
         $metadata = \Laminas\Db\Metadata\Source\Factory::createSourceFromAdapter($this->adapter);
         $result_List = [];
         foreach ($this->getTableList() as $table) {
             $tableColumn_List = $metadata->getColumnNames($table, $this->adapter->getCurrentSchema());
             $insertdata = [];
-            foreach ($bean->getDatabaseFieldName_Map() as $dataName => $dbColumn) {
+            foreach ($this->getFieldColumnMap() as $dataName => $dbColumn) {
                 if ($bean->hasData($dataName) && in_array($dbColumn, $tableColumn_List)) {
-                    $insertdata[$dbColumn] = $this->convertValueToDatabase($bean->getData($dataName), $bean->getDataType($dataName));
+                    $insertdata[$dbColumn] = $formatter->format($bean)->getValue($dataName);
                 }
             }
             if (count($insertdata)) {
                 $sql    = new Sql($this->adapter);
                 $update = $sql->update($table);
-                foreach ($bean->getDatabaseFieldName_Map($bean::COLUMN_TYPE_PRIMARY_KEY) as $dataName => $dbColumn) {
+                foreach ($this->getPrimaryKeyList() as $dbColumn) {
+                    $dataName = array_flip($this->getFieldColumnMap())[$dbColumn];
                     $update->where("$table.$dbColumn = {$bean->getData($dataName)}");
                 }
                 $update->set($insertdata);

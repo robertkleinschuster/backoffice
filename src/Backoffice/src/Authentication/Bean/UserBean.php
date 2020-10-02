@@ -6,9 +6,9 @@ namespace Backoffice\Authentication\Bean;
 
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Mvc\View\ComponentDataBeanInterface;
-use NiceshopsDev\Bean\Database\AbstractDatabaseBean;
+use NiceshopsDev\Bean\JsonSerializable\AbstractJsonSerializableBean;
 
-class UserBean extends AbstractDatabaseBean implements ComponentDataBeanInterface, UserInterface
+class UserBean extends AbstractJsonSerializableBean implements ComponentDataBeanInterface, UserInterface
 {
 
     public const STATE_ACTIVE = 'active';
@@ -20,14 +20,14 @@ class UserBean extends AbstractDatabaseBean implements ComponentDataBeanInterfac
      */
     public function __construct()
     {
-        $this->setDatabaseField('Person_ID', self::DATA_TYPE_INT, [self::COLUMN_TYPE_PRIMARY_KEY, self::COLUMN_TYPE_FOREIGN_KEY]);
-        $this->setDatabaseField('Person_Firstname', self::DATA_TYPE_STRING);
-        $this->setDatabaseField('Person_Lastname', self::DATA_TYPE_STRING);
-        $this->setDatabaseField('User_Username', self::DATA_TYPE_STRING);
-        $this->setDatabaseField('User_Displayname', self::DATA_TYPE_STRING);
-        $this->setDatabaseField('User_Password', self::DATA_TYPE_STRING);
-        $this->setDatabaseField('UserState_Code', self::DATA_TYPE_STRING, [self::COLUMN_TYPE_FOREIGN_KEY]);
-        $this->setDataType('Roles', self::DATA_TYPE_ARRAY);
+        $this->setDataType('Person_ID', self::DATA_TYPE_INT, true);
+        $this->setDataType('Person_Firstname', self::DATA_TYPE_STRING, true);
+        $this->setDataType('Person_Lastname', self::DATA_TYPE_STRING, true);
+        $this->setDataType('User_Username', self::DATA_TYPE_STRING, true);
+        $this->setDataType('User_Displayname', self::DATA_TYPE_STRING, true);
+        $this->setDataType('User_Password', self::DATA_TYPE_STRING, true);
+        $this->setDataType('UserState_Code', self::DATA_TYPE_STRING, true);
+        $this->setDataType('Roles', self::DATA_TYPE_ARRAY, true);
     }
 
     public function getIdentity(): string

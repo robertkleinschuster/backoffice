@@ -13,10 +13,12 @@ use Backoffice\Mvc\Controller\AuthenticationController;
 use Backoffice\Mvc\Controller\IndexController;
 use Backoffice\Mvc\Controller\UpdateController;
 use Backoffice\Mvc\Controller\UserController;
+use Backoffice\Mvc\Controller\UserRoleController;
 use Backoffice\Mvc\Model\AuthenticationModel;
 use Backoffice\Mvc\Model\IndexModel;
 use Backoffice\Mvc\Model\UpdateModel;
 use Backoffice\Mvc\Model\UserModel;
+use Backoffice\Mvc\Model\UserRoleModel;
 use Backoffice\Session\Cache\FilesystemCachePoolFactory;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Mezzio\Authentication\AuthenticationInterface;
@@ -59,12 +61,14 @@ class ConfigProvider
                     'auth' => AuthenticationController::class,
                     'user' => UserController::class,
                     'update' => UpdateController::class,
+                    'userrole' => UserRoleController::class,
                 ],
                 'models' => [
                     'index' => IndexModel::class,
                     'auth' => AuthenticationModel::class,
                     'user' => UserModel::class,
                     'update' => UpdateModel::class,
+                    'userrole' => UserRoleModel::class,
                 ],
             ],
             'mezzio-session-cache' => [
@@ -167,21 +171,12 @@ class ConfigProvider
                 AuthenticationInterface::class => PhpSession::class,
             ],
             'invokables' => [
-
             ],
             'factories'  => [
                 'SessionCache' => FilesystemCachePoolFactory::class,
-                IndexController::class => InvokableFactory::class,
-                IndexModel::class => InvokableFactory::class,
-                AuthenticationModel::class => InvokableFactory::class,
-                AuthenticationController::class => InvokableFactory::class,
-                UserController::class => InvokableFactory::class,
-                UserModel::class => InvokableFactory::class,
                 AuthenticationMiddleware::class => AuthenticationMiddlewareFactory::class,
                 UserRepositoryInterface::class => UserRepositoryFactory::class,
                 UserInterface::class => UserBeanFactory::class,
-                UpdateController::class => InvokableFactory::class,
-                UpdateModel::class => InvokableFactory::class
             ],
         ];
     }

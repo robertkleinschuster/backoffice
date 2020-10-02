@@ -3,15 +3,14 @@
 
 namespace Backoffice\Mvc\Model;
 
+use Backoffice\Mvc\Parser\BackofficeBeanParser;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterAwareInterface;
 use Laminas\Db\Adapter\AdapterAwareTrait;
 use Mezzio\Mvc\Controller\ControllerRequest;
+use Mezzio\Mvc\Helper\ValidationHelperAwareInterface;
 use Mezzio\Mvc\Model\AbstractModel;
-use NiceshopsDev\Bean\BeanFactory\BeanFactoryInterface;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
 use NiceshopsDev\Bean\BeanFinder\BeanFinderInterface;
-use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
 use NiceshopsDev\Bean\BeanProcessor\BeanProcessorInterface;
 
 abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
@@ -148,7 +147,8 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
                 $bean = $this->getFinder()->getBean();
             }
 
-            $bean->setFromArray($attributes);
+            $parser = new BackofficeBeanParser();
+            $bean = $parser->parse($attributes, $bean)->toBean();
 
             $beanList = $this->getFinder()->getFactory()->createBeanList();
             $beanList->addBean($bean);
@@ -156,7 +156,9 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
             $this->getProcessor()->setBeanList($beanList);
             $this->getProcessor()->save();
 
-            $this->getValidationHelper()->addErrorFieldMap($this->getProcessor()->getValidationHelper()->getErrorFieldMap());
+            if ($this->getProcessor() instanceof ValidationHelperAwareInterface) {
+                $this->getValidationHelper()->addErrorFieldMap($this->getProcessor()->getValidationHelper()->getErrorFieldMap());
+            }
         }
     }
 

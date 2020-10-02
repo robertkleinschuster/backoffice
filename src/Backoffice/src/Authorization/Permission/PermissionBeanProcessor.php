@@ -6,12 +6,14 @@ namespace Backoffice\Authorization\Permission;
 
 use Backoffice\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
+use Mezzio\Mvc\Helper\ValidationHelperAwareInterface;
+use Mezzio\Mvc\Helper\ValidationHelperAwareTrait;
 use NiceshopsDev\Bean\BeanInterface;
 use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
 
-class PermissionBeanProcessor extends AbstractBeanProcessor
+class PermissionBeanProcessor extends AbstractBeanProcessor implements ValidationHelperAwareInterface
 {
-
+    use ValidationHelperAwareTrait;
 
     /**
      * UserBeanProcessor constructor.
@@ -19,7 +21,15 @@ class PermissionBeanProcessor extends AbstractBeanProcessor
      */
     public function __construct(Adapter $adapter)
     {
-        parent::__construct(new DatabaseBeanSaver($adapter, 'Permission'));
+        $saver = new DatabaseBeanSaver($adapter, 'UserPermission');
+        $saver->setFieldColumnMap([
+            'UserPermission_Code' => 'UserPermission_Code',
+            'UserPermission_Active' => 'UserPermission_Active',
+        ]);
+        $saver->setPrimaryKeyList([
+            'UserPermission_Code',
+        ]);
+        parent::__construct($saver);
     }
 
 

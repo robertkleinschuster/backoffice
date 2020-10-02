@@ -36,6 +36,15 @@ class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterfa
         $this->adapter = $adapter;
         $loader = new DatabaseBeanLoader($adapter, 'User');
         $loader->addJoin('Person', 'Person_ID');
+        $loader->setFieldColumnMap([
+            'Person_ID' => 'Person_ID',
+            'Person_Firstname' => 'Person_Firstname',
+            'Person_Lastname' => 'Person_Lastname',
+            'User_Username' => 'User_Username',
+            'User_Displayname' => 'User_Displayname',
+            'User_Password' => 'User_Password',
+            'UserState_Code' => 'UserState_Code',
+        ]);
         parent::__construct($loader, new UserBeanFactory());
     }
 
@@ -65,7 +74,7 @@ class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterfa
     {
         $bean =  parent::initializeBeanWithAdditionlData($bean);
         $roleFinder = new RoleBeanFinder($this->adapter);
-        $roleFinder->getLoader()->addJoin('User_UserRole', 'UserRole_Code');
+        $roleFinder->getLoader()->addJoin('User_UserRole', 'UserRole_ID');
         $roleFinder->getLoader()->addWhere('Person_ID', $bean->getData('Person_ID'), 'User_UserRole');
         if ($roleFinder->find()) {
             $beanList = $roleFinder->getBeanList();

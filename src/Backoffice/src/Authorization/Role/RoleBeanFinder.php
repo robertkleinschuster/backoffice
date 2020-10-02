@@ -17,7 +17,13 @@ class RoleBeanFinder extends AbstractBeanFinder
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
-        parent::__construct(new DatabaseBeanLoader($adapter, 'UserRole'), new RoleBeanFactory());
+        $loader = new DatabaseBeanLoader($adapter, 'UserRole');
+        $loader->setFieldColumnMap([
+           'UserRole_ID' => 'UserRole_ID',
+           'UserRole_Code' => 'UserRole_Code',
+           'UserRole_Active' => 'UserRole_Active'
+        ]);
+        parent::__construct($loader, new RoleBeanFactory());
     }
 
     protected function initializeBeanWithAdditionlData(BeanInterface $bean): BeanInterface
@@ -25,7 +31,7 @@ class RoleBeanFinder extends AbstractBeanFinder
         $bean = parent::initializeBeanWithAdditionlData($bean);
         $permissionFinder = new PermissionBeanFinder($this->adapter);
         $permissionFinder->getLoader()->addJoin('UserRole_UserPermission', 'UserPermission_Code');
-        $permissionFinder->getLoader()->addWhere('UserRole_Code', $bean->getData('UserRole_Code'), 'UserRole_UserPermission');
+        $permissionFinder->getLoader()->addWhere('UserRole_ID', $bean->getData('UserRole_ID'), 'UserRole_UserPermission');
         if ($permissionFinder->find()) {
             $beanList = $permissionFinder->getBeanList();
         } else {

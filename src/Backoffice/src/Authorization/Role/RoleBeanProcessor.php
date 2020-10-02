@@ -3,15 +3,27 @@ namespace Backoffice\Authorization\Role;
 
 use Backoffice\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
+use Mezzio\Mvc\Helper\ValidationHelperAwareInterface;
+use Mezzio\Mvc\Helper\ValidationHelperAwareTrait;
 use NiceshopsDev\Bean\BeanInterface;
 use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
-use NiceshopsDev\Bean\BeanProcessor\BeanSaverInterface;
 
-class RoleBeanProcessor extends AbstractBeanProcessor
+class RoleBeanProcessor extends AbstractBeanProcessor implements ValidationHelperAwareInterface
 {
+    use ValidationHelperAwareTrait;
+
     public function __construct(Adapter $adapter)
     {
-        parent::__construct(new DatabaseBeanSaver($adapter, 'Role'));
+        $saver = new DatabaseBeanSaver($adapter, 'UserRole');
+        $saver->setFieldColumnMap([
+            'UserRole_ID' => 'UserRole_ID',
+            'UserRole_Code' => 'UserRole_Code',
+            'UserRole_Active' => 'UserRole_Active',
+        ]);
+        $saver->setPrimaryKeyList([
+            'UserRole_ID',
+        ]);
+        parent::__construct($saver);
     }
 
 

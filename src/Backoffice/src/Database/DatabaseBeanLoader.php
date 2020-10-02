@@ -50,6 +50,11 @@ class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
      */
     private $column_List;
 
+    /**
+     * @var string[]
+     */
+    private $fieldColumn_Map;
+
 
     /**
      * UserBeanLoader constructor.
@@ -91,6 +96,29 @@ class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
     }
 
     /**
+     * @return string[]
+     * @throws \Exception
+     */
+    public function getFieldColumnMap(): array
+    {
+        if (null == $this->fieldColumn_Map) {
+            throw new \Exception('Field column map not initialized.');
+        }
+        return $this->fieldColumn_Map;
+    }
+
+    /**
+     * @param string[] $fieldColumn_Map
+     * @return DatabaseBeanLoader
+     */
+    public function setFieldColumnMap(array $fieldColumn_Map)
+    {
+        $this->fieldColumn_Map = $fieldColumn_Map;
+        return $this;
+    }
+
+
+    /**
      * @param string $table
      * @param string $column
      * @param string|null $remoteColumn
@@ -121,7 +149,7 @@ class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
             }
             $this->where_Map[$logic]["$table.$key"] = $value;
         } else {
-            throw new \Exception('Invalid key');
+            throw new \Exception('Invalid key ' . $key);
         }
     }
 
@@ -138,7 +166,7 @@ class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
                 } elseif (count($explode) == 2) {
                     $this->addWhere($explode[1], $value, $explode[0]);
                 } else {
-                    throw new \Exception('Invalid key');
+                    throw new \Exception('Invalid key ' . $key);
                 }
             }
         }
@@ -215,51 +243,12 @@ class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
      */
     public function initializeBeanWithData(BeanInterface $bean): BeanInterface
     {
+        $parser = new DatabaseBeanParser();
         $data = $this->getRow();
-        if ($bean instanceof DatabaseBeanInterface) {
-            foreach ($bean->getDatabaseFieldName_Map() as $name => $dbColumn) {
-                if (isset($data[$dbColumn])) {
-                    $bean->setData($name, $this->convertValueFromDatabase($data[$dbColumn], $bean->getDataType($name)));
-                }
-            }
-        }
-       return $bean;
+        $beanData = array_intersect_key($data, array_flip($this->getFieldColumnMap()));
+        return $parser->parse($beanData, $bean)->toBean();
     }
 
-
-    /**
-     * @param $value
-     * @param string $type
-     * @return bool|\DateTime|false|int|mixed|string|null
-     * @throws \Exception
-     */
-    protected function convertValueFromDatabase($value, string $type)
-    {
-        if ($value === null || $value === '') {
-            return null;
-        }
-        switch ($type) {
-            case AbstractBaseBean::DATA_TYPE_STRING:
-                return strval($value);
-            case AbstractBaseBean::DATA_TYPE_BOOL:
-                if ($value === 'true') {
-                    return true;
-                } elseif ($value === 'false') {
-                    return false;
-                }
-            case AbstractBaseBean::DATA_TYPE_INT:
-                return intval($value);
-            case AbstractBaseBean::DATA_TYPE_FLOAT:
-                return boolval($value);
-            case AbstractBaseBean::DATA_TYPE_ARRAY:
-                return json_decode($value);
-            case AbstractBaseBean::DATA_TYPE_DATE:
-            case AbstractBaseBean::DATA_TYPE_DATETIME_PHP:
-                return \DateTime::createFromFormat('Y-m-d H:i:s', $value);
-
-        }
-        throw new \Exception("Unabled to convert $type from db.");
-    }
 
     /**
      * @return Select

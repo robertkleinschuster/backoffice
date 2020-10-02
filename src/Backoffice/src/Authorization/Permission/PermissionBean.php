@@ -9,8 +9,8 @@ class PermissionBean extends AbstractDatabaseBean implements ComponentDataBeanIn
 {
     public function __construct()
     {
-        $this->setDatabaseField('PermissionRole_Code', self::DATA_TYPE_STRING, [self::COLUMN_TYPE_PRIMARY_KEY]);
-        $this->setDatabaseField('PermissionRole_Active', self::DATA_TYPE_BOOL);
+        $this->setDataType('PermissionRole_Code', self::DATA_TYPE_STRING, true);
+        $this->setDataType('PermissionRole_Active', self::DATA_TYPE_BOOL, true);
     }
 
 

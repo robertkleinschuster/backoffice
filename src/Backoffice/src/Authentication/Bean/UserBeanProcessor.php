@@ -7,16 +7,15 @@ namespace Backoffice\Authentication\Bean;
 use Backoffice\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
 use Mezzio\Mvc\Helper\ValidationHelper;
+use Mezzio\Mvc\Helper\ValidationHelperAwareInterface;
+use Mezzio\Mvc\Helper\ValidationHelperAwareTrait;
 use NiceshopsDev\Bean\BeanInterface;
 use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
 
-class UserBeanProcessor extends AbstractBeanProcessor
+class UserBeanProcessor extends AbstractBeanProcessor implements ValidationHelperAwareInterface
 {
+    use ValidationHelperAwareTrait;
 
-    /**
-     * @var ValidationHelper
-     */
-    private $validationHelper;
 
     /**
      * @var Adapter
@@ -30,18 +29,21 @@ class UserBeanProcessor extends AbstractBeanProcessor
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
-        parent::__construct(new DatabaseBeanSaver($adapter, 'Person', 'User'));
-    }
+        $saver = new DatabaseBeanSaver($adapter, 'Person', 'User');
+        $saver->setFieldColumnMap([
+            'Person_ID' => 'Person_ID',
+            'Person_Firstname' => 'Person_Firstname',
+            'Person_Lastname' => 'Person_Lastname',
+            'User_Username' => 'User_Username',
+            'User_Displayname' => 'User_Displayname',
+            'User_Password' => 'User_Password',
+            'UserState_Code' => 'UserState_Code',
+        ]);
+        $saver->setPrimaryKeyList([
+            'Person_ID'
+        ]);
+        parent::__construct($saver);
 
-    /**
-     * @return mixed
-     */
-    public function getValidationHelper()
-    {
-        if (null === $this->validationHelper) {
-            $this->validationHelper = new ValidationHelper();
-        }
-        return $this->validationHelper;
     }
 
     /**

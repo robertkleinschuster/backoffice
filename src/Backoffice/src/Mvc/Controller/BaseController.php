@@ -6,6 +6,7 @@ namespace Backoffice\Mvc\Controller;
 
 use Backoffice\Authentication\Bean\UserBean;
 use Backoffice\Database\DatabaseMiddleware;
+use Backoffice\Mvc\Formatter\BackofficeBeanFormatter;
 use Backoffice\Mvc\Model\BaseModel;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Csrf\CsrfGuardInterface;
@@ -86,6 +87,7 @@ abstract class BaseController extends AbstractController
     {
         $this->setView(new View('Backoffice', new ViewModel()));
         $this->getView()->setLayout('layout/dashboard');
+        $this->getView()->setBeanFormatter(new BackofficeBeanFormatter());
         $navigation = new Navigation('System');
         $navigation->addElement(
             new Element(
@@ -93,6 +95,16 @@ abstract class BaseController extends AbstractController
                 $this->getPathHelper()
                     ->setController('user')
                     ->setAction('overview')
+                    ->getPath()
+            )
+        );
+
+        $navigation->addElement(
+            new Element(
+                'Rollen',
+                $this->getPathHelper()
+                    ->setController('userrole')
+                    ->setAction('index')
                     ->getPath()
             )
         );
@@ -141,7 +153,8 @@ abstract class BaseController extends AbstractController
      */
     public function error(\Throwable $exception)
     {
-        $alert = new Alert("Es ist ein Fehler aufgetreten.", new ComponentModel());
+        $alert = new Alert('', new ComponentModel());
+        $alert->setHeading("Es ist ein Fehler aufgetreten.");
         if ($this->getControllerResponse()->getStatusCode() == 404) {
             $alert->setStyle(Alert::STYLE_DARK);
         } else {
@@ -159,7 +172,7 @@ abstract class BaseController extends AbstractController
         $trace = array_slice($trace, 0, 5);
         $alert->getComponentModel()->getComponentDataBean()->setData('trace', implode('<br>', $trace));
 
-        $this->getView()->addComponent($alert);
+        $this->getView()->addComponent($alert, true);
     }
 
     /**

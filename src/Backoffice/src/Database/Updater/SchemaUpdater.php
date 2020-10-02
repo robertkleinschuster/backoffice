@@ -10,6 +10,7 @@ use Laminas\Db\Sql\Ddl\Constraint\ForeignKey;
 use Laminas\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Laminas\Db\Sql\Ddl\Constraint\UniqueKey;
 use Laminas\Db\Sql\Ddl\CreateTable;
+use Laminas\Db\Sql\Ddl\Index\Index;
 
 class SchemaUpdater extends AbstractUpdater
 {
@@ -61,10 +62,15 @@ class SchemaUpdater extends AbstractUpdater
     public function updateTableUserRole()
     {
         $table = $this->getTableStatement('UserRole');
+        $this->addColumnToTable($table, new Integer('UserRole_ID'))
+            ->setOption('AUTO_INCREMENT', true);
         $this->addColumnToTable($table, new Varchar('UserRole_Code', 255));
-        $this->addColumnToTable($table, new Boolean('UserRole_Active'));
+        $this->addColumnToTable($table, new Boolean('UserRole_Active'))
+        ->setDefault(true);
         if ($table instanceof CreateTable) {
-            $table->addConstraint(new PrimaryKey('UserRole_Code'));
+            $table->addConstraint(new PrimaryKey('UserRole_ID'));
+            $table->addConstraint(new Index('UserRole_Code'));
+            $table->addConstraint(new UniqueKey('UserRole_Code'));
         }
         return $this->query($table);
     }
@@ -73,11 +79,11 @@ class SchemaUpdater extends AbstractUpdater
     {
         $table = $this->getTableStatement('User_UserRole');
         $this->addColumnToTable($table, new Integer('Person_ID'));
-        $this->addColumnToTable($table, new Varchar('UserRole_Code', 255));
+        $this->addColumnToTable($table, new Integer('UserRole_ID'));
         if ($table instanceof CreateTable) {
-            $table->addConstraint(new PrimaryKey(['Person_ID', 'UserRole_Code']));
+            $table->addConstraint(new PrimaryKey(['Person_ID', 'UserRole_ID']));
             $table->addConstraint(new ForeignKey('FK_User_UserRole_User', 'Person_ID', 'User', 'Person_ID'));
-            $table->addConstraint(new ForeignKey('FK_User_UserRole_UserRole', 'UserRole_Code', 'UserRole', 'UserRole_Code'));
+            $table->addConstraint(new ForeignKey('FK_User_UserRole_UserRole', 'UserRole_ID', 'UserRole', 'UserRole_ID'));
         }
         return $this->query($table);
 
@@ -97,11 +103,11 @@ class SchemaUpdater extends AbstractUpdater
     public function updateTableUserRole_UserPermission()
     {
         $table = $this->getTableStatement('UserRole_UserPermission');
-        $this->addColumnToTable($table, new Varchar('UserRole_Code', 255));
+        $this->addColumnToTable($table, new Integer('UserRole_ID'));
         $this->addColumnToTable($table, new Varchar('UserPermission_Code', 255));
         if ($table instanceof CreateTable) {
-            $table->addConstraint(new PrimaryKey(['UserRole_Code', 'UserPermission_Code']));
-            $table->addConstraint(new ForeignKey('FK_UserRole_UserPermission_UserRole', 'UserRole_Code', 'UserRole', 'UserRole_Code'));
+            $table->addConstraint(new PrimaryKey(['UserRole_ID', 'UserPermission_Code']));
+            $table->addConstraint(new ForeignKey('FK_UserRole_UserPermission_UserRole', 'UserRole_ID', 'UserRole', 'UserRole_ID'));
             $table->addConstraint(new ForeignKey('FK_UserRole_UserPermission_UserPermission', 'UserPermission_Code', 'UserPermission', 'UserPermission_Code'));
         }
         return $this->query($table);
