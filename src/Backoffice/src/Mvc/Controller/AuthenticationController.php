@@ -22,8 +22,9 @@ class AuthenticationController extends BaseController
         }
         $login_error = $this->getFlashMessanger()->getFlash('login_error');
         if ($login_error) {
-            $alert = new Alert('Fehler bei der Anmeldung', new ComponentModel());
+            $alert = new Alert();
             $alert->getComponentModel()->setComponentDataBean(new ComponentDataBean());;
+            $alert->setHeading('Fehler bei der Anmeldung');
             $alert->addText('', 'login_error')->setValue($login_error);
             $this->getView()->addComponent($alert);
         }
@@ -37,9 +38,9 @@ class AuthenticationController extends BaseController
         $componentDataBean->setFromArray($this->getControllerRequest()->getAttributes());
         $componentModel->setComponentDataBean($componentDataBean);
         $editComponent = new Edit('', $componentModel);
-        $editComponent->addText('Benutzername', 'login_username')->setType(Text::TYPE_TEXT)->setRequired();
-        $editComponent->addText('Passwort', 'login_password')->setType(Text::TYPE_PASSWORD)->setRequired();
-        $editComponent->addSubmit('Anmelden', 'login');
+        $editComponent->addText('login_username', 'Benutzername')->setType(Text::TYPE_TEXT)->setRequired();
+        $editComponent->addText('login_password', 'Passwort')->setType(Text::TYPE_PASSWORD)->setRequired();
+        $editComponent->addSubmit('login', 'Anmelden');
         $editComponent->addAttribute('login_token', $this->getGuard()->generateToken('login_token'));
         $editComponent->addAttribute(ControllerRequest::ATTRIBUTE_REDIRECT, $this->getPathHelper()->setController('index')->setAction('index')->getPath());
         $editComponent->getComponentModel()->getValidationHelper()->addErrorFieldMap($this->getValidationErrorMap());

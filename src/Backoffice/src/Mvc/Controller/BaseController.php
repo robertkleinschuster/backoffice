@@ -148,9 +148,9 @@ abstract class BaseController extends AbstractController
             $alert->setStyle(Alert::STYLE_DANGER);
         }
 
-        $alert->addText('Fehler', 'message');
-        $alert->addText('Details', '')->setValue("{file}:{line}");
-        $alert->addText('Trace', '')->setValue("{trace}");
+        $alert->addText('message', 'Fehler');
+        $alert->addText('', 'Details')->setValue("{file}:{line}");
+        $alert->addText('trace', 'Trace');
         $alert->getComponentModel()->setComponentDataBean(new ComponentDataBean());
         $alert->getComponentModel()->getComponentDataBean()->setData('message', $exception->getMessage());
         $alert->getComponentModel()->getComponentDataBean()->setData('file', $exception->getFile());

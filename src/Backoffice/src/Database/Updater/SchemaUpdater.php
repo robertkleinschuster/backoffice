@@ -3,75 +3,16 @@
 namespace Backoffice\Database\Updater;
 
 
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\AbstractSql;
-use Laminas\Db\Sql\Ddl\AlterTable;
 use Laminas\Db\Sql\Ddl\Column\Boolean;
-use Laminas\Db\Sql\Ddl\Column\Column;
 use Laminas\Db\Sql\Ddl\Column\Integer;
 use Laminas\Db\Sql\Ddl\Column\Varchar;
 use Laminas\Db\Sql\Ddl\Constraint\ForeignKey;
 use Laminas\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Laminas\Db\Sql\Ddl\Constraint\UniqueKey;
 use Laminas\Db\Sql\Ddl\CreateTable;
-use Laminas\Db\Sql\Sql;
 
 class SchemaUpdater extends AbstractUpdater
 {
-
-    /**
-     * @var array
-     */
-    private $existingTableList;
-
-    /**
-     * SchemaUpdater constructor.
-     * @param $adapter
-     */
-    public function __construct(Adapter $adapter)
-    {
-        parent::__construct($adapter);
-        $this->existingTableList = $this->metadata->getTableNames($adapter->getCurrentSchema());
-    }
-
-
-    /**
-     * @param string $table
-     * @return AlterTable|CreateTable
-     */
-    protected function getTableStatement(string $table)
-    {
-        if (!in_array($table, $this->existingTableList)) {
-            $personTable = new CreateTable($table);
-        } else {
-            $personTable = new AlterTable($table);
-        }
-        return $personTable;
-    }
-
-    /**
-     * @param string $tableName
-     * @param AbstractSql $table
-     * @param Column $column
-     * @throws \Exception
-     */
-    protected function addColumnToTable(AbstractSql $table, Column $column)
-    {
-        if ($table instanceof CreateTable) {
-            $table->addColumn($column);
-        }
-        if ($table instanceof AlterTable) {
-            $columns = $this->metadata->getColumnNames($table->getRawState(AlterTable::TABLE), $this->adapter->getCurrentSchema());
-            if (!in_array($column->getName(), $columns)) {
-                $table->addColumn($column);
-            } else {
-                $table->changeColumn($column->getName(), $column);
-            }
-        }
-        return $column;
-    }
-
-
 
     public function updateTablePerson()
     {

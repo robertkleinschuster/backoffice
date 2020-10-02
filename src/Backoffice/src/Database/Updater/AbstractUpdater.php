@@ -5,6 +5,9 @@ use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterAwareInterface;
 use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\Db\Sql\AbstractSql;
+use Laminas\Db\Sql\Ddl\AlterTable;
+use Laminas\Db\Sql\Ddl\Column\Column;
+use Laminas\Db\Sql\Ddl\CreateTable;
 use Laminas\Db\Sql\Sql;
 use Mezzio\Mvc\Helper\ValidationHelperAwareInterface;
 use Mezzio\Mvc\Helper\ValidationHelperAwareTrait;
@@ -26,6 +29,11 @@ class AbstractUpdater implements ValidationHelperAwareInterface, AdapterAwareInt
 
     protected $metadata;
 
+    /**
+     * @var array
+     */
+    protected $existingTableList;
+
 
     /**
      * SchemaUpdater constructor.
@@ -35,6 +43,8 @@ class AbstractUpdater implements ValidationHelperAwareInterface, AdapterAwareInt
     {
         $this->adapter = $adapter;
         $this->metadata = \Laminas\Db\Metadata\Source\Factory::createSourceFromAdapter($this->adapter);
+        $this->existingTableList = $this->metadata->getTableNames($adapter->getCurrentSchema());
+
     }
 
 
@@ -151,4 +161,86 @@ class AbstractUpdater implements ValidationHelperAwareInterface, AdapterAwareInt
         }
         return $result;
     }
+
+    /**
+     * @param string $table
+     * @param string $column
+     * @return array
+     */
+    protected function getKeyList(string $table, string $column)
+    {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select($table);
+        $select->columns([$column]);
+        $result = $this->adapter->query(
+            $sql->buildSqlString($select, $this->adapter),
+            Adapter::QUERY_MODE_EXECUTE
+        );
+        return array_column($result->toArray(), $column);
+    }
+
+    /**
+     * @param string $table
+     * @param string $keyColumn
+     * @param array $data_Map
+     * @return array
+     */
+    protected function saveDataMap(string $table, string $keyColumn, array $data_Map)
+    {
+        $existingKey_List = $this->getKeyList($table, $keyColumn);
+        $result = [];
+        foreach ($data_Map as $item) {
+            $sql = new Sql($this->adapter);
+            if (in_array($item[$keyColumn], $existingKey_List)) {
+                $update = $sql->update($table);
+                $update->where([$keyColumn => $item[$keyColumn]]);
+                unset($item[$keyColumn]);
+                $update->set($item);
+                $result[] = $this->query($update);
+            } else {
+                $insert = $sql->insert($table);
+                $insert->columns(array_keys($item));
+                $insert->values(array_values($item));
+                $result[] = $this->query($insert);
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @param string $table
+     * @return AlterTable|CreateTable
+     */
+    protected function getTableStatement(string $table)
+    {
+        if (!in_array($table, $this->existingTableList)) {
+            $personTable = new CreateTable($table);
+        } else {
+            $personTable = new AlterTable($table);
+        }
+        return $personTable;
+    }
+
+    /**
+     * @param AbstractSql $table
+     * @param Column $column
+     * @return Column
+     * @throws \Exception
+     */
+    protected function addColumnToTable(AbstractSql $table, Column $column)
+    {
+        if ($table instanceof CreateTable) {
+            $table->addColumn($column);
+        }
+        if ($table instanceof AlterTable) {
+            $columns = $this->metadata->getColumnNames((string)$table->getRawState(AlterTable::TABLE), $this->adapter->getCurrentSchema());
+            if (!in_array($column->getName(), $columns)) {
+                $table->addColumn($column);
+            } else {
+                $table->changeColumn($column->getName(), $column);
+            }
+        }
+        return $column;
+    }
+
 }

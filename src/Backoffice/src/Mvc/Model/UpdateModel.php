@@ -15,14 +15,12 @@ class UpdateModel extends BaseModel
         // TODO: Implement init() method.
     }
 
-    public function getSchemaUpdaterPreview() {
-        $schemaUpdater = new SchemaUpdater($this->getDbAdpater());
-        return $schemaUpdater->getPreviewMap();
+    public function getSchemaUpdater() {
+        return new SchemaUpdater($this->getDbAdpater());
     }
 
-    public function getDataUpdaterPreview() {
-        $schemaUpdater = new DataUpdater($this->getDbAdpater());
-        return $schemaUpdater->getPreviewMap();
+    public function getDataUpdater() {
+        return new DataUpdater($this->getDbAdpater());
     }
 
     public function submit(array $attributes)

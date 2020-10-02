@@ -12,6 +12,8 @@ class UserBean extends AbstractDatabaseBean implements ComponentDataBeanInterfac
 {
 
     public const STATE_ACTIVE = 'active';
+    public const STATE_INACTIVE = 'inactive';
+    public const STATE_LOCKED = 'locked';
 
     /**
      * UserBean constructor.

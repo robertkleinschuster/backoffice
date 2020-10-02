@@ -3,21 +3,46 @@ namespace Backoffice\Database\Updater;
 
 
 use Backoffice\Authentication\Bean\UserBean;
-use Laminas\Db\Sql\Sql;
 
 class DataUpdater extends AbstractUpdater
 {
+
     public function updateDataUserState()
     {
-        $result = [];
+        $data_Map = [];
+        $data_Map[] = [
+            'UserState_Code' => UserBean::STATE_ACTIVE,
+            'UserState_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserState_Code' => UserBean::STATE_INACTIVE,
+            'UserState_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserState_Code' => UserBean::STATE_LOCKED,
+            'UserState_Active' => true,
+        ];
+        return $this->saveDataMap('UserState', 'UserState_Code', $data_Map);
+    }
 
-        $sql = new Sql($this->adapter);
-        $insert = $sql->insert('UserState');
 
-        $insert->columns(['UserState_Code', 'UserState_Active']);
-        $insert->values([UserBean::STATE_ACTIVE, true]);
-        $result[] = $this->query($insert);
+    public function updateDataUserPermission()
+    {
+        $data_Map = [];
+        $data_Map[] = [
+            'UserPermission_Code' => 'default',
+            'UserPermission_Active' => true,
+        ];
+        return $this->saveDataMap('UserPermission', 'UserPermission_Code', $data_Map);
+    }
 
-        return $result;
+    public function updateDataUserRole()
+    {
+        $data_Map = [];
+        $data_Map[] = [
+            'UserRole_Code' => 'default',
+            'UserRole_Active' => true,
+        ];
+        return $this->saveDataMap('UserRole', 'UserRole_Code', $data_Map);
     }
 }

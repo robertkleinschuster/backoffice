@@ -38,15 +38,11 @@ class UserController extends BaseController
     public function overviewAction()
     {
         $this->getView()->getViewModel()->setTitle('Benutzerübersicht');
-        $toolbar = new Toolbar('', new ComponentModel());
+        $toolbar = new Toolbar();
         $toolbar->getComponentModel()->setComponentDataBean(new ComponentDataBean());
-        $toolbar->addLink('Neu', 'create')
-            ->setAction($this->getPathHelper()->setAction('create')->getPath())
-            ->setValue('Neu')
-            ->addOption(Link::OPTION_BUTTON_STYLE)
-            ->setStyle(Link::STYLE_SECONDARY);
+        $toolbar->addButton($this->getPathHelper()->setAction('create')->getPath(), 'Neu');
         $this->getView()->addComponent($toolbar);
-        $overview = new Overview('', new ComponentModel());
+        $overview = new Overview();
         $path = $this->getPathHelper()->setViewIdMap(['Person_ID' => '{Person_ID}']);
         $overview->addLink('', '')
             ->setAction($path->setAction('detail')
@@ -61,14 +57,14 @@ class UserController extends BaseController
             ->setAction($path->setAction('delete')->getPath(false))
             ->setValue("<i class=\"fas fa-eraser\"></i>")
         ->setChapter('actions');
-        $overview->addBadge('Status', 'User_Active')
+        $overview->addBadge('User_Active', 'Status')
             ->setValue('Aktiv')
             ->setStyle(Badge::STYLE_SUCCESS)->setWidth(50);
-        $overview->addLink('Benutzername', 'User_Username')
-            ->setAction($path->setAction('detail')->getPath(false));
-        $overview->addText('Vorname', 'Person_Firstname');
-        $overview->addText('Nachname', 'Person_Lastname');
-        $overview->addText('Anzeigename', 'User_Displayname');
+
+        $overview->addText('User_Username', 'Benutzername');
+        $overview->addText('Person_Firstname', 'Vorname');
+        $overview->addText('Person_Lastname', 'Nachname');
+        $overview->addText('User_Displayname', 'Anzeigename');
 
         $overview->getComponentModel()->setComponentDataBeanList($this->getModel()->getFinder()->getBeanList());
         $this->getView()->addComponent($overview);
@@ -83,11 +79,11 @@ class UserController extends BaseController
             $this->getControllerResponse()->setRedirect($this->getPathHelper()->setAction('overview')->getPath());
             return;
         }
-        $detail = new Detail('', new ComponentModel());
-        $detail->addText('Benutzername', 'User_Username');
-        $detail->addText('Anzeigename', 'User_Displayname');
-        $detail->addText('Name', 'Person_Firstname');
-        $detail->addText('Nachname', 'Person_Lastname');
+        $detail = new Detail();
+        $detail->addText( 'User_Username', 'Benutzername');
+        $detail->addText('User_Displayname', 'Anzeigename');
+        $detail->addText('Person_Firstname', 'Name');
+        $detail->addText('Person_Lastname', 'Nachname');
         $detail->getComponentModel()->setComponentDataBean($this->getModel()->getFinder()->getBean());
         $this->getView()->addComponent($detail);
     }
@@ -95,13 +91,12 @@ class UserController extends BaseController
     public function createAction()
     {
         $this->getView()->getViewModel()->setTitle('Benutzer erstellen');
-        $componentModel = new ComponentModel();
         $bean = $this->getModel()->getFinder()->getFactory()->createBean();
-        $componentModel->setComponentDataBean($bean);
-        $componentModel->getValidationHelper()->addErrorFieldMap($this->getValidationErrorMap());
-        $edit = $this->addEditUserFields($componentModel);
-        $edit->addSubmit('Erstellen', 'save');
-        $edit->addLink('Abbrechen', 'cancel')
+        $edit = $this->addEditUserFields();
+        $edit->getComponentModel()->setComponentDataBean($bean);
+        $edit->getComponentModel()->getValidationHelper()->addErrorFieldMap($this->getValidationErrorMap());
+        $edit->addSubmit('save', 'Erstellen');
+        $edit->addLink('cancel', 'Abbrechen')
             ->setAction($this->getPathHelper()->setAction('overview')->getPath())
             ->setAppendToColumnPrevious(true)
             ->setStyle(Link::STYLE_SECONDARY)->setValue('Abbrechen');
@@ -118,9 +113,9 @@ class UserController extends BaseController
     public function editAction()
     {
         $this->getView()->getViewModel()->setTitle('Benutzer bearbeiten');
-        $edit = $this->addEditUserFields(new ComponentModel());
-        $edit->addSubmit('Speichern', 'save');
-        $edit->addLink('Abbrechen', 'cancel')->setAction($this->getPathHelper()->setAction('overview')->getPath())
+        $edit = $this->addEditUserFields();
+        $edit->addSubmit('save', 'Speichern');
+        $edit->addLink('cancel', 'Abbrechen')->setAction($this->getPathHelper()->setAction('overview')->getPath())
             ->setAppendToColumnPrevious(true)
             ->setStyle(Link::STYLE_SECONDARY)->setValue('Abbrechen');
         $edit->addAttribute(ControllerRequest::ATTRIBUTE_REDIRECT, $this->getPathHelper()->setAction('overview')->getPath());
@@ -134,46 +129,45 @@ class UserController extends BaseController
     public function deleteAction() {
         $this->getView()->getViewModel()->setTitle('Benutzer löschen');
         $bean = $this->getModel()->getFinder()->getBean();
-        $alert = new Alert('Sicherheitsabfrage', new ComponentModel());
+        $alert = new Alert();
         $alert->getComponentModel()->setComponentDataBean($bean);
         $alert->addText("", "")->setValue('Sind sie sicher, dass sie den Benutzer "{User_Username}" löschen wollen?');
         $this->getView()->addComponent($alert);
-        $edit = new Edit('', new ComponentModel());
+        $edit = new Edit();
         $edit->getComponentModel()->setComponentDataBean($bean);
-        $edit->addSubmit('Löschen', 'delete');
-        $edit->addLink('Abbrechen', 'cancel')->setAction($this->getPathHelper()->setAction('overview')->getPath())
+        $edit->addSubmit('delete', 'Löschen');
+        $edit->addLink('cancel', 'Abbrechen')->setAction($this->getPathHelper()->setAction('overview')->getPath())
             ->setAppendToColumnPrevious(true)
             ->setStyle(Link::STYLE_SECONDARY)->setValue('Abbrechen');
         $edit->addAttribute(ControllerRequest::ATTRIBUTE_REDIRECT, $this->getPathHelper()->setAction('overview')->getPath());
         $this->getView()->addComponent($edit);
     }
 
-    protected function addEditUserFields($model) {
-        $edit = new Edit('Benutzer Daten', $model);
+    protected function addEditUserFields() {
+        $edit = new Edit('Benutzer Daten');
         $edit->setCols(2);
-        $edit->addText('Vorname', 'Person_Firstname')
+        $edit->addText('Person_Firstname', 'Vorname')
             ->setChapter('Persönliche Daten')
             ->setAutocomplete(Text::AUTOCOMPLETE_GIVEN_NAME)
             ->setAppendToColumnPrevious(true);
-        $edit->addText('Nachname', 'Person_Lastname')
+        $edit->addText('Person_Lastname', 'Nachname')
             ->setChapter('Persönliche Daten')
             ->setAutocomplete(Text::AUTOCOMPLETE_FAMILY_NAME)
             ->setAppendToColumnPrevious(true);
-        $edit->addText('Anzeigename', 'User_Displayname')
+        $edit->addText('User_Displayname', 'Anzeigename')
             ->setChapter('Persönliche Daten')
             ->setAutocomplete(Text::AUTOCOMPLETE_NICKNAME)
             ->setAppendToColumnPrevious(true);
-        $edit->addText('Benutzername', 'User_Username')
+        $edit->addText('User_Username', 'Benutzername')
             ->setChapter('Anmeldedaten')
             ->setAutocomplete(Text::AUTOCOMPLETE_USERNAME);
-        $edit->addText('Passwort', 'User_Password')
+        $edit->addText('User_Password', 'Passwort')
             ->setType(Text::TYPE_PASSWORD)
             ->setChapter('Anmeldedaten')
             ->setAutocomplete(Text::AUTOCOMPLETE_NEW_PASSWORD)
             ->setAppendToColumnPrevious(true);
         $edit->addAttribute('UserState_Code', UserBean::STATE_ACTIVE)
         ->setAppendToColumnPrevious(true);
-
         return $edit;
     }
 }
