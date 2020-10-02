@@ -82,6 +82,7 @@ class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterfa
             $beanList = $roleFinder->getFactory()->createBeanList();
         }
         $bean->setData('Roles',  $beanList->getData('UserRole_Code'));
+        $bean->setData('UserRole_BeanList',  $beanList);
         return $bean;
     }
 

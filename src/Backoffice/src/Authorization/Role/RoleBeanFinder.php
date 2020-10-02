@@ -38,6 +38,7 @@ class RoleBeanFinder extends AbstractBeanFinder
             $beanList = $permissionFinder->getFactory()->createBeanList();
         }
         $bean->setData('Permissions',  $beanList->getData('UserPermission_Code'));
+        $bean->setData('UserPermission_BeanList',  $beanList);
         return $bean;
     }
 

@@ -14,11 +14,12 @@ class RoleBeanProcessor extends AbstractBeanProcessor implements ValidationHelpe
 
     public function __construct(Adapter $adapter)
     {
-        $saver = new DatabaseBeanSaver($adapter, 'UserRole');
+        $saver = new DatabaseBeanSaver($adapter, 'UserRole', 'User_UserRole');
         $saver->setFieldColumnMap([
             'UserRole_ID' => 'UserRole_ID',
             'UserRole_Code' => 'UserRole_Code',
             'UserRole_Active' => 'UserRole_Active',
+            'Person_ID' => 'Person_ID',
         ]);
         $saver->setPrimaryKeyList([
             'UserRole_ID',

@@ -79,6 +79,7 @@ class UserController extends BaseController
             $this->getControllerResponse()->setRedirect($this->getPathHelper()->setAction('overview')->getPath());
             return;
         }
+
         $detail = new Detail();
         $detail->addText( 'User_Username', 'Benutzername');
         $detail->addText('User_Displayname', 'Anzeigename');
@@ -87,6 +88,23 @@ class UserController extends BaseController
         $bean = $this->getModel()->getFinder()->getBean();
         $detail->getComponentModel()->setComponentDataBean($bean);
         $this->getView()->addComponent($detail);
+
+        $toolbar = new Toolbar('Rollen');
+        $toolbar->getComponentModel()->addComponentDataBean(new ComponentDataBean());
+        $toolbar->addButton(
+            $this->getPathHelper()
+                ->setController('userrole')
+                ->setAction('linktouser')
+                ->setParams(['Person_ID' => $bean->getData('Person_ID')])
+                ->getPath(),
+            'Hinzufügen'
+        );
+        $this->getView()->addComponent($toolbar);
+
+        $overview = new Overview();
+        $overview->getComponentModel()->setComponentDataBeanList($bean->getData('UserRole_BeanList'));
+        $overview->addText('UserRole_Code', 'Code');
+        $this->getView()->addComponent($overview);
     }
 
     public function createAction()

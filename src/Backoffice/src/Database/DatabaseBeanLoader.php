@@ -55,6 +55,11 @@ class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
      */
     private $fieldColumn_Map;
 
+    /**
+     * @var int
+     */
+    private $limit;
+
 
     /**
      * UserBeanLoader constructor.
@@ -115,6 +120,34 @@ class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
     {
         $this->fieldColumn_Map = $fieldColumn_Map;
         return $this;
+    }
+
+
+    /**
+    * @return int
+    */
+    public function getLimit(): int
+    {
+        return $this->limit;
+    }
+
+    /**
+    * @param int $limit
+    *
+    * @return $this
+    */
+    public function setLimit(int $limit): self
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
+    /**
+    * @return bool
+    */
+    public function hasLimit(): bool
+    {
+        return $this->limit !== null;
     }
 
 
@@ -194,6 +227,15 @@ class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
     }
 
     /**
+     * @param Select $select
+     */
+    protected function handleLimit(Select $select) {
+        if ($this->hasLimit()) {
+            $select->limit($this->getLimit());
+        }
+    }
+
+    /**
      * @return int
      */
     public function count(): int
@@ -259,6 +301,7 @@ class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
         $select = $sql->select($this->getTable());
         $this->handleJoins($select);
         $this->handleWhere($select);
+        $this->handleLimit($select);
         return $select;
     }
 
