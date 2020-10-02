@@ -37,7 +37,7 @@ class UserController extends BaseController
 
     public function overviewAction()
     {
-        $this->getView()->getViewModel()->setTitle('Benutzerübersicht');
+        $this->getView()->getViewModel()->setTitle('Benutzer Übersicht');
         $toolbar = new Toolbar();
         $toolbar->getComponentModel()->setComponentDataBean(new ComponentDataBean());
         $toolbar->addButton($this->getPathHelper()->setAction('create')->getPath(), 'Neu');
@@ -100,8 +100,8 @@ class UserController extends BaseController
             ->setAction($this->getPathHelper()->setAction('overview')->getPath())
             ->setAppendToColumnPrevious(true)
             ->setStyle(Link::STYLE_SECONDARY)->setValue('Abbrechen');
-        $edit->addAttribute(ControllerRequest::ATTRIBUTE_REDIRECT, $this->getPathHelper()->setAction('overview')->getPath());
-        $edit->addAttribute(ControllerRequest::ATTRIBUTE_CREATE, 'create');
+        $edit->addSubmitAttribute(ControllerRequest::ATTRIBUTE_REDIRECT, $this->getPathHelper()->setAction('overview')->getPath());
+        $edit->addSubmitAttribute(ControllerRequest::ATTRIBUTE_CREATE, 'create');
         $this->getView()->addComponent($edit);
         foreach ($edit->getFieldList() as $item) {
             $bean->setData($item->getKey(), $this->getControllerRequest()->getAttribute($item->getKey()));
@@ -118,7 +118,7 @@ class UserController extends BaseController
         $edit->addLink('cancel', 'Abbrechen')->setAction($this->getPathHelper()->setAction('overview')->getPath())
             ->setAppendToColumnPrevious(true)
             ->setStyle(Link::STYLE_SECONDARY)->setValue('Abbrechen');
-        $edit->addAttribute(ControllerRequest::ATTRIBUTE_REDIRECT, $this->getPathHelper()->setAction('overview')->getPath());
+        $edit->addSubmitAttribute(ControllerRequest::ATTRIBUTE_REDIRECT, $this->getPathHelper()->setAction('overview')->getPath());
         $bean = $this->getModel()->getFinder()->getBean();
         $bean->setData('User_Password', '');
         $edit->getComponentModel()->setComponentDataBean($bean);
@@ -139,7 +139,7 @@ class UserController extends BaseController
         $edit->addLink('cancel', 'Abbrechen')->setAction($this->getPathHelper()->setAction('overview')->getPath())
             ->setAppendToColumnPrevious(true)
             ->setStyle(Link::STYLE_SECONDARY)->setValue('Abbrechen');
-        $edit->addAttribute(ControllerRequest::ATTRIBUTE_REDIRECT, $this->getPathHelper()->setAction('overview')->getPath());
+        $edit->addSubmitAttribute(ControllerRequest::ATTRIBUTE_REDIRECT, $this->getPathHelper()->setAction('overview')->getPath());
         $this->getView()->addComponent($edit);
     }
 
@@ -166,7 +166,7 @@ class UserController extends BaseController
             ->setChapter('Anmeldedaten')
             ->setAutocomplete(Text::AUTOCOMPLETE_NEW_PASSWORD)
             ->setAppendToColumnPrevious(true);
-        $edit->addAttribute('UserState_Code', UserBean::STATE_ACTIVE)
+        $edit->addSubmitAttribute('UserState_Code', UserBean::STATE_ACTIVE)
         ->setAppendToColumnPrevious(true);
         return $edit;
     }

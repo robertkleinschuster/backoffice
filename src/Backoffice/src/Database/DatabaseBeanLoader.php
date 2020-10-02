@@ -72,6 +72,17 @@ class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
     }
 
     /**
+     * @param string $table
+     * @return DatabaseBeanLoader
+     */
+    public function setTable(string $table)
+    {
+        $this->table = $table;
+        return $this;
+    }
+
+
+    /**
      * @return string
      */
     protected function getTable(): string

@@ -27,6 +27,7 @@ class UserBeanFactory implements BeanFactoryInterface
         return function (string $identity, array $roles = [], array $details = []) : UserInterface {
             $bean = $this->createBean();
             $bean->setFromArray($details);
+            $bean->setData('Roles', $roles);
             return $bean;
         };
     }

@@ -4,13 +4,13 @@
 namespace Backoffice\Authentication\Bean;
 
 
+use Backoffice\Authorization\Role\RoleBeanFinder;
 use Backoffice\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Adapter\AdapterInterface;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepositoryInterface;
 use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
-use Psr\Container\ContainerInterface;
+use NiceshopsDev\Bean\BeanInterface;
 
 /**
  * Class UserBeanFinder
@@ -23,10 +23,17 @@ class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterfa
 {
 
     /**
+     * @var Adapter
+     */
+    private $adapter;
+
+    /**
      * UserBeanFinder constructor.
+     * @param Adapter $adapter
      */
     public function __construct(Adapter $adapter)
     {
+        $this->adapter = $adapter;
         $loader = new DatabaseBeanLoader($adapter, 'User');
         $loader->addJoin('Person', 'Person_ID');
         parent::__construct($loader, new UserBeanFactory());
@@ -48,6 +55,25 @@ class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterfa
             }
         }
         return null;
+    }
+
+    /**
+     * @param BeanInterface $bean
+     * @return BeanInterface
+     */
+    protected function initializeBeanWithAdditionlData(BeanInterface $bean): BeanInterface
+    {
+        $bean =  parent::initializeBeanWithAdditionlData($bean);
+        $roleFinder = new RoleBeanFinder($this->adapter);
+        $roleFinder->getLoader()->addJoin('User_UserRole', 'UserRole_Code');
+        $roleFinder->getLoader()->addWhere('Person_ID', $bean->getData('Person_ID'), 'User_UserRole');
+        if ($roleFinder->find()) {
+            $beanList = $roleFinder->getBeanList();
+        } else {
+            $beanList = $roleFinder->getFactory()->createBeanList();
+        }
+        $bean->setData('Roles',  $beanList->getData('UserRole_Code'));
+        return $bean;
     }
 
 

@@ -27,6 +27,7 @@ class UserBean extends AbstractDatabaseBean implements ComponentDataBeanInterfac
         $this->setDatabaseField('User_Displayname', self::DATA_TYPE_STRING);
         $this->setDatabaseField('User_Password', self::DATA_TYPE_STRING);
         $this->setDatabaseField('UserState_Code', self::DATA_TYPE_STRING, [self::COLUMN_TYPE_FOREIGN_KEY]);
+        $this->setDataType('Roles', self::DATA_TYPE_ARRAY);
     }
 
     public function getIdentity(): string
@@ -36,7 +37,7 @@ class UserBean extends AbstractDatabaseBean implements ComponentDataBeanInterfac
 
     public function getRoles(): iterable
     {
-        return [];
+        return $this->getData('Roles');
     }
 
     public function getDetail(string $name, $default = null)

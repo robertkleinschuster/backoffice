@@ -25,7 +25,7 @@ class AuthenticationController extends BaseController
             $alert = new Alert();
             $alert->getComponentModel()->setComponentDataBean(new ComponentDataBean());;
             $alert->setHeading('Fehler bei der Anmeldung');
-            $alert->addText('', 'login_error')->setValue($login_error);
+            $alert->addText('login_error', '')->setValue($login_error);
             $this->getView()->addComponent($alert);
         }
 
