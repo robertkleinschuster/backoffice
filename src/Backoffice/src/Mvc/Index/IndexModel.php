@@ -1,8 +1,10 @@
 <?php
 
 
-namespace Backoffice\Mvc\Model;
+namespace Backoffice\Mvc\Index;
 
+
+use Backoffice\Mvc\Base\BaseModel;
 
 class IndexModel extends BaseModel
 {

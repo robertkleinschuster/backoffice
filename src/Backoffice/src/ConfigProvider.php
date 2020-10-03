@@ -7,20 +7,20 @@ namespace Backoffice;
 use Backoffice\Authentication\AuthenticationMiddleware;
 use Backoffice\Authentication\AuthenticationMiddlewareFactory;
 use Backoffice\Authentication\Bean\UserBeanFactory;
-use Backoffice\Authentication\Bean\UserBeanFinder;
 use Backoffice\Authentication\UserRepositoryFactory;
-use Backoffice\Mvc\Controller\AuthenticationController;
-use Backoffice\Mvc\Controller\IndexController;
-use Backoffice\Mvc\Controller\UpdateController;
-use Backoffice\Mvc\Controller\UserController;
-use Backoffice\Mvc\Controller\UserRoleController;
-use Backoffice\Mvc\Model\AuthenticationModel;
-use Backoffice\Mvc\Model\IndexModel;
-use Backoffice\Mvc\Model\UpdateModel;
-use Backoffice\Mvc\Model\UserModel;
-use Backoffice\Mvc\Model\UserRoleModel;
+use Backoffice\Mvc\Authentication\AuthenticationController;
+use Backoffice\Mvc\Authentication\AuthenticationModel;
+use Backoffice\Mvc\Index\IndexController;
+use Backoffice\Mvc\Index\IndexModel;
+use Backoffice\Mvc\Role\RoleController;
+use Backoffice\Mvc\Role\RoleModel;
+use Backoffice\Mvc\RolePermission\RolePermissionController;
+use Backoffice\Mvc\RolePermission\RolePermissionModel;
+use Backoffice\Mvc\Update\UpdateController;
+use Backoffice\Mvc\Update\UpdateModel;
+use Backoffice\Mvc\User\UserModel;
+use Backoffice\Mvc\User\UserController;
 use Backoffice\Session\Cache\FilesystemCachePoolFactory;
-use Laminas\ServiceManager\Factory\InvokableFactory;
 use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\Session\PhpSession;
 use Mezzio\Authentication\UserInterface;
@@ -61,14 +61,16 @@ class ConfigProvider
                     'auth' => AuthenticationController::class,
                     'user' => UserController::class,
                     'update' => UpdateController::class,
-                    'userrole' => UserRoleController::class,
+                    'role' => RoleController::class,
+                    'rolepermission' => RolePermissionController::class,
                 ],
                 'models' => [
                     'index' => IndexModel::class,
                     'auth' => AuthenticationModel::class,
                     'user' => UserModel::class,
                     'update' => UpdateModel::class,
-                    'userrole' => UserRoleModel::class,
+                    'role' => RoleModel::class,
+                    'rolepermission' => RolePermissionModel::class,
                 ],
             ],
             'mezzio-session-cache' => [

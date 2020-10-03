@@ -18,9 +18,9 @@ class DatabaseBeanParser extends AbstractBeanParser
             case AbstractBaseBean::DATA_TYPE_STRING:
                 return strval($value);
             case AbstractBaseBean::DATA_TYPE_BOOL:
-                if ($value === 'true') {
+                if ($value === 1) {
                     return true;
-                } elseif ($value === 'false') {
+                } elseif ($value === 0) {
                     return false;
                 }
             case AbstractBaseBean::DATA_TYPE_INT:

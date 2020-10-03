@@ -2,14 +2,14 @@
 namespace Backoffice\Authorization\Permission;
 
 
-use Mezzio\Mvc\View\ComponentDataBeanInterface;
-use NiceshopsDev\Bean\Database\AbstractDatabaseBean;
+use NiceshopsDev\Bean\JsonSerializable\AbstractJsonSerializableBean;
 
-class PermissionBean extends AbstractDatabaseBean implements ComponentDataBeanInterface
+class PermissionBean extends AbstractJsonSerializableBean
 {
     public function __construct()
     {
         $this->setDataType('UserPermission_Code', self::DATA_TYPE_STRING, true);
+        $this->setDataType('UserRole_ID', self::DATA_TYPE_INT, true);
         $this->setDataType('UserPermission_Active', self::DATA_TYPE_BOOL, true);
     }
 

@@ -1,0 +1,139 @@
+<?php
+
+
+namespace Backoffice\Mvc\User;
+
+use Backoffice\Authentication\Bean\UserBean;
+use Backoffice\Mvc\Base\BaseController;
+use Mezzio\Mvc\Helper\PathHelper;
+use Mezzio\Mvc\View\ComponentDataBean;
+use Mezzio\Mvc\View\Components\Detail\Detail;
+use Mezzio\Mvc\View\Components\Edit\Edit;
+use Mezzio\Mvc\View\Components\Edit\Fields\Text;
+use Mezzio\Mvc\View\Components\Overview\Fields\Badge;
+use Mezzio\Mvc\View\Components\Overview\Overview;
+use Mezzio\Mvc\View\Components\Toolbar\Toolbar;
+
+/**
+ * Class UserController
+ * @package Backoffice\Mvc\Controller
+ * @method UserModel getModel()
+ */
+class UserController extends BaseController
+{
+    protected function initView()
+    {
+        parent::initView();
+        $this->setActiveNavigation('user', 'index');
+    }
+
+
+    public function indexAction()
+    {
+        $overview = $this->initOverviewTemplate();
+        $overview->getComponentModel()->setComponentDataBeanList($this->getModel()->getFinder()->getBeanList());
+    }
+
+    public function detailAction()
+    {
+        $detail = $this->initDetailTemplate();
+
+        $bean = $this->getModel()->getFinder()->getBean();
+        $detail->getComponentModel()->setComponentDataBean($bean);
+        $toolbar = new Toolbar('Rollen');
+        $toolbar->getComponentModel()->addComponentDataBean(new ComponentDataBean());
+        $toolbar->addButton(
+            $this->getPathHelper()
+                ->setController('userrole')
+                ->setAction('linktouser')
+                ->setParams(['Person_ID' => $bean->getData('Person_ID')])
+                ->getPath(),
+            'Hinzufügen'
+        );
+        $this->getView()->addComponent($toolbar);
+
+        $overview = new Overview();
+        $overview->getComponentModel()->setComponentDataBeanList($bean->getData('UserRole_BeanList'));
+        $overview->addText('UserRole_Code', 'Code');
+        $this->getView()->addComponent($overview);
+    }
+
+    public function createAction()
+    {
+        $edit = $this->initCreateTemplate();
+        $bean = $this->getModel()->getFinder()->getFactory()->createBean();
+        $edit->getComponentModel()->setComponentDataBean($bean);
+        $bean->setData('User_Password', '');
+        foreach ($edit->getFieldList() as $item) {
+            $bean->setData($item->getKey(), $this->getControllerRequest()->getAttribute($item->getKey()));
+        }
+        $bean->setFromArray($this->getPreviousAttributes());
+    }
+
+    public function editAction()
+    {
+        $edit = $this->initEditTemplate();
+        $bean = $this->getModel()->getFinder()->getBean();
+        $edit->getComponentModel()->setComponentDataBean($bean);
+        $bean->setData('User_Password', '');
+    }
+
+    public function deleteAction()
+    {
+        $edit = $this->initDeleteTemplate();
+        $edit->getComponentModel()->setComponentDataBean($this->getModel()->getFinder()->getBean());
+
+    }
+
+
+    protected function getDetailPath(): PathHelper
+    {
+        return $this->getPathHelper()->setViewIdMap(['Person_ID' => '{Person_ID}']);
+    }
+
+    protected function addOverviewFields(Overview $overview): void
+    {
+        $overview->addBadge('User_Active', 'Status')
+            ->setValue('Aktiv')
+            ->setStyle(Badge::STYLE_SUCCESS)->setWidth(50);
+        $overview->addText('User_Username', 'Benutzername');
+        $overview->addText('Person_Firstname', 'Vorname');
+        $overview->addText('Person_Lastname', 'Nachname');
+        $overview->addText('User_Displayname', 'Anzeigename');
+    }
+
+    protected function addDetailFields(Detail $detail): void
+    {
+        $detail->addText('User_Username', 'Benutzername');
+        $detail->addText('User_Displayname', 'Anzeigename');
+        $detail->addText('Person_Firstname', 'Name');
+        $detail->addText('Person_Lastname', 'Nachname');
+    }
+
+    protected function addEditFields(Edit $edit): void
+    {
+        $edit->setCols(2);
+        $edit->addText('Person_Firstname', 'Vorname')
+            ->setChapter('Persönliche Daten')
+            ->setAutocomplete(Text::AUTOCOMPLETE_GIVEN_NAME)
+            ->setAppendToColumnPrevious(true);
+        $edit->addText('Person_Lastname', 'Nachname')
+            ->setChapter('Persönliche Daten')
+            ->setAutocomplete(Text::AUTOCOMPLETE_FAMILY_NAME)
+            ->setAppendToColumnPrevious(true);
+        $edit->addText('User_Displayname', 'Anzeigename')
+            ->setChapter('Persönliche Daten')
+            ->setAutocomplete(Text::AUTOCOMPLETE_NICKNAME)
+            ->setAppendToColumnPrevious(true);
+        $edit->addText('User_Username', 'Benutzername')
+            ->setChapter('Anmeldedaten')
+            ->setAutocomplete(Text::AUTOCOMPLETE_USERNAME);
+        $edit->addText('User_Password', 'Passwort')
+            ->setType(Text::TYPE_PASSWORD)
+            ->setChapter('Anmeldedaten')
+            ->setAutocomplete(Text::AUTOCOMPLETE_NEW_PASSWORD)
+            ->setAppendToColumnPrevious(true);
+        $edit->addSubmitAttribute('UserState_Code', UserBean::STATE_ACTIVE)
+            ->setAppendToColumnPrevious(true);
+    }
+}

@@ -22,9 +22,9 @@ class DatabaseBeanFormatter extends AbstractBeanFormatter
                 return strval($value);
             case AbstractBaseBean::DATA_TYPE_BOOL:
                 if ($value) {
-                    return 'true';
+                    return 1;
                 } else {
-                    return 'false';
+                    return 0;
                 }
             case AbstractBaseBean::DATA_TYPE_ARRAY:
                 return json_encode($value);

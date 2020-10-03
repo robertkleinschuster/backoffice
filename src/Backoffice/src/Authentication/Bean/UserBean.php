@@ -4,11 +4,11 @@
 namespace Backoffice\Authentication\Bean;
 
 
+use Backoffice\Authorization\Role\RoleBeanList;
 use Mezzio\Authentication\UserInterface;
-use Mezzio\Mvc\View\ComponentDataBeanInterface;
 use NiceshopsDev\Bean\JsonSerializable\AbstractJsonSerializableBean;
 
-class UserBean extends AbstractJsonSerializableBean implements ComponentDataBeanInterface, UserInterface
+class UserBean extends AbstractJsonSerializableBean implements UserInterface
 {
 
     public const STATE_ACTIVE = 'active';
@@ -28,6 +28,8 @@ class UserBean extends AbstractJsonSerializableBean implements ComponentDataBean
         $this->setDataType('User_Password', self::DATA_TYPE_STRING, true);
         $this->setDataType('UserState_Code', self::DATA_TYPE_STRING, true);
         $this->setDataType('Roles', self::DATA_TYPE_ARRAY, true);
+        $this->setDataType('UserRole_BeanList', self::DATA_TYPE_ITERABLE, true);
+        $this->setData('UserRole_BeanList', new RoleBeanList());
     }
 
     public function getIdentity(): string
@@ -37,7 +39,7 @@ class UserBean extends AbstractJsonSerializableBean implements ComponentDataBean
 
     public function getRoles(): iterable
     {
-        return $this->getData('Roles');
+        return $this->getData('UserRole_BeanList')->getSerializeData();
     }
 
     public function getDetail(string $name, $default = null)
@@ -48,5 +50,9 @@ class UserBean extends AbstractJsonSerializableBean implements ComponentDataBean
     public function getDetails(): array
     {
         return $this->toArray();
+    }
+
+    public function getPermission_List(): array {
+        return $this->getData('UserRole_BeanList')->getPermission_List();
     }
 }

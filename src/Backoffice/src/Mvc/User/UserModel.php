@@ -1,10 +1,11 @@
 <?php
 
 
-namespace Backoffice\Mvc\Model;
+namespace Backoffice\Mvc\User;
 
 use Backoffice\Authentication\Bean\UserBeanFinder;
 use Backoffice\Authentication\Bean\UserBeanProcessor;
+use Backoffice\Mvc\Base\BaseModel;
 
 /**
  * Class UserModel

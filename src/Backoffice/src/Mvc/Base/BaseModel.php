@@ -1,13 +1,11 @@
 <?php
 
 
-namespace Backoffice\Mvc\Model;
+namespace Backoffice\Mvc\Base;
 
-use Backoffice\Mvc\Parser\BackofficeBeanParser;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterAwareInterface;
 use Laminas\Db\Adapter\AdapterAwareTrait;
-use Mezzio\Mvc\Controller\ControllerRequest;
 use Mezzio\Mvc\Helper\ValidationHelperAwareInterface;
 use Mezzio\Mvc\Model\AbstractModel;
 use NiceshopsDev\Bean\BeanFinder\BeanFinderInterface;
@@ -89,73 +87,72 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
     }
 
     /**
-     * @param array $ids
+     * @param array $viewIdMap
      */
-    public function find(array $ids)
+    public function find(array $viewIdMap)
     {
         if ($this->hasFinder()) {
-            $this->getFinder()->getLoader()->initByIdMap($ids);
+            $this->getFinder()->getLoader()->initByIdMap($viewIdMap);
             $this->getFinder()->find();
         }
     }
 
     /**
-     * @param array $ids
-     */
-    public function create(array $ids)
-    {
-
-    }
-    /**
+     * @param array $viewIdMap
      * @param array $attributes
+     * @return mixed|void
      */
-    public function submit(array $attributes)
-    {
-        if ($attributes['submit'] == 'save') {
-            $this->save($attributes);
-        }
-        if ($attributes['submit'] == 'delete') {
-            $this->delete($attributes);
-        }
-    }
-
-    protected function delete(array $attributes)
+    protected function create(array $viewIdMap, array $attributes)
     {
         if ($this->hasFinder() && $this->hasProcessor()) {
-
-            if ($this->getFinder()->count()) {
-                $bean = $this->getFinder()->getBean();
-
-                $beanList = $this->getFinder()->getFactory()->createBeanList();
-                $beanList->addBean($bean);
-
-                $this->getProcessor()->setBeanList($beanList);
-                $this->getProcessor()->delete();
-
+            $bean = $this->getFinder()->getFactory()->createBean();
+            $parser = new BackofficeBeanParser();
+            $bean = $parser->parse(array_replace($attributes, $viewIdMap), $bean)->toBean();
+            $beanList = $this->getFinder()->getFactory()->createBeanList();
+            $beanList->addBean($bean);
+            $this->getProcessor()->setBeanList($beanList);
+            $this->getProcessor()->save();
+            if ($this->getProcessor() instanceof ValidationHelperAwareInterface) {
+                $this->getValidationHelper()->addErrorFieldMap($this->getProcessor()->getValidationHelper()->getErrorFieldMap());
             }
-            $this->getValidationHelper()->addErrorFieldMap($this->getProcessor()->getValidationHelper()->getErrorFieldMap());
         }
     }
 
+
+    /**
+     * @param array $viewIdMap
+     * @return mixed|void
+     */
+    protected function delete(array $viewIdMap)
+    {
+        if ($this->hasFinder() && $this->hasProcessor()) {
+            if ($this->getFinder()->count()) {
+                $bean = $this->getFinder()->getBean();
+                $beanList = $this->getFinder()->getFactory()->createBeanList();
+                $beanList->addBean($bean);
+                $this->getProcessor()->setBeanList($beanList);
+                $this->getProcessor()->delete();
+            }
+            if ($this->getProcessor() instanceof ValidationHelperAwareInterface) {
+                $this->getValidationHelper()->addErrorFieldMap($this->getProcessor()->getValidationHelper()->getErrorFieldMap());
+            }
+        }
+    }
+
+    /**
+     * @param array $attributes
+     * @return mixed|void
+     */
     protected function save(array $attributes)
     {
         if ($this->hasFinder() && $this->hasProcessor()) {
-
-            if (isset($attributes[ControllerRequest::ATTRIBUTE_CREATE])) {
-                $bean = $this->getFinder()->getFactory()->createBean();
-            } else {
-                $bean = $this->getFinder()->getBean();
-            }
-
+            $bean = $this->getFinder()->getBean();
             $parser = new BackofficeBeanParser();
             $bean = $parser->parse($attributes, $bean)->toBean();
-
             $beanList = $this->getFinder()->getFactory()->createBeanList();
             $beanList->addBean($bean);
-
             $this->getProcessor()->setBeanList($beanList);
             $this->getProcessor()->save();
-
             if ($this->getProcessor() instanceof ValidationHelperAwareInterface) {
                 $this->getValidationHelper()->addErrorFieldMap($this->getProcessor()->getValidationHelper()->getErrorFieldMap());
             }

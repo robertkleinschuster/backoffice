@@ -1,9 +1,10 @@
 <?php
 
 
-namespace Backoffice\Mvc\Controller;
+namespace Backoffice\Mvc\Authentication;
 
 
+use Backoffice\Mvc\Base\BaseController;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Mvc\Controller\ControllerRequest;
 use Mezzio\Mvc\View\ComponentDataBean;
@@ -52,6 +53,5 @@ class AuthenticationController extends BaseController
         $this->getSession()->clear();
         return $this->getControllerResponse()->setRedirect($this->getPathHelper()->setController('auth')->setAction('login')->getPath());
     }
-
 
 }

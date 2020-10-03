@@ -1,8 +1,10 @@
 <?php
 
 
-namespace Backoffice\Mvc\Controller;
+namespace Backoffice\Mvc\Index;
 
+
+use Backoffice\Mvc\Base\BaseController;
 
 class IndexController extends BaseController
 {
@@ -15,4 +17,5 @@ class IndexController extends BaseController
     public function searchAction() {
         $this->getControllerResponse()->setRedirect($this->getPathHelper()->setAction('index')->getPath());
     }
+
 }

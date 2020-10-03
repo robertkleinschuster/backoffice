@@ -1,8 +1,10 @@
 <?php
 
 
-namespace Backoffice\Mvc\Formatter;
+namespace Backoffice\Mvc\Role;
 
+
+use Backoffice\Mvc\Base\BackofficeBeanFormatter;
 
 class RoleBeanFormatter extends BackofficeBeanFormatter
 {

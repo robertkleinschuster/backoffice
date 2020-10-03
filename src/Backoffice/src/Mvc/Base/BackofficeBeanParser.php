@@ -1,5 +1,5 @@
 <?php
-namespace Backoffice\Mvc\Parser;
+namespace Backoffice\Mvc\Base;
 
 use NiceshopsDev\Bean\AbstractBaseBean;
 

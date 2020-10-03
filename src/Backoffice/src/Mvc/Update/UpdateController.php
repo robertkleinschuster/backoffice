@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Backoffice\Mvc\Controller;
+namespace Backoffice\Mvc\Update;
 
 use Backoffice\Database\Updater\AbstractUpdater;
-use Backoffice\Mvc\Model\UpdateModel;
+use Backoffice\Mvc\Base\BaseController;
 use Mezzio\Mvc\View\ComponentDataBean;
 use Mezzio\Mvc\View\ComponentModel;
 use Mezzio\Mvc\View\Components\Edit\Edit;
@@ -23,7 +23,6 @@ class UpdateController extends BaseController
         $this->setActiveNavigation('update', 'index');
 
     }
-
 
     public function indexAction()
     {
@@ -50,5 +49,4 @@ class UpdateController extends BaseController
         $edit->addSubmit($submitAction, 'Update');
         return $edit;
     }
-
 }

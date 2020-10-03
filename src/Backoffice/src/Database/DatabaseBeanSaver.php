@@ -11,7 +11,6 @@ use Laminas\Db\Sql\Delete;
 use Laminas\Db\Sql\Sql;
 use NiceshopsDev\Bean\BeanInterface;
 use NiceshopsDev\Bean\BeanProcessor\AbstractBeanSaver;
-use NiceshopsDev\Bean\Database\DatabaseBeanInterface;
 
 class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterface
 {
@@ -87,10 +86,7 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
      */
     public function getPrimaryKeyList(): array
     {
-        if (null == $this->primaryKey_List) {
-            throw new \Exception('Primary key list not initialized.');
-        }
-        return $this->primaryKey_List;
+        return $this->primaryKey_List ?? [];
     }
 
     /**
@@ -109,12 +105,7 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
      */
     protected function saveBean(BeanInterface $bean): bool
     {
-        $keys = [];
-        foreach ($this->getPrimaryKeyList() as $item) {
-            $keys[] = $bean->hasData($item);
-        }
-        $hasPrimaryKey = !in_array(false, $keys) && count($keys) > 0;
-        if ($hasPrimaryKey) {
+        if ($this->hasPrimaryKeyValue($bean)) {
             return $this->update($bean);
         } else {
             return $this->insert($bean);
@@ -122,37 +113,61 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
     }
 
 
-    /**
-     * @param BeanInterface $bean
-     * @return bool
-     */
-    protected function deleteBean(BeanInterface $bean): bool
+    protected function hasPrimaryKeyValue(BeanInterface $bean): bool
     {
-        if ($bean instanceof DatabaseBeanInterface) {
-            if ($bean->hasPrimaryKeyValue()) {
-                $result_List = [];
-                $tableList = $this->getTableList();
-                $tableList = array_reverse($tableList);
-                foreach ($tableList as $table) {
-                    $primaryKeys = $bean->getDatabaseFieldName_Map($bean::COLUMN_TYPE_PRIMARY_KEY);
-                    if (count($primaryKeys)) {
-                        $delete = new Delete($table);
-                        foreach ($primaryKeys as $dataName => $dbColumn) {
-                            $delete->where("$table.$dbColumn = {$bean->getData($dataName)}");
-                        }
-                        $result = $this->adapter->query($delete->getSqlString($this->adapter->getPlatform()))->execute();
-                        $result_List[] = $result->getAffectedRows() > 0;
-                    }
-                }
-                return !in_array(false, $result_List, true) && count($result_List) > 0;
-            }
+        $keys = [];
+        foreach ($this->getPrimaryKeyList() as $item) {
+            $keys[] = $bean->hasData($this->getFieldNameByColumn($item));
         }
-        return false;
+        $hasPrimaryKey = !in_array(false, $keys) && count($keys) > 0;
+        return $hasPrimaryKey;
+    }
+
+    protected function getFieldNameByColumn(string $column): string
+    {
+        $name = array_flip($this->getFieldColumnMap())[$column];
+        if (null == $name) {
+            throw new \Exception("No bean field found for column $column.");
+        }
+        return $name;
     }
 
     /**
-     * @param DatabaseBeanInterface $bean
+     * @param BeanInterface $bean
      * @return bool
+     * @throws \Exception
+     */
+    protected function deleteBean(BeanInterface $bean): bool
+    {
+        $formatter = new DatabaseBeanFormatter();
+        $metadata = \Laminas\Db\Metadata\Source\Factory::createSourceFromAdapter($this->adapter);
+
+        $result_List = [];
+        $tableList = $this->getTableList();
+        $tableList = array_reverse($tableList);
+        foreach ($tableList as $table) {
+            $tableColumn_List = $metadata->getColumnNames($table, $this->adapter->getCurrentSchema());
+            $deletedata = [];
+            foreach ($this->getFieldColumnMap() as $dataName => $dbColumn) {
+                if ($bean->hasData($dataName) && in_array($dbColumn, $tableColumn_List)) {
+                    $deletedata[$dbColumn] = $formatter->format($bean)->getValue($dataName);
+                }
+            }
+            if (count($deletedata)) {
+                $delete = new Delete($table);
+                $delete->where($deletedata);
+                $result = $this->adapter->query($delete->getSqlString($this->adapter->getPlatform()))->execute();
+                $result_List[] = $result->getAffectedRows() > 0;
+            }
+        }
+        return !in_array(false, $result_List, true) && count($result_List) > 0;
+
+    }
+
+    /**
+     * @param BeanInterface $bean
+     * @return bool
+     * @throws \Exception
      */
     protected function insert(BeanInterface $bean): bool
     {
@@ -169,13 +184,15 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
                 }
             }
             if (count($insertdata)) {
-                $sql    = new Sql($this->adapter);
+                $sql = new Sql($this->adapter);
                 $insert = $sql->insert($table);
                 $insert->columns(array_keys($insertdata));
                 $insert->values(array_values($insertdata));
                 $result = $this->adapter->query($sql->buildSqlString($insert), $this->adapter::QUERY_MODE_EXECUTE);
-                if (!$bean->hasPrimaryKeyValue()) {
-                    $bean->setPrimaryKeyValue($result->getGeneratedValue());
+                if (count($this->getPrimaryKeyList()) == 1) {
+                    foreach ($this->getPrimaryKeyList() as $item) {
+                        $bean->setData($this->getFieldNameByColumn($item), $result->getGeneratedValue());
+                    }
                 }
                 $result_List[] = $result->getAffectedRows() > 0;
             }
@@ -184,8 +201,9 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
     }
 
     /**
-     * @param DatabaseBeanInterface $bean
+     * @param BeanInterface $bean
      * @return bool
+     * @throws \Exception
      */
     protected function update(BeanInterface $bean): bool
     {
@@ -200,12 +218,11 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
                     $insertdata[$dbColumn] = $formatter->format($bean)->getValue($dataName);
                 }
             }
-            if (count($insertdata)) {
-                $sql    = new Sql($this->adapter);
+            if (count($insertdata) && count($this->getPrimaryKeyList())) {
+                $sql = new Sql($this->adapter);
                 $update = $sql->update($table);
                 foreach ($this->getPrimaryKeyList() as $dbColumn) {
-                    $dataName = array_flip($this->getFieldColumnMap())[$dbColumn];
-                    $update->where("$table.$dbColumn = {$bean->getData($dataName)}");
+                    $update->where(["$table.$dbColumn" => $insertdata[$dbColumn]]);
                 }
                 $update->set($insertdata);
                 $result = $this->adapter->query($sql->buildSqlString($update), $this->adapter::QUERY_MODE_EXECUTE);

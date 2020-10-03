@@ -1,6 +1,6 @@
 <?php
 
-namespace Backoffice\Mvc\Formatter;
+namespace Backoffice\Mvc\Base;
 
 
 use NiceshopsDev\Bean\AbstractBaseBean;
