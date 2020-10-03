@@ -12,16 +12,23 @@ use Mezzio\Mvc\Controller\ControllerRequest;
 class UpdateModel extends BaseModel
 {
 
+    public const OPTION_SCHEMA_ALLOWED = 'schema_allowed';
+    public const OPTION_DATA_ALLOWED = 'data_allowed';
+
     public function init()
     {
 
     }
 
-    public function getSchemaUpdater() {
+
+
+    public function getSchemaUpdater()
+    {
         return new SchemaUpdater($this->getDbAdpater());
     }
 
-    public function getDataUpdater() {
+    public function getDataUpdater()
+    {
         return new DataUpdater($this->getDbAdpater());
     }
 
@@ -33,14 +40,22 @@ class UpdateModel extends BaseModel
     {
         switch ($request->getSubmit()) {
             case 'schema':
-                $schemaUpdater = new SchemaUpdater($this->getDbAdpater());
-                $schemaUpdater->execute($request->getAttributes());
-                $this->getValidationHelper()->addErrorFieldMap($schemaUpdater->getValidationHelper()->getErrorFieldMap());
+                if ($this->hasOption(self::OPTION_SCHEMA_ALLOWED)) {
+                    $schemaUpdater = new SchemaUpdater($this->getDbAdpater());
+                    $schemaUpdater->execute($request->getAttributes());
+                    $this->getValidationHelper()->addErrorFieldMap($schemaUpdater->getValidationHelper()->getErrorFieldMap());
+                } else {
+                    $this->handlePermissionDenied();
+                }
                 break;
             case 'data':
-                $schemaUpdater = new DataUpdater($this->getDbAdpater());
-                $schemaUpdater->execute($request->getAttributes());
-                $this->getValidationHelper()->addErrorFieldMap($schemaUpdater->getValidationHelper()->getErrorFieldMap());
+                if ($this->hasOption(self::OPTION_DATA_ALLOWED)) {
+                    $schemaUpdater = new DataUpdater($this->getDbAdpater());
+                    $schemaUpdater->execute($request->getAttributes());
+                    $this->getValidationHelper()->addErrorFieldMap($schemaUpdater->getValidationHelper()->getErrorFieldMap());
+                } else {
+                    $this->handlePermissionDenied();
+                }
                 break;
         }
     }

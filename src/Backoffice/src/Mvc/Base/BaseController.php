@@ -46,7 +46,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
     public const ATTRIBUTE_DELETE_PERMISSION = 'delete_permission';
 
 
-    public function setPermissions(string $create, string $edit, $delete)
+    public function setPermissions(string $create, string $edit, string $delete)
     {
         $this->setAttribute(self::ATTRIBUTE_CREATE_PERMISSION, $create);
         $this->setAttribute(self::ATTRIBUTE_EDIT_PERMISSION, $edit);
@@ -135,35 +135,35 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         $this->getView()->setPermissionList($this->getUser()->getPermission_List());
 
         $navigation = new Navigation('System');
-        $navigation->addElement(
-            new Element(
-                'Benutzer',
-                $this->getPathHelper()
-                    ->setController('user')
-                    ->setAction('index')
-                    ->getPath()
-            )
+        $navigation->setPermissionList($this->getUser()->getPermission_List());
+        $element =  new Element(
+            'Benutzer',
+            $this->getPathHelper()
+                ->setController('user')
+                ->setAction('index')
+                ->getPath()
         );
+        $element->setPermission('user');
+        $navigation->addElement($element);
+        $element = new Element(
+            'Rollen',
+            $this->getPathHelper()
+                ->setController('role')
+                ->setAction('index')
+                ->getPath()
+        );
+        $element->setPermission('role');
+        $navigation->addElement($element);
 
-        $navigation->addElement(
-            new Element(
-                'Rollen',
-                $this->getPathHelper()
-                    ->setController('role')
-                    ->setAction('index')
-                    ->getPath()
-            )
+        $element =  new Element(
+            'Update',
+            $this->getPathHelper()
+                ->setController('update')
+                ->setAction('index')
+                ->getPath()
         );
-
-        $navigation->addElement(
-            new Element(
-                'Update',
-                $this->getPathHelper()
-                    ->setController('update')
-                    ->setAction('index')
-                    ->getPath()
-            )
-        );
+        $element->setPermission('update');
+        $navigation->addElement($element);
 
         $this->getView()->getViewModel()->addNavigation($navigation);
 

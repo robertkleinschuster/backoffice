@@ -22,6 +22,9 @@ class RoleController extends BaseController
         parent::initView();
         $this->setActiveNavigation('role', 'index');
         $this->setPermissions('role.create', 'role.edit', 'role.delete');
+        if (!$this->checkPermission('role')) {
+            throw new \Exception('Unauthorized');
+        }
     }
 
 

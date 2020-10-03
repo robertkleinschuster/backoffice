@@ -27,6 +27,9 @@ class UserController extends BaseController
         parent::initView();
         $this->setActiveNavigation('user', 'index');
         $this->setPermissions('user.create', 'user.edit', 'user.delete');
+        if (!$this->checkPermission('user')) {
+            throw new \Exception('Unauthorized');
+        }
     }
 
 

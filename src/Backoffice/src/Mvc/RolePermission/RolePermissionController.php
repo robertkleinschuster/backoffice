@@ -19,6 +19,9 @@ class RolePermissionController extends BaseController
     {
         parent::initView();
         $this->setPermissions('rolepermission.create', 'rolepermission.edit', 'rolepermission.delete');
+        if (!$this->checkPermission('rolepermission')) {
+            throw new \Exception('Unauthorized');
+        }
     }
 
 
