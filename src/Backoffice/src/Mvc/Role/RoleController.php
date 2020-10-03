@@ -88,7 +88,7 @@ class RoleController extends BaseController
                 ->setAction('create')
                 ->setViewIdMap(['UserRole_ID' => $bean->getData('UserRole_ID')])
                 ->getPath(),
-            'Hinzufügen');
+            'Hinzufügen')->setPermission('rolepermission.create');
         $this->getView()->addComponent($toolbar);
 
         $overview = new Overview();
@@ -101,7 +101,7 @@ class RoleController extends BaseController
                     'UserPermission_Code' => "{UserPermission_Code}"
                 ])
                 ->getPath()
-        )->setWidth(45)->setPermission('userrole.delete');
+        )->setWidth(45)->setPermission('rolepermission.delete');
         $overview->addText('UserPermission_Code', 'Code');
         $overview->getComponentModel()->setComponentDataBeanList($bean->getData('UserPermission_BeanList'));
         $this->getView()->addComponent($overview);

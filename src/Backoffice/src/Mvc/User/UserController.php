@@ -51,7 +51,7 @@ class UserController extends BaseController
                 ->setViewIdMap(['Person_ID' => $bean->getData('Person_ID')])
                 ->getPath(),
             'Hinzufügen'
-        );
+        )->setPermission('userrole.create');
         $this->getView()->addComponent($toolbar);
 
         $overview = new Overview();
