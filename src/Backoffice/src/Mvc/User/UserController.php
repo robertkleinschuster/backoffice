@@ -5,6 +5,7 @@ namespace Backoffice\Mvc\User;
 
 use Backoffice\Authentication\Bean\UserBean;
 use Backoffice\Mvc\Base\BaseController;
+use Backoffice\Mvc\Role\RoleBeanFormatter;
 use Mezzio\Mvc\Helper\PathHelper;
 use Mezzio\Mvc\View\ComponentDataBean;
 use Mezzio\Mvc\View\Components\Detail\Detail;
@@ -25,12 +26,13 @@ class UserController extends BaseController
     {
         parent::initView();
         $this->setActiveNavigation('user', 'index');
+        $this->setPermissions('user.create', 'user.edit', 'user.delete');
     }
 
 
     public function indexAction()
     {
-        $overview = $this->initOverviewTemplate();
+        $overview = $this->initOverviewTemplate(new RoleBeanFormatter());
         $overview->getComponentModel()->setComponentDataBeanList($this->getModel()->getFinder()->getBeanList());
     }
 
@@ -45,16 +47,26 @@ class UserController extends BaseController
         $toolbar->addButton(
             $this->getPathHelper()
                 ->setController('userrole')
-                ->setAction('linktouser')
-                ->setParams(['Person_ID' => $bean->getData('Person_ID')])
+                ->setAction('create')
+                ->setViewIdMap(['Person_ID' => $bean->getData('Person_ID')])
                 ->getPath(),
             'Hinzufügen'
         );
         $this->getView()->addComponent($toolbar);
 
         $overview = new Overview();
-        $overview->getComponentModel()->setComponentDataBeanList($bean->getData('UserRole_BeanList'));
+        $overview->addDeleteIcon(
+            $this->getPathHelper()
+                ->setController('userrole')
+                ->setAction('delete')
+                ->setViewIdMap([
+                    'Person_ID' => $bean->getData('Person_ID'),
+                    'UserRole_ID' => "{UserRole_ID}"
+                ])
+                ->getPath()
+        )->setWidth(45)->setPermission('userrole.delete');
         $overview->addText('UserRole_Code', 'Code');
+        $overview->getComponentModel()->setComponentDataBeanList($bean->getData('UserRole_BeanList'));
         $this->getView()->addComponent($overview);
     }
 

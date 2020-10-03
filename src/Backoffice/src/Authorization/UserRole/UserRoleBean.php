@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Backoffice\Mvc\Authorization\UserRole;
+namespace Backoffice\Authorization\UserRole;
 
 
 use NiceshopsDev\Bean\JsonSerializable\AbstractJsonSerializableBean;

@@ -30,7 +30,7 @@ class DataUpdater extends AbstractUpdater
     {
         $data_Map = [];
         $data_Map[] = [
-            'UserPermission_Code' => 'user.view',
+            'UserPermission_Code' => 'user.delete',
             'UserPermission_Active' => true,
         ];
         $data_Map[] = [
@@ -43,7 +43,7 @@ class DataUpdater extends AbstractUpdater
         ];
 
         $data_Map[] = [
-            'UserPermission_Code' => 'role.view',
+            'UserPermission_Code' => 'role.delete',
             'UserPermission_Active' => true,
         ];
         $data_Map[] = [
@@ -54,6 +54,42 @@ class DataUpdater extends AbstractUpdater
             'UserPermission_Code' => 'role.edit',
             'UserPermission_Active' => true,
         ];
+
+        $data_Map[] = [
+            'UserPermission_Code' => 'userrole.delete',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'userrole.create',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'userrole.edit',
+            'UserPermission_Active' => true,
+        ];
+
+        $data_Map[] = [
+            'UserPermission_Code' => 'rolepermission.delete',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'rolepermission.create',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'rolepermission.edit',
+            'UserPermission_Active' => true,
+        ];
+
+        $data_Map[] = [
+            'UserPermission_Code' => 'update.schema',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'update.data',
+            'UserPermission_Active' => true,
+        ];
+
 
         return $this->saveDataMap('UserPermission', 'UserPermission_Code', $data_Map);
     }

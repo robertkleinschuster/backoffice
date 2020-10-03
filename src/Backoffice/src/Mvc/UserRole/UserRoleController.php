@@ -1,24 +1,18 @@
 <?php
 
 
-namespace Backoffice\Mvc\RolePermission;
-
+namespace Backoffice\Mvc\UserRole;
 
 use Backoffice\Mvc\Base\BaseController;
 use Mezzio\Mvc\Helper\PathHelper;
 use Mezzio\Mvc\View\Components\Edit\Edit;
 
-/**
- * Class RolePermissionController
- * @package Backoffice\Mvc\RolePermission
- * @method RolePermissionModel getModel()
- */
-class RolePermissionController extends BaseController
+class UserRoleController extends BaseController
 {
     protected function initView()
     {
         parent::initView();
-        $this->setPermissions('rolepermission.create', 'rolepermission.edit', 'rolepermission.delete');
+        $this->setPermissions('userrole.create', 'userrole.edit', 'userrole.delete');
     }
 
 
@@ -33,21 +27,20 @@ class RolePermissionController extends BaseController
     protected function addEditFields(Edit $edit): void
     {
         parent::addEditFields($edit);
-        $edit->addSelect('UserPermission_Code', 'Berechtigung')
-            ->setSelectOptions($this->getModel()->getPermissionList());
+        $edit->addSelect('UserRole_ID', 'Rolle')
+            ->setSelectOptions($this->getModel()->getRoleList());
     }
 
     public function deleteAction()
     {
         $viewId = $this->getControllerRequest()->getViewIdMap();
-        unset($viewId['UserPermission_Code']);
+        unset($viewId['UserRole_ID']);
         $edit = $this->initDeleteTemplate($this->getRoleDetailRedirectPath()->setViewIdMap($viewId)->getPath());
         $edit->getComponentModel()->setComponentDataBean($this->getModel()->getFinder()->getBean());
     }
 
     protected function getRoleDetailRedirectPath(): PathHelper
     {
-        return $this->getPathHelper()->setController('role')->setAction('detail')->setViewIdMap($this->getControllerRequest()->getViewIdMap());
+        return $this->getPathHelper()->setController('user')->setAction('detail')->setViewIdMap($this->getControllerRequest()->getViewIdMap());
     }
-
 }

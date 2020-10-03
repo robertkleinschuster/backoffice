@@ -21,6 +21,7 @@ class RoleController extends BaseController
     {
         parent::initView();
         $this->setActiveNavigation('role', 'index');
+        $this->setPermissions('role.create', 'role.edit', 'role.delete');
     }
 
 
@@ -100,7 +101,7 @@ class RoleController extends BaseController
                     'UserPermission_Code' => "{UserPermission_Code}"
                 ])
                 ->getPath()
-        )->setWidth(45);
+        )->setWidth(45)->setPermission('userrole.delete');
         $overview->addText('UserPermission_Code', 'Code');
         $overview->getComponentModel()->setComponentDataBeanList($bean->getData('UserPermission_BeanList'));
         $this->getView()->addComponent($overview);

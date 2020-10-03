@@ -29,14 +29,38 @@ use Mezzio\Mvc\View\ViewModel;
 use Mezzio\Session\LazySession;
 use Mezzio\Session\SessionMiddleware;
 use NiceshopsDev\Bean\BeanFormatter\BeanFormatterInterface;
+use NiceshopsDev\NiceCore\Attribute\AttributeAwareInterface;
+use NiceshopsDev\NiceCore\Attribute\AttributeTrait;
 
 /**
  * Class BaseController
  * @package Backoffice\Mvc\Controller
  * @method BaseModel getModel()
  */
-abstract class BaseController extends AbstractController
+abstract class BaseController extends AbstractController implements AttributeAwareInterface
 {
+    use AttributeTrait;
+
+    public const ATTRIBUTE_CREATE_PERMISSION = 'create_permission';
+    public const ATTRIBUTE_EDIT_PERMISSION = 'edit_permission';
+    public const ATTRIBUTE_DELETE_PERMISSION = 'delete_permission';
+
+
+    public function setPermissions(string $create, string $edit, $delete)
+    {
+        $this->setAttribute(self::ATTRIBUTE_CREATE_PERMISSION, $create);
+        $this->setAttribute(self::ATTRIBUTE_EDIT_PERMISSION, $edit);
+        $this->setAttribute(self::ATTRIBUTE_DELETE_PERMISSION, $delete);
+        if ($this->checkPermission($create)) {
+            $this->getModel()->addOption(BaseModel::OPTION_CREATE_ALLOWED);
+        }
+        if ($this->checkPermission($edit)) {
+            $this->getModel()->addOption(BaseModel::OPTION_EDIT_ALLOWED);
+        }
+        if ($this->checkPermission($delete)) {
+            $this->getModel()->addOption(BaseModel::OPTION_DELETE_ALLOWED);
+        }
+    }
 
 
     /**
@@ -94,6 +118,15 @@ abstract class BaseController extends AbstractController
         return $this->getControllerRequest()->getServerRequest()->getAttribute(UserInterface::class) ?? new UserBean();
     }
 
+    /**
+     * @param string $permission
+     * @return bool
+     */
+    protected function checkPermission(string $permission): bool
+    {
+        return in_array($permission, $this->getUser()->getPermission_List());
+    }
+
     protected function initView()
     {
         $this->setView(new View('Backoffice', new ViewModel()));
@@ -149,6 +182,7 @@ abstract class BaseController extends AbstractController
     {
         $this->getModel()->setDbAdapter($this->getControllerRequest()->getServerRequest()->getAttribute(DatabaseMiddleware::ADAPTER_ATTRIBUTE));
         $this->getModel()->init();
+
     }
 
     /**
@@ -157,6 +191,17 @@ abstract class BaseController extends AbstractController
     public function end()
     {
         $this->setTemplateVariable('token', $this->getGuard()->generateToken());
+        $validationHelper = new ValidationHelper();
+        $validationHelper->addErrorFieldMap($this->getValidationErrorMap());
+        if (count($validationHelper->getErrorList('Permission'))) {
+            $alert = new Alert();
+            $alert->setHeading('Zugriff verweigert!');
+            $alert->getComponentModel()->setComponentDataBean(new ComponentDataBean());
+            foreach ($validationHelper->getErrorList('Permission') as $item) {
+                $alert->addText('', '')->setValue($item);
+            }
+            $this->getView()->addComponent($alert, true);
+        }
     }
 
     /**
@@ -208,11 +253,15 @@ abstract class BaseController extends AbstractController
     }
 
 
-    protected function initOverviewTemplate(BeanFormatterInterface $formatter= null) {
+    protected function initOverviewTemplate(BeanFormatterInterface $formatter)
+    {
         $this->getView()->getViewModel()->setTitle('Übersicht');
         $toolbar = new Toolbar();
         $toolbar->getComponentModel()->setComponentDataBean(new ComponentDataBean());
-        $toolbar->addButton($this->getPathHelper()->setAction('create')->getPath(), 'Hinzufügen');
+        $button = $toolbar->addButton($this->getPathHelper()->setAction('create')->getPath(), 'Hinzufügen');
+        if ($this->hasAttribute(self::ATTRIBUTE_CREATE_PERMISSION)) {
+            $button->setPermission($this->getAttribute(self::ATTRIBUTE_CREATE_PERMISSION));
+        }
         $this->getView()->addComponent($toolbar);
         $overview = new Overview();
         if (null !== $formatter) {
@@ -221,8 +270,14 @@ abstract class BaseController extends AbstractController
         $path = $this->getDetailPath();
         $overview->addDetailIcon($path->setAction('detail')->getPath(false))
             ->setWidth(122);
-        $overview->addEditIcon($path->setAction('edit')->getPath(false));
-        $overview->addDeleteIcon($path->setAction('delete')->getPath(false));
+        $editButton = $overview->addEditIcon($path->setAction('edit')->getPath(false));
+        if ($this->hasAttribute(self::ATTRIBUTE_EDIT_PERMISSION)) {
+            $editButton->setPermission($this->getAttribute(self::ATTRIBUTE_EDIT_PERMISSION));
+        }
+        $deleteButton = $overview->addDeleteIcon($path->setAction('delete')->getPath(false));
+        if ($this->hasAttribute(self::ATTRIBUTE_DELETE_PERMISSION)) {
+            $deleteButton->setPermission($this->getAttribute(self::ATTRIBUTE_DELETE_PERMISSION));
+        }
         $this->addOverviewFields($overview);
         $this->getView()->addComponent($overview);
         return $overview;
@@ -274,7 +329,6 @@ abstract class BaseController extends AbstractController
         $this->getView()->addComponent($edit);
         return $edit;
     }
-
 
 
     public function initDeleteTemplate(string $redirect = null)

@@ -159,4 +159,10 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
         }
     }
 
+    protected function handlePermissionDenied()
+    {
+        $this->getValidationHelper()->addError('Permission', 'Sie haben nicht die Berechtigung diesen Eintrag zu bearbeiten.');
+    }
+
+
 }

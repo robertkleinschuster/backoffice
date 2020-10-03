@@ -15,15 +15,6 @@ class RolePermissionModel extends BaseModel
         $this->setProcessor(new RolePermissionBeanProcessor($this->getDbAdpater()));
     }
 
-    protected function delete(array $viewIdMap)
-    {
-        $this->getProcessor()->getSaver()->setPrimaryKeyList([
-            'Person_ID',
-            'UserRole_ID'
-        ]);
-        parent::delete($viewIdMap);
-    }
-
 
     public function getPermissionList(): array
     {

@@ -20,6 +20,8 @@ use Backoffice\Mvc\Update\UpdateController;
 use Backoffice\Mvc\Update\UpdateModel;
 use Backoffice\Mvc\User\UserModel;
 use Backoffice\Mvc\User\UserController;
+use Backoffice\Mvc\UserRole\UserRoleController;
+use Backoffice\Mvc\UserRole\UserRoleModel;
 use Backoffice\Session\Cache\FilesystemCachePoolFactory;
 use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\Session\PhpSession;
@@ -63,6 +65,7 @@ class ConfigProvider
                     'update' => UpdateController::class,
                     'role' => RoleController::class,
                     'rolepermission' => RolePermissionController::class,
+                    'userrole' => UserRoleController::class,
                 ],
                 'models' => [
                     'index' => IndexModel::class,
@@ -71,6 +74,7 @@ class ConfigProvider
                     'update' => UpdateModel::class,
                     'role' => RoleModel::class,
                     'rolepermission' => RolePermissionModel::class,
+                    'userrole' => UserRoleModel::class,
                 ],
             ],
             'mezzio-session-cache' => [

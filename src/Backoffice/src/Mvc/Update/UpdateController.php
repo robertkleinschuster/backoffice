@@ -21,7 +21,6 @@ class UpdateController extends BaseController
     {
         parent::initView();
         $this->setActiveNavigation('update', 'index');
-
     }
 
     public function indexAction()
