@@ -82,7 +82,7 @@ class SchemaUpdater extends AbstractUpdater
         $this->addColumnToTable($table, new Integer('UserRole_ID'));
         if ($table instanceof CreateTable) {
             $table->addConstraint(new PrimaryKey(['Person_ID', 'UserRole_ID']));
-            $table->addConstraint(new ForeignKey('FK_User_UserRole_User', 'Person_ID', 'User', 'Person_ID'));
+            $table->addConstraint(new ForeignKey('FK_User_UserRole_User', 'Person_ID', 'User', 'Person_ID', 'CASCADE'));
             $table->addConstraint(new ForeignKey('FK_User_UserRole_UserRole', 'UserRole_ID', 'UserRole', 'UserRole_ID'));
         }
         return $this->query($table);
