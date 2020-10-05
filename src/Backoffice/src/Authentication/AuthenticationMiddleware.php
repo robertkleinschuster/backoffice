@@ -3,6 +3,9 @@
 
 namespace Backoffice\Authentication;
 
+use Backoffice\Authentication\Bean\UserBeanFinder;
+use Backoffice\Database\DatabaseMiddleware;
+use Laminas\Db\Adapter\Adapter;
 use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Csrf\CsrfMiddleware;
@@ -42,8 +45,9 @@ class AuthenticationMiddleware implements MiddlewareInterface
         $guard = $request->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);
         $flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
         $config = $this->container->get('config');
+
         // Allow GET to Auth Controller
-        if ($request->getUri()->getPath() === $config['authentication']['redirect'] && $request->getMethod() === 'GET') {
+        if (($request->getUri()->getPath() === $config['authentication']['redirect'] && $request->getMethod() === 'GET') || $request->getUri()->getPath() == '/setup/index/') {
             return $handler->handle($request);
         }
         $user = null;

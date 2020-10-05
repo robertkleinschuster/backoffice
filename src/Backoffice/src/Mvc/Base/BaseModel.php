@@ -3,6 +3,7 @@
 
 namespace Backoffice\Mvc\Base;
 
+use Backoffice\Authentication\Bean\UserBean;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterAwareInterface;
 use Laminas\Db\Adapter\AdapterAwareTrait;
@@ -24,6 +25,11 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
      * @var BeanProcessorInterface
      */
     private $processor;
+
+    /**
+     * @var UserBean
+     */
+    private $user;
 
     /**
      * @return Adapter
@@ -87,6 +93,34 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
     }
 
     /**
+    * @return UserBean
+    */
+    public function getUser(): UserBean
+    {
+        return $this->user;
+    }
+
+    /**
+    * @param UserBean $user
+    *
+    * @return $this
+    */
+    public function setUser(UserBean $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+    /**
+    * @return bool
+    */
+    public function hasUser(): bool
+    {
+        return $this->user !== null;
+    }
+
+
+    /**
      * @param array $viewIdMap
      */
     public function find(array $viewIdMap)
@@ -110,6 +144,9 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
             $bean = $parser->parse(array_replace($attributes, $viewIdMap), $bean)->toBean();
             $beanList = $this->getFinder()->getFactory()->createBeanList();
             $beanList->addBean($bean);
+            if ($this->hasUser() && $this->getUser()->hasData('Person_ID')) {
+                $this->getProcessor()->getSaver()->setPersonId($this->getUser()->getData('Person_ID'));
+            }
             $this->getProcessor()->setBeanList($beanList);
             $this->getProcessor()->save();
             if ($this->getProcessor() instanceof ValidationHelperAwareInterface) {
@@ -118,6 +155,28 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
         }
     }
 
+    /**
+     * @param array $attributes
+     * @return mixed|void
+     */
+    protected function save(array $attributes)
+    {
+        if ($this->hasFinder() && $this->hasProcessor()) {
+            $bean = $this->getFinder()->getBean();
+            $parser = new BackofficeBeanParser();
+            $bean = $parser->parse($attributes, $bean)->toBean();
+            $beanList = $this->getFinder()->getFactory()->createBeanList();
+            $beanList->addBean($bean);
+            if ($this->hasUser() && $this->getUser()->hasData('Person_ID')) {
+                $this->getProcessor()->getSaver()->setPersonId($this->getUser()->getData('Person_ID'));
+            }
+            $this->getProcessor()->setBeanList($beanList);
+            $this->getProcessor()->save();
+            if ($this->getProcessor() instanceof ValidationHelperAwareInterface) {
+                $this->getValidationHelper()->addErrorFieldMap($this->getProcessor()->getValidationHelper()->getErrorFieldMap());
+            }
+        }
+    }
 
     /**
      * @param array $viewIdMap
@@ -139,25 +198,6 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
         }
     }
 
-    /**
-     * @param array $attributes
-     * @return mixed|void
-     */
-    protected function save(array $attributes)
-    {
-        if ($this->hasFinder() && $this->hasProcessor()) {
-            $bean = $this->getFinder()->getBean();
-            $parser = new BackofficeBeanParser();
-            $bean = $parser->parse($attributes, $bean)->toBean();
-            $beanList = $this->getFinder()->getFactory()->createBeanList();
-            $beanList->addBean($bean);
-            $this->getProcessor()->setBeanList($beanList);
-            $this->getProcessor()->save();
-            if ($this->getProcessor() instanceof ValidationHelperAwareInterface) {
-                $this->getValidationHelper()->addErrorFieldMap($this->getProcessor()->getValidationHelper()->getErrorFieldMap());
-            }
-        }
-    }
 
     protected function handlePermissionDenied()
     {

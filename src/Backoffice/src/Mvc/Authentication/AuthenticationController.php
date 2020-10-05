@@ -4,6 +4,7 @@
 namespace Backoffice\Mvc\Authentication;
 
 
+use Backoffice\Authentication\Bean\UserBeanFinder;
 use Backoffice\Mvc\Base\BaseController;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Mvc\Controller\ControllerRequest;
@@ -17,6 +18,15 @@ use Mezzio\Mvc\View\Components\Edit\Fields\Text;
 class AuthenticationController extends BaseController
 {
     public function loginAction() {
+        try {
+            $userFinder = new UserBeanFinder($this->getModel()->getDbAdpater());
+            $count = $userFinder->count();
+        } catch (\Exception $ex) {
+            $count = 0;
+        }
+        if ($count == 0) {
+            $this->getControllerResponse()->setRedirect($this->getPathHelper()->setController('setup')->setAction('index')->getPath());
+        }
         if ($this->getSession()->has(UserInterface::class)) {
             $this->getControllerResponse()->setRedirect($this->getPathHelper()->setController('index')->setAction('index')->getPath());
             return;

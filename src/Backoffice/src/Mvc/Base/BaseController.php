@@ -62,6 +62,24 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         }
     }
 
+    /**
+     * @param string $id
+     * @param string $index
+     * @return mixed|void
+     */
+    protected function handleNavigationState(string $id, string $index)
+    {
+        $this->getSession()->set($id, $index);
+    }
+
+    /**
+     * @param string $id
+     * @return mixed
+     */
+    protected function getNavigationState(string $id): int
+    {
+        return intval($this->getSession()->get($id)) ?? 0;
+    }
 
     /**
      * @param ValidationHelper $validationHelper
@@ -181,8 +199,8 @@ abstract class BaseController extends AbstractController implements AttributeAwa
     protected function initModel()
     {
         $this->getModel()->setDbAdapter($this->getControllerRequest()->getServerRequest()->getAttribute(DatabaseMiddleware::ADAPTER_ATTRIBUTE));
+        $this->getModel()->setUser($this->getUser());
         $this->getModel()->init();
-
     }
 
     /**

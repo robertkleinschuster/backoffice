@@ -16,6 +16,8 @@ use Backoffice\Mvc\Role\RoleController;
 use Backoffice\Mvc\Role\RoleModel;
 use Backoffice\Mvc\RolePermission\RolePermissionController;
 use Backoffice\Mvc\RolePermission\RolePermissionModel;
+use Backoffice\Mvc\Setup\SetupController;
+use Backoffice\Mvc\Setup\SetupModel;
 use Backoffice\Mvc\Update\UpdateController;
 use Backoffice\Mvc\Update\UpdateModel;
 use Backoffice\Mvc\User\UserModel;
@@ -59,6 +61,7 @@ class ConfigProvider
             ],
             'mvc' => [
                 'controllers' => [
+                    'setup' => SetupController::class,
                     'index' => IndexController::class,
                     'auth' => AuthenticationController::class,
                     'user' => UserController::class,
@@ -68,6 +71,7 @@ class ConfigProvider
                     'userrole' => UserRoleController::class,
                 ],
                 'models' => [
+                    'setup' => SetupModel::class,
                     'index' => IndexModel::class,
                     'auth' => AuthenticationModel::class,
                     'user' => UserModel::class,

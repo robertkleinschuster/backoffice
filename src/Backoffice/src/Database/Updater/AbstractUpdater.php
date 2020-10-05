@@ -1,4 +1,5 @@
 <?php
+
 namespace Backoffice\Database\Updater;
 
 use Laminas\Db\Adapter\Adapter;
@@ -7,6 +8,11 @@ use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\Db\Sql\AbstractSql;
 use Laminas\Db\Sql\Ddl\AlterTable;
 use Laminas\Db\Sql\Ddl\Column\Column;
+use Laminas\Db\Sql\Ddl\Column\Integer;
+use Laminas\Db\Sql\Ddl\Column\Timestamp;
+use Laminas\Db\Sql\Ddl\Constraint\AbstractConstraint;
+use Laminas\Db\Sql\Ddl\Constraint\ForeignKey;
+use Laminas\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Laminas\Db\Sql\Ddl\CreateTable;
 use Laminas\Db\Sql\Sql;
 use Mezzio\Mvc\Helper\ValidationHelperAwareInterface;
@@ -47,21 +53,34 @@ class AbstractUpdater implements ValidationHelperAwareInterface, AdapterAwareInt
 
     }
 
-
+    /**
+     * @param string $table
+     * @param string $constraintName
+     * @return bool
+     */
+    public function hasConstraints(string $table, string $constraintName)
+    {
+        foreach ($this->metadata->getConstraints($table, $this->adapter->getCurrentSchema()) as $constraint) {
+            if ($constraint->getName() == $constraintName) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
-    * @return string
-    */
+     * @return string
+     */
     public function getMode(): string
     {
         return $this->mode;
     }
 
     /**
-    * @param string $mode
-    *
-    * @return $this
-    */
+     * @param string $mode
+     *
+     * @return $this
+     */
     public function setMode(string $mode): self
     {
         $this->mode = $mode;
@@ -69,8 +88,8 @@ class AbstractUpdater implements ValidationHelperAwareInterface, AdapterAwareInt
     }
 
     /**
-    * @return bool
-    */
+     * @return bool
+     */
     public function hasMode(): bool
     {
         return $this->mode !== null;
@@ -157,7 +176,7 @@ class AbstractUpdater implements ValidationHelperAwareInterface, AdapterAwareInt
             );
         }
         if ($this->isPreview()) {
-            $result = str_replace(PHP_EOL, '<br>',  $sql->buildSqlString($statement, $this->adapter));
+            $result = str_replace(PHP_EOL, '<br>', $sql->buildSqlString($statement, $this->adapter));
         }
         return $result;
     }
@@ -211,15 +230,26 @@ class AbstractUpdater implements ValidationHelperAwareInterface, AdapterAwareInt
      * @param string $table
      * @return AlterTable|CreateTable
      */
-    protected function getTableStatement(string $table)
+    protected function getTableStatement(string $tableName)
     {
-        if (!in_array($table, $this->existingTableList)) {
-            $personTable = new CreateTable($table);
+        if (!in_array($tableName, $this->existingTableList)) {
+            $table = new CreateTable($tableName);
         } else {
-            $personTable = new AlterTable($table);
+            $table = new AlterTable($tableName);
         }
-        return $personTable;
+        return $table;
     }
+
+    protected function addDefaultColumnsToTable(AbstractSql $table)
+    {
+        $this->addColumnToTable($table, new Timestamp('Timestamp_Create', true));
+        $this->addColumnToTable($table, new Integer('Person_ID_Create', true));
+        $this->addColumnToTable($table, new Timestamp('Timestamp_Edit', true));
+        $this->addColumnToTable($table, new Integer('Person_ID_Edit', true));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'Person_ID_Create', 'Person', 'Person_ID'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'Person_ID_Edit', 'Person', 'Person_ID'));
+    }
+
 
     /**
      * @param AbstractSql $table
@@ -241,6 +271,35 @@ class AbstractUpdater implements ValidationHelperAwareInterface, AdapterAwareInt
             }
         }
         return $column;
+    }
+
+    /**
+     * @param AbstractSql $table
+     * @param AbstractConstraint $constraint
+     */
+    protected function addConstraintToTable(AbstractSql $table, AbstractConstraint $constraint)
+    {
+        $tableName = (string)$table->getRawState(AlterTable::TABLE);
+        $path = explode('\\', get_class($constraint));
+        $type = $this->abbreviate(array_pop($path));
+        if ($constraint instanceof PrimaryKey) {
+            $constraintName = "_laminas_{$tableName}_PRIMARY";
+        } else {
+            $constraintName = $type . '_' . $this->abbreviate($tableName) . '_' . $this->abbreviate(implode('_', $constraint->getColumns()));
+        }
+
+        if (
+            $table instanceof CreateTable ||
+            (!$this->hasConstraints($tableName, $constraintName) && $constraint instanceof ForeignKey)
+        ) {
+            $constraint->setName($constraintName);
+            $table->addConstraint($constraint);
+        }
+    }
+
+    protected function abbreviate(string $value)
+    {
+        return preg_replace('~[^A-Z_]~', '', $value);
     }
 
 }

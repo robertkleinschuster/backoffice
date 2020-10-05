@@ -45,6 +45,7 @@ class UpdateController extends BaseController
         $schemaComponent->setPermission('update.schema');
         $navigation->addComponent($schemaComponent);
         $navigation->setPermission('update');
+        $navigation->setActive($this->getNavigationState($navigation->getId()));
         $this->getView()->addComponent($navigation);
     }
 
