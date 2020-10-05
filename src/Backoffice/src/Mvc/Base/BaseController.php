@@ -183,7 +183,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         $element->setPermission('update');
         $navigation->addElement($element);
 
-        $this->getView()->getViewModel()->addNavigation($navigation);
+        $this->getView()->addNavigation($navigation);
 
         // Set Global Template vars
         $this->setTemplateVariable('logoutLink', '/auth/logout');
@@ -251,24 +251,6 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         $this->getView()->addComponent($alert, true);
     }
 
-    /**
-     * @param $controller
-     * @param $action
-     */
-    public function setActiveNavigation(string $controller, string $action)
-    {
-        foreach ($this->getView()->getViewModel()->getNavigationList() as $item) {
-            foreach ($item->getElementList() as $element) {
-                if ($element->getLink() == $this->getPathHelper()
-                        ->setController($controller)
-                        ->setAction($action)
-                        ->getPath()) {
-                    $element->setActive(true);
-                    return;
-                }
-            }
-        }
-    }
 
 
     protected function initOverviewTemplate(BeanFormatterInterface $formatter)
