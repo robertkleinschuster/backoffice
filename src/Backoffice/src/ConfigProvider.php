@@ -8,6 +8,7 @@ use Backoffice\Authentication\AuthenticationMiddleware;
 use Backoffice\Authentication\AuthenticationMiddlewareFactory;
 use Backoffice\Authentication\Bean\UserBeanFactory;
 use Backoffice\Authentication\UserRepositoryFactory;
+use Backoffice\Logging\LoggingErrorListenerDelegatorFactory;
 use Backoffice\Mvc\Authentication\AuthenticationController;
 use Backoffice\Mvc\Authentication\AuthenticationModel;
 use Backoffice\Mvc\Index\IndexController;
@@ -25,6 +26,10 @@ use Backoffice\Mvc\User\UserController;
 use Backoffice\Mvc\UserRole\UserRoleController;
 use Backoffice\Mvc\UserRole\UserRoleModel;
 use Backoffice\Session\Cache\MemcachedCachePoolFactory;
+use Laminas\Log\Formatter\Simple;
+use Laminas\Log\Logger;
+use Laminas\Log\Processor\RequestId;
+use Laminas\Stratigility\Middleware\ErrorHandler;
 use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\Session\PhpSession;
 use Mezzio\Authentication\UserInterface;
@@ -189,6 +194,11 @@ class ConfigProvider
                 AuthenticationMiddleware::class => AuthenticationMiddlewareFactory::class,
                 UserRepositoryInterface::class => UserRepositoryFactory::class,
                 UserInterface::class => UserBeanFactory::class,
+            ],
+            'delegators' => [
+                ErrorHandler::class => [
+                    LoggingErrorListenerDelegatorFactory::class,
+                ],
             ],
         ];
     }
