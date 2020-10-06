@@ -24,7 +24,7 @@ use Backoffice\Mvc\User\UserModel;
 use Backoffice\Mvc\User\UserController;
 use Backoffice\Mvc\UserRole\UserRoleController;
 use Backoffice\Mvc\UserRole\UserRoleModel;
-use Backoffice\Session\Cache\FilesystemCachePoolFactory;
+use Backoffice\Session\Cache\MemcachedCachePoolFactory;
 use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\Session\PhpSession;
 use Mezzio\Authentication\UserInterface;
@@ -87,6 +87,8 @@ class ConfigProvider
                 'cache_item_pool_service' => 'SessionCache',
 
                 'filesystem_folder' => __DIR__ . '/../../../data/session',
+                'memcached_host' => 'localhost',
+                'memcached_port' => 11211,
 
                 // The name of the session cookie. This name must comply with
                 // the syntax outlined in https://tools.ietf.org/html/rfc6265.html
@@ -183,7 +185,7 @@ class ConfigProvider
             'invokables' => [
             ],
             'factories'  => [
-                'SessionCache' => FilesystemCachePoolFactory::class,
+                'SessionCache' => MemcachedCachePoolFactory::class,
                 AuthenticationMiddleware::class => AuthenticationMiddlewareFactory::class,
                 UserRepositoryInterface::class => UserRepositoryFactory::class,
                 UserInterface::class => UserBeanFactory::class,
