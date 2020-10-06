@@ -37,7 +37,7 @@ class RolePermissionController extends BaseController
     {
         parent::addEditFields($edit);
         $edit->addSelect('UserPermission_Code', 'Berechtigung')
-            ->setSelectOptions($this->getModel()->getPermissionList());
+            ->setSelectOptions($this->getModel()->getPermissionList($this->getUser()->getPermission_List()));
     }
 
     public function deleteAction()

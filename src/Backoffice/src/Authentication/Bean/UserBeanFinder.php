@@ -5,6 +5,7 @@ namespace Backoffice\Authentication\Bean;
 
 
 use Backoffice\Authorization\Role\RoleBeanFinder;
+use Backoffice\Authorization\UserRole\UserRoleBeanFinder;
 use Backoffice\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
 use Mezzio\Authentication\UserInterface;
@@ -45,7 +46,16 @@ class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterfa
             'User_Password' => 'User_Password',
             'UserState_Code' => 'UserState_Code',
         ]);
+        $loader->addSelect('Person_ID', 'Person');
+        $loader->addSelect('Person_Firstname', 'Person');
+        $loader->addSelect('Person_Lastname', 'Person');
+        $loader->addSelect('User_Username');
+        $loader->addSelect('User_Displayname');
+        $loader->addSelect('User_Password');
+        $loader->addSelect('UserState_Code');
         parent::__construct($loader, new UserBeanFactory());
+        $userRoleFinder = new UserRoleBeanFinder($adapter);
+        $this->linkBeanFinder($userRoleFinder, 'UserRole_BeanList', 'Person_ID', 'Person_ID');
     }
 
     /**
@@ -64,26 +74,6 @@ class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterfa
             }
         }
         return null;
-    }
-
-    /**
-     * @param BeanInterface $bean
-     * @return BeanInterface
-     */
-    protected function initializeBeanWithAdditionlData(BeanInterface $bean): BeanInterface
-    {
-        $bean =  parent::initializeBeanWithAdditionlData($bean);
-        $roleFinder = new RoleBeanFinder($this->adapter);
-        $roleFinder->getLoader()->addJoin('User_UserRole', 'UserRole_ID');
-        $roleFinder->getLoader()->addWhere('Person_ID', $bean->getData('Person_ID'), 'User_UserRole');
-        if ($roleFinder->find()) {
-            $beanList = $roleFinder->getBeanList();
-        } else {
-            $beanList = $roleFinder->getFactory()->createBeanList();
-        }
-        $bean->setData('Roles',  $beanList->getData('UserRole_Code'));
-        $bean->setData('UserRole_BeanList',  $beanList);
-        return $bean;
     }
 
 

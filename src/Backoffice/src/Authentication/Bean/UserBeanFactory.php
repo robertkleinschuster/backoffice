@@ -6,6 +6,7 @@ namespace Backoffice\Authentication\Bean;
 
 use Backoffice\Authorization\Role\RoleBean;
 use Backoffice\Authorization\Role\RoleBeanList;
+use Backoffice\Authorization\UserRole\UserRoleBeanList;
 use Mezzio\Authentication\UserInterface;
 use NiceshopsDev\Bean\BeanFactory\BeanFactoryInterface;
 use NiceshopsDev\Bean\BeanInterface;
@@ -29,7 +30,7 @@ class UserBeanFactory implements BeanFactoryInterface
         return function (string $identity, array $roles = [], array $details = []) : UserInterface {
             $bean = $this->createBean();
             $bean->setFromArray($details);
-            $roleBeanList = new RoleBeanList();
+            $roleBeanList = new UserRoleBeanList();
             $roleBeanList->setSerializeData($roles);
             $bean->setData('UserRole_BeanList', $roleBeanList);
             return $bean;

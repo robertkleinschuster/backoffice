@@ -38,19 +38,20 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
     {
         return $this->adapter;
     }
+
     /**
-    * @return BeanFinderInterface
-    */
+     * @return BeanFinderInterface
+     */
     public function getFinder(): BeanFinderInterface
     {
         return $this->finder;
     }
 
     /**
-    * @param BeanFinderInterface $finder
-    *
-    * @return $this
-    */
+     * @param BeanFinderInterface $finder
+     *
+     * @return $this
+     */
     public function setFinder(BeanFinderInterface $finder): self
     {
         $this->finder = $finder;
@@ -58,26 +59,26 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
     }
 
     /**
-    * @return bool
-    */
+     * @return bool
+     */
     public function hasFinder(): bool
     {
         return $this->finder !== null;
     }
 
     /**
-    * @return BeanProcessorInterface
-    */
+     * @return BeanProcessorInterface
+     */
     public function getProcessor(): BeanProcessorInterface
     {
         return $this->processor;
     }
 
     /**
-    * @param BeanProcessorInterface $processor
-    *
-    * @return $this
-    */
+     * @param BeanProcessorInterface $processor
+     *
+     * @return $this
+     */
     public function setProcessor(BeanProcessorInterface $processor): self
     {
         $this->processor = $processor;
@@ -85,26 +86,26 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
     }
 
     /**
-    * @return bool
-    */
+     * @return bool
+     */
     public function hasProcessor(): bool
     {
         return $this->processor !== null;
     }
 
     /**
-    * @return UserBean
-    */
+     * @return UserBean
+     */
     public function getUser(): UserBean
     {
         return $this->user;
     }
 
     /**
-    * @param UserBean $user
-    *
-    * @return $this
-    */
+     * @param UserBean $user
+     *
+     * @return $this
+     */
     public function setUser(UserBean $user): self
     {
         $this->user = $user;
@@ -112,8 +113,8 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
     }
 
     /**
-    * @return bool
-    */
+     * @return bool
+     */
     public function hasUser(): bool
     {
         return $this->user !== null;
@@ -126,10 +127,27 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
     public function find(array $viewIdMap)
     {
         if ($this->hasFinder()) {
+            if (!$this->getFinder()->hasLimit()) {
+                $this->getFinder()->limit(50, 0);
+            }
             $this->getFinder()->getLoader()->initByIdMap($viewIdMap);
             $this->getFinder()->find();
         }
     }
+
+    /**
+     * @param int $limit
+     * @param int $page
+     */
+    public function setLimit(int $limit, int $page)
+    {
+        if ($this->hasFinder()) {
+            if ($limit > 0 && $page > 0) {
+                $this->getFinder()->limit($limit, $limit * ($page - 1));
+            }
+        }
+    }
+
 
     /**
      * @param array $viewIdMap

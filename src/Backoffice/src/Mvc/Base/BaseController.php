@@ -24,6 +24,8 @@ use Mezzio\Mvc\View\Components\Overview\Overview;
 use Mezzio\Mvc\View\Components\Toolbar\Toolbar;
 use Mezzio\Mvc\View\Navigation\Element;
 use Mezzio\Mvc\View\Navigation\Navigation;
+use Mezzio\Mvc\View\Navigation\PageNavigation;
+use Mezzio\Mvc\View\Navigation\PageNavigationElement;
 use Mezzio\Mvc\View\View;
 use Mezzio\Mvc\View\ViewModel;
 use Mezzio\Session\LazySession;
@@ -64,10 +66,10 @@ abstract class BaseController extends AbstractController implements AttributeAwa
 
     /**
      * @param string $id
-     * @param string $index
+     * @param int $index
      * @return mixed|void
      */
-    protected function handleNavigationState(string $id, string $index)
+    protected function handleNavigationState(string $id, int $index)
     {
         $this->getSession()->set($id, $index);
     }
@@ -279,6 +281,23 @@ abstract class BaseController extends AbstractController implements AttributeAwa
             $deleteButton->setPermission($this->getAttribute(self::ATTRIBUTE_DELETE_PERMISSION));
         }
         $this->addOverviewFields($overview);
+
+        if ($this->getModel()->getFinder()->hasLimit()) {
+            $pages = $this->getModel()->getFinder()->count() / $this->getModel()->getFinder()->getLimit();
+            $pageNavigation = new PageNavigation();
+            for ($i = 0; $i < $pages; $i++) {
+                $element = new PageNavigationElement();
+                $element->setLink($this->getPathHelper()->setParams([ControllerRequest::ATTRIBUTE_LIMIT => $this->getModel()->getFinder()->getLimit(), ControllerRequest::ATTRIBUTE_PAGE => $i + 1])->getPath());
+                $pageNavigation->addElement($element);
+            }
+            if ($this->getControllerRequest()->hasPage()) {
+                $page = $this->getControllerRequest()->getPage();
+                $page = $page > 0 ? $page : 1;
+                $pageNavigation->setActive($page - 1);
+            }
+            $overview->getComponentModel()->setPageNavigation($pageNavigation);
+        }
+
         $this->getView()->addComponent($overview);
         return $overview;
     }

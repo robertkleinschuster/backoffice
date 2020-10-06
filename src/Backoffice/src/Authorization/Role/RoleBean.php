@@ -10,10 +10,8 @@ class RoleBean extends AbstractJsonSerializableBean
     public function __construct()
     {
         $this->setDataType('UserRole_ID', self::DATA_TYPE_INT, true);
-        $this->setDataType('Person_ID', self::DATA_TYPE_INT, true);
         $this->setDataType('UserRole_Code', self::DATA_TYPE_STRING, true);
         $this->setDataType('UserRole_Active', self::DATA_TYPE_BOOL, true);
-        $this->setDataType('Permissions', self::DATA_TYPE_ARRAY, true);
         $this->setDataType('UserPermission_BeanList', self::DATA_TYPE_ITERABLE, true);
         $this->setData('UserPermission_BeanList', new PermissionBeanList());
     }

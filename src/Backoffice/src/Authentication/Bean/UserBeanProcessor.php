@@ -96,7 +96,7 @@ class UserBeanProcessor extends AbstractBeanProcessor implements ValidationHelpe
     protected function validateForDelete(BeanInterface $bean): bool
     {
         $finder = new UserBeanFinder($this->adapter);
-        if ($finder->count() == 1) {
+        if ($finder->find() == 1) {
             return false;
         }
         return $bean->hasData('Person_ID');

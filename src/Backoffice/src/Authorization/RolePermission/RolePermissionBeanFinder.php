@@ -15,6 +15,7 @@ class RolePermissionBeanFinder extends \NiceshopsDev\Bean\BeanFinder\AbstractBea
     public function __construct(Adapter $adapter)
     {
         $loader = new DatabaseBeanLoader($adapter, 'UserRole_UserPermission');
+        $loader->addJoin('UserPermission', 'UserPermission_Code');
         $loader->setFieldColumnMap(
             [
                 'UserRole_ID' => 'UserRole_ID',
