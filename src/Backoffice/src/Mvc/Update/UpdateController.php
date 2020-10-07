@@ -3,7 +3,7 @@
 
 namespace Backoffice\Mvc\Update;
 
-use Backoffice\Database\Updater\AbstractUpdater;
+use Base\Database\Updater\AbstractUpdater;
 use Backoffice\Mvc\Base\BaseController;
 use Mvc\View\ComponentDataBean;
 use Mvc\View\ComponentModel;

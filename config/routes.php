@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Backoffice\Authentication\AuthenticationMiddleware;
-use Backoffice\Database\DatabaseMiddleware;
+use Base\Authentication\AuthenticationMiddleware;
+use Base\Database\DatabaseMiddleware;
 use Mezzio\Application;
 use Mezzio\MiddlewareFactory;
 use Mvc\Handler\MvcHandler;
@@ -41,10 +41,15 @@ use Psr\Container\ContainerInterface;
  */
 return static function (Application $app, MiddlewareFactory $factory, ContainerInterface $container): void {
 
-    $app->any(MvcHandler::getRoute(), [
+    $app->any(MvcHandler::getRoute('/backoffice'), [
         DatabaseMiddleware::class,
         AuthenticationMiddleware::class,
         MvcHandler::class
     ], 'backoffice');
+
+    $app->any(MvcHandler::getRoute(), [
+        DatabaseMiddleware::class,
+        MvcHandler::class
+    ], 'cms');
 
 };

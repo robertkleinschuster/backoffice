@@ -12,16 +12,16 @@ class SetupModel extends \Backoffice\Mvc\Base\BaseModel
 {
     public function init()
     {
-        $this->setProcessor(new \Backoffice\Authentication\Bean\UserBeanProcessor($this->getDbAdpater()));
-        $this->setFinder(new \Backoffice\Authentication\Bean\UserBeanFinder($this->getDbAdpater()));
+        $this->setProcessor(new \Base\Authentication\Bean\UserBeanProcessor($this->getDbAdpater()));
+        $this->setFinder(new \Base\Authentication\Bean\UserBeanFinder($this->getDbAdpater()));
     }
 
     protected function create(array $viewIdMap, array $attributes)
     {
 
-        $schemaUpdater = new \Backoffice\Database\Updater\SchemaUpdater($this->getDbAdpater());
+        $schemaUpdater = new \Base\Database\Updater\SchemaUpdater($this->getDbAdpater());
         $schemaUpdater->execute($schemaUpdater->getUpdateMethodList());
-        $dataUpdater = new \Backoffice\Database\Updater\DataUpdater($this->getDbAdpater());
+        $dataUpdater = new \Base\Database\Updater\DataUpdater($this->getDbAdpater());
         $dataUpdater->execute($dataUpdater->getUpdateMethodList());
 
         parent::create($viewIdMap, $attributes);

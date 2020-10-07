@@ -3,7 +3,7 @@
 
 namespace Backoffice\Mvc\User;
 
-use Backoffice\Authentication\Bean\UserBean;
+use Base\Authentication\Bean\UserBean;
 use Backoffice\Mvc\Base\BaseController;
 use Backoffice\Mvc\Role\RoleBeanFormatter;
 use Mvc\Helper\PathHelper;

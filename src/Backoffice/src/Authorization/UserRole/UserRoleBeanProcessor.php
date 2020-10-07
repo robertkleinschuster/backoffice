@@ -4,7 +4,7 @@
 namespace Backoffice\Authorization\UserRole;
 
 
-use Backoffice\Database\DatabaseBeanSaver;
+use Base\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
 use Mvc\Helper\ValidationHelperAwareInterface;
 use Mvc\Helper\ValidationHelperAwareTrait;

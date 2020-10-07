@@ -5,7 +5,7 @@ namespace Backoffice\Authorization\Role;
 use Backoffice\Authorization\Permission\PermissionBeanFactory;
 use Backoffice\Authorization\Permission\PermissionBeanFinder;
 use Backoffice\Authorization\RolePermission\RolePermissionBeanFinder;
-use Backoffice\Database\DatabaseBeanLoader;
+use Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
 use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
 use NiceshopsDev\Bean\BeanInterface;

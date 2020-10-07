@@ -22,7 +22,6 @@ $aggregator = new ConfigAggregator([
     \Mezzio\Authentication\ConfigProvider::class,
     \Laminas\Hydrator\ConfigProvider::class,
     \Laminas\Db\ConfigProvider::class,
-    \Backoffice\ConfigProvider::class,
     \Laminas\HttpHandlerRunner\ConfigProvider::class,
     \Mezzio\Plates\ConfigProvider::class,
     \Mezzio\Router\FastRouteRouter\ConfigProvider::class,
@@ -39,6 +38,10 @@ $aggregator = new ConfigAggregator([
         ? \Mezzio\Swoole\ConfigProvider::class
         : function(): array { return[]; },
 
+    // Module config here to overwrite default config
+    \Base\ConfigProvider::class,
+    \Backoffice\ConfigProvider::class,
+    \Cms\ConfigProvider::class,
 
     // Load application config in a pre-defined order in such a way that local settings
     // overwrite global settings. (Loaded as first to last):

@@ -4,8 +4,8 @@
 namespace Backoffice\Mvc\Update;
 
 
-use Backoffice\Database\Updater\DataUpdater;
-use Backoffice\Database\Updater\SchemaUpdater;
+use Base\Database\Updater\DataUpdater;
+use Base\Database\Updater\SchemaUpdater;
 use Backoffice\Mvc\Base\BaseModel;
 use Mvc\Controller\ControllerRequest;
 

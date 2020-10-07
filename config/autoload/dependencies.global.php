@@ -2,25 +2,41 @@
 
 declare(strict_types=1);
 
+use Base\Authentication\AuthenticationMiddleware;
+use Base\Authentication\AuthenticationMiddlewareFactory;
+use Base\Authentication\Bean\UserBeanFactory;
+use Base\Authentication\UserRepositoryFactory;
+use Base\Database\DatabaseMiddleware;
+use Base\Database\DatabaseMiddlewareFactory;
+use Base\Logging\LoggingErrorListenerDelegatorFactory;
+use Base\Session\Cache\MemcachedCachePoolFactory;
+use Laminas\Stratigility\Middleware\ErrorHandler;
+use Mezzio\Authentication\AuthenticationInterface;
+use Mezzio\Authentication\Session\PhpSession;
+use Mezzio\Authentication\UserInterface;
+use Mezzio\Authentication\UserRepositoryInterface;
+use Mezzio\Session\Cache\CacheSessionPersistence;
+use Mezzio\Session\SessionPersistenceInterface;
+
 return [
-    // Provides application-wide services.
-    // We recommend using fully-qualified class names whenever possible as
-    // service names.
     'dependencies' => [
-        // Use 'aliases' to alias a service name to another service. The
-        // key is the alias name, the value is the service to which it points.
         'aliases' => [
-            // Fully\Qualified\ClassOrInterfaceName::class => Fully\Qualified\ClassName::class,
+            SessionPersistenceInterface::class => CacheSessionPersistence::class,
+            AuthenticationInterface::class => PhpSession::class,
         ],
-        // Use 'invokables' for constructor-less services, or services that do
-        // not require arguments to the constructor. Map a service name to the
-        // class name.
         'invokables' => [
-            // Fully\Qualified\InterfaceName::class => Fully\Qualified\ClassName::class,
         ],
-        // Use 'factories' for services provided by callbacks/factory classes.
-        'factories'  => [
-            // Fully\Qualified\ClassName::class => Fully\Qualified\FactoryName::class,
+        'factories' => [
+            'SessionCache' => MemcachedCachePoolFactory::class,
+            AuthenticationMiddleware::class => AuthenticationMiddlewareFactory::class,
+            UserRepositoryInterface::class => UserRepositoryFactory::class,
+            UserInterface::class => UserBeanFactory::class,
+            DatabaseMiddleware::class => DatabaseMiddlewareFactory::class,
+        ],
+        'delegators' => [
+            ErrorHandler::class => [
+                LoggingErrorListenerDelegatorFactory::class,
+            ],
         ],
     ],
 ];

@@ -3,7 +3,7 @@
 
 namespace Backoffice\Mvc\Base;
 
-use Backoffice\Authentication\Bean\UserBean;
+use Base\Authentication\Bean\UserBean;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterAwareInterface;
 use Laminas\Db\Adapter\AdapterAwareTrait;

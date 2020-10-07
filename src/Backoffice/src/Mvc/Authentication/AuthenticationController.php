@@ -4,7 +4,7 @@
 namespace Backoffice\Mvc\Authentication;
 
 
-use Backoffice\Authentication\Bean\UserBeanFinder;
+use Base\Authentication\Bean\UserBeanFinder;
 use Backoffice\Mvc\Base\BaseController;
 use Mezzio\Authentication\UserInterface;
 use Mvc\Controller\ControllerRequest;

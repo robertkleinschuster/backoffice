@@ -4,8 +4,8 @@
 namespace Backoffice\Mvc\Base;
 
 
-use Backoffice\Authentication\Bean\UserBean;
-use Backoffice\Database\DatabaseMiddleware;
+use Base\Authentication\Bean\UserBean;
+use Base\Database\DatabaseMiddleware;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Csrf\CsrfGuardInterface;
 use Mezzio\Csrf\CsrfMiddleware;

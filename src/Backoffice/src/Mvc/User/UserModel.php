@@ -3,8 +3,8 @@
 
 namespace Backoffice\Mvc\User;
 
-use Backoffice\Authentication\Bean\UserBeanFinder;
-use Backoffice\Authentication\Bean\UserBeanProcessor;
+use Base\Authentication\Bean\UserBeanFinder;
+use Base\Authentication\Bean\UserBeanProcessor;
 use Backoffice\Mvc\Base\BaseModel;
 
 /**

@@ -2,8 +2,8 @@
 namespace Backoffice\Mvc\Setup;
 
 
-use Backoffice\Authentication\Bean\UserBean;
-use Backoffice\Database\DatabaseMiddleware;
+use Base\Authentication\Bean\UserBean;
+use Base\Database\DatabaseMiddleware;
 use Mvc\View\Components\Edit\Edit;
 use Mvc\View\Components\Edit\Fields\Text;
 
