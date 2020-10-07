@@ -7,7 +7,7 @@ namespace Backoffice\Mvc\Update;
 use Backoffice\Database\Updater\DataUpdater;
 use Backoffice\Database\Updater\SchemaUpdater;
 use Backoffice\Mvc\Base\BaseModel;
-use Mezzio\Mvc\Controller\ControllerRequest;
+use Mvc\Controller\ControllerRequest;
 
 class UpdateModel extends BaseModel
 {

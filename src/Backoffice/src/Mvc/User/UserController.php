@@ -6,14 +6,14 @@ namespace Backoffice\Mvc\User;
 use Backoffice\Authentication\Bean\UserBean;
 use Backoffice\Mvc\Base\BaseController;
 use Backoffice\Mvc\Role\RoleBeanFormatter;
-use Mezzio\Mvc\Helper\PathHelper;
-use Mezzio\Mvc\View\ComponentDataBean;
-use Mezzio\Mvc\View\Components\Detail\Detail;
-use Mezzio\Mvc\View\Components\Edit\Edit;
-use Mezzio\Mvc\View\Components\Edit\Fields\Text;
-use Mezzio\Mvc\View\Components\Overview\Fields\Badge;
-use Mezzio\Mvc\View\Components\Overview\Overview;
-use Mezzio\Mvc\View\Components\Toolbar\Toolbar;
+use Mvc\Helper\PathHelper;
+use Mvc\View\ComponentDataBean;
+use Mvc\View\Components\Detail\Detail;
+use Mvc\View\Components\Edit\Edit;
+use Mvc\View\Components\Edit\Fields\Text;
+use Mvc\View\Components\Overview\Fields\Badge;
+use Mvc\View\Components\Overview\Overview;
+use Mvc\View\Components\Toolbar\Toolbar;
 
 /**
  * Class UserController

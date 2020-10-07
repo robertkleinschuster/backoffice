@@ -15,8 +15,8 @@ use Laminas\Db\Sql\Ddl\Constraint\ForeignKey;
 use Laminas\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Laminas\Db\Sql\Ddl\CreateTable;
 use Laminas\Db\Sql\Sql;
-use Mezzio\Mvc\Helper\ValidationHelperAwareInterface;
-use Mezzio\Mvc\Helper\ValidationHelperAwareTrait;
+use Mvc\Helper\ValidationHelperAwareInterface;
+use Mvc\Helper\ValidationHelperAwareTrait;
 
 class AbstractUpdater implements ValidationHelperAwareInterface, AdapterAwareInterface
 {

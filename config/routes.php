@@ -6,7 +6,7 @@ use Backoffice\Authentication\AuthenticationMiddleware;
 use Backoffice\Database\DatabaseMiddleware;
 use Mezzio\Application;
 use Mezzio\MiddlewareFactory;
-use Mezzio\Mvc\Handler\MvcHandler;
+use Mvc\Handler\MvcHandler;
 use Psr\Container\ContainerInterface;
 
 /**

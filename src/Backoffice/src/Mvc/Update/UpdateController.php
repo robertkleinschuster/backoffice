@@ -5,10 +5,10 @@ namespace Backoffice\Mvc\Update;
 
 use Backoffice\Database\Updater\AbstractUpdater;
 use Backoffice\Mvc\Base\BaseController;
-use Mezzio\Mvc\View\ComponentDataBean;
-use Mezzio\Mvc\View\ComponentModel;
-use Mezzio\Mvc\View\Components\Base\AbstractComponent;
-use Mezzio\Mvc\View\Components\Edit\Edit;
+use Mvc\View\ComponentDataBean;
+use Mvc\View\ComponentModel;
+use Mvc\View\Components\Base\AbstractComponent;
+use Mvc\View\Components\Edit\Edit;
 
 
 /**
@@ -37,7 +37,7 @@ class UpdateController extends BaseController
     public function indexAction()
     {
         $this->getView()->getViewModel()->setTitle('Updates');
-        $navigation = new \Mezzio\Mvc\View\Components\Navigation\Navigation('Datenbank Updates', new ComponentModel());
+        $navigation = new \Mvc\View\Components\Navigation\Navigation('Datenbank Updates', new ComponentModel());
         $dataComponent = $this->getUpdaterComponent($this->getModel()->getDataUpdater(), 'Daten Update', 'data');
         $dataComponent->setPermission('update.data');
         $navigation->addComponent($dataComponent);

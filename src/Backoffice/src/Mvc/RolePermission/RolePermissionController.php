@@ -5,8 +5,8 @@ namespace Backoffice\Mvc\RolePermission;
 
 
 use Backoffice\Mvc\Base\BaseController;
-use Mezzio\Mvc\Helper\PathHelper;
-use Mezzio\Mvc\View\Components\Edit\Edit;
+use Mvc\Helper\PathHelper;
+use Mvc\View\Components\Edit\Edit;
 
 /**
  * Class RolePermissionController

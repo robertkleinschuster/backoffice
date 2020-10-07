@@ -6,7 +6,7 @@ use Backoffice\Authorization\Role\RoleBeanFinder;
 use Backoffice\Authorization\Role\RoleBeanProcessor;
 use Backoffice\Authorization\UserRole\UserRoleBeanFinder;
 use Backoffice\Authorization\UserRole\UserRoleBeanProcessor;
-use Mezzio\Mvc\Helper\ValidationHelperAwareInterface;
+use Mvc\Helper\ValidationHelperAwareInterface;
 
 class SetupModel extends \Backoffice\Mvc\Base\BaseModel
 {

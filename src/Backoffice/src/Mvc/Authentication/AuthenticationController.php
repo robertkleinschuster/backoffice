@@ -7,12 +7,12 @@ namespace Backoffice\Mvc\Authentication;
 use Backoffice\Authentication\Bean\UserBeanFinder;
 use Backoffice\Mvc\Base\BaseController;
 use Mezzio\Authentication\UserInterface;
-use Mezzio\Mvc\Controller\ControllerRequest;
-use Mezzio\Mvc\View\ComponentDataBean;
-use Mezzio\Mvc\View\ComponentModel;
-use Mezzio\Mvc\View\Components\Alert\Alert;
-use Mezzio\Mvc\View\Components\Edit\Edit;
-use Mezzio\Mvc\View\Components\Edit\Fields\Text;
+use Mvc\Controller\ControllerRequest;
+use Mvc\View\ComponentDataBean;
+use Mvc\View\ComponentModel;
+use Mvc\View\Components\Alert\Alert;
+use Mvc\View\Components\Edit\Edit;
+use Mvc\View\Components\Edit\Fields\Text;
 
 
 class AuthenticationController extends BaseController

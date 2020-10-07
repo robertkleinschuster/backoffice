@@ -7,8 +7,8 @@ use Backoffice\Authentication\Bean\UserBean;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterAwareInterface;
 use Laminas\Db\Adapter\AdapterAwareTrait;
-use Mezzio\Mvc\Helper\ValidationHelperAwareInterface;
-use Mezzio\Mvc\Model\AbstractModel;
+use Mvc\Helper\ValidationHelperAwareInterface;
+use Mvc\Model\AbstractModel;
 use NiceshopsDev\Bean\BeanFinder\BeanFinderInterface;
 use NiceshopsDev\Bean\BeanProcessor\BeanProcessorInterface;
 

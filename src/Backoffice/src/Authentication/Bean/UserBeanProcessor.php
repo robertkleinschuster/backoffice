@@ -6,9 +6,9 @@ namespace Backoffice\Authentication\Bean;
 
 use Backoffice\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
-use Mezzio\Mvc\Helper\ValidationHelper;
-use Mezzio\Mvc\Helper\ValidationHelperAwareInterface;
-use Mezzio\Mvc\Helper\ValidationHelperAwareTrait;
+use Mvc\Helper\ValidationHelper;
+use Mvc\Helper\ValidationHelperAwareInterface;
+use Mvc\Helper\ValidationHelperAwareTrait;
 use NiceshopsDev\Bean\BeanInterface;
 use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
 

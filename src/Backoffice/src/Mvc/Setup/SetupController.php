@@ -3,8 +3,8 @@ namespace Backoffice\Mvc\Setup;
 
 
 use Backoffice\Authentication\Bean\UserBean;
-use Mezzio\Mvc\View\Components\Edit\Edit;
-use Mezzio\Mvc\View\Components\Edit\Fields\Text;
+use Mvc\View\Components\Edit\Edit;
+use Mvc\View\Components\Edit\Fields\Text;
 
 class SetupController extends \Backoffice\Mvc\Base\BaseController
 {

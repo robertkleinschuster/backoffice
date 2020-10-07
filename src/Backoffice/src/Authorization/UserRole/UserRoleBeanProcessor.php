@@ -6,8 +6,8 @@ namespace Backoffice\Authorization\UserRole;
 
 use Backoffice\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
-use Mezzio\Mvc\Helper\ValidationHelperAwareInterface;
-use Mezzio\Mvc\Helper\ValidationHelperAwareTrait;
+use Mvc\Helper\ValidationHelperAwareInterface;
+use Mvc\Helper\ValidationHelperAwareTrait;
 use NiceshopsDev\Bean\BeanInterface;
 
 class UserRoleBeanProcessor extends \NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor implements ValidationHelperAwareInterface
