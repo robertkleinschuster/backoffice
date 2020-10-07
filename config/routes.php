@@ -41,15 +41,10 @@ use Psr\Container\ContainerInterface;
  */
 return static function (Application $app, MiddlewareFactory $factory, ContainerInterface $container): void {
 
-    $app->any(MvcHandler::getRoute('/backoffice'), [
+    $app->any(MvcHandler::getRoute(), [
         DatabaseMiddleware::class,
         AuthenticationMiddleware::class,
         MvcHandler::class
     ], 'backoffice');
-
-    $app->any(MvcHandler::getRoute(), [
-        DatabaseMiddleware::class,
-        MvcHandler::class
-    ], 'cms');
 
 };

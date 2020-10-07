@@ -58,4 +58,9 @@ class IndexController extends \Mvc\Controller\AbstractController
     {
         // TODO: Implement error() method.
     }
+
+
+    public function indexAction() {
+
+    }
 }

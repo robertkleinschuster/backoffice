@@ -9,9 +9,6 @@ use Mvc\Model\AbstractModel;
 class IndexModel extends AbstractModel
 {
 
-    public function indexAction() {
-
-    }
 
     protected function handlePermissionDenied()
     {
