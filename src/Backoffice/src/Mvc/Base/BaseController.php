@@ -188,13 +188,13 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         $this->getView()->addNavigation($navigation);
 
         // Set Global Template vars
-        $this->setTemplateVariable('logoutLink', '/auth/logout');
+        $this->setTemplateVariable('logoutLink', $this->getPathHelper()->setController('auth')->setAction('logout')->getPath());
         if ($this->getUser()->hasData('User_Displayname')) {
             $this->setTemplateVariable('logoutLabel', $this->getUser()->getData('User_Displayname') . ' abmelden');
         } else {
             $this->setTemplateVariable('logoutLabel', 'abmelden');
         }
-        $this->setTemplateVariable('searchAction', '/index/search');
+        $this->setTemplateVariable('searchAction', $this->getPathHelper()->setController('index')->setAction('search')->getPath());
         $this->setTemplateVariable('searchLabel', 'Suchen');
     }
 

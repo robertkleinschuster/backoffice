@@ -4,14 +4,12 @@
 namespace Backoffice\Authentication\Bean;
 
 
-use Backoffice\Authorization\Role\RoleBeanFinder;
 use Backoffice\Authorization\UserRole\UserRoleBeanFinder;
 use Backoffice\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepositoryInterface;
 use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
-use NiceshopsDev\Bean\BeanInterface;
 
 /**
  * Class UserBeanFinder

@@ -109,7 +109,7 @@ class UserBeanProcessor extends AbstractBeanProcessor implements ValidationHelpe
         if ($bean->hasData('User_Password')) {
             $password = $bean->getData('User_Password');
             $info = password_get_info($password);
-            if ($info['algo'] === 0 ) {
+            if ($info['algo'] !== PASSWORD_BCRYPT ) {
                 $bean->setData('User_Password', password_hash($password, PASSWORD_BCRYPT));
             }
         }

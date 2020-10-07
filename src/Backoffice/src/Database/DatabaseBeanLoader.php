@@ -221,13 +221,11 @@ class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
      */
     public function addWhere(string $key, $value, string $table = null, $logic = Predicate::OP_AND)
     {
-        if (in_array($key, $this->column_List)) {
+        if ($this->checkColumnExists($key)) {
             if (null === $table) {
                 $table = $this->getTable();
             }
             $this->where_Map[$logic]["$table.$key"] = $value;
-        } else {
-            throw new \Exception('Invalid key ' . $key);
         }
         return $this;
     }
@@ -240,13 +238,11 @@ class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
      */
     public function addGroup(string $key, string $table = null)
     {
-        if (in_array($key, $this->column_List)) {
+        if ($this->checkColumnExists($key)) {
             if (null === $table) {
                 $table = $this->getTable();
             }
             $this->group_Map[] = "$table.$key";
-        } else {
-            throw new \Exception('Invalid key ' . $key);
         }
         return $this;
     }
@@ -259,15 +255,18 @@ class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
      */
     public function addSelect(string $key, string $table = null)
     {
-        if (in_array($key, $this->column_List)) {
+        if ($this->checkColumnExists($key)) {
             if (null === $table) {
                 $table = $this->getTable();
             }
             $this->select_Map[$key] = "$table.$key";
-        } else {
-            throw new \Exception('Invalid key ' . $key);
         }
         return $this;
+    }
+
+    public function checkColumnExists(string $column)
+    {
+        return in_array($column, $this->column_List);
     }
 
 
@@ -285,8 +284,6 @@ class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
                     $this->addWhere($explode[0], $value);
                 } elseif (count($explode) == 2) {
                     $this->addWhere($explode[1], $value, $explode[0]);
-                } else {
-                    throw new \Exception('Invalid key ' . $key);
                 }
             }
         }

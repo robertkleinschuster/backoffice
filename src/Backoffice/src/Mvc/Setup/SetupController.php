@@ -3,6 +3,7 @@ namespace Backoffice\Mvc\Setup;
 
 
 use Backoffice\Authentication\Bean\UserBean;
+use Backoffice\Database\DatabaseMiddleware;
 use Mvc\View\Components\Edit\Edit;
 use Mvc\View\Components\Edit\Fields\Text;
 
@@ -25,7 +26,8 @@ class SetupController extends \Backoffice\Mvc\Base\BaseController
 
     protected function initModel()
     {
-        parent::initModel();
+        $this->getModel()->setDbAdapter($this->getControllerRequest()->getServerRequest()->getAttribute(DatabaseMiddleware::ADAPTER_ATTRIBUTE));
+        $this->getModel()->init();
         try {
            $count =  $this->getModel()->getFinder()->count();
         } catch (\Throwable $ex) {

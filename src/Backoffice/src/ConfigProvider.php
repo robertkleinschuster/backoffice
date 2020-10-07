@@ -21,14 +21,11 @@ use Backoffice\Mvc\Setup\SetupController;
 use Backoffice\Mvc\Setup\SetupModel;
 use Backoffice\Mvc\Update\UpdateController;
 use Backoffice\Mvc\Update\UpdateModel;
-use Backoffice\Mvc\User\UserModel;
 use Backoffice\Mvc\User\UserController;
+use Backoffice\Mvc\User\UserModel;
 use Backoffice\Mvc\UserRole\UserRoleController;
 use Backoffice\Mvc\UserRole\UserRoleModel;
 use Backoffice\Session\Cache\MemcachedCachePoolFactory;
-use Laminas\Log\Formatter\Simple;
-use Laminas\Log\Logger;
-use Laminas\Log\Processor\RequestId;
 use Laminas\Stratigility\Middleware\ErrorHandler;
 use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\Session\PhpSession;
@@ -50,14 +47,14 @@ class ConfigProvider
      * To add a bit of a structure, each section is defined in a separate
      * method which returns an array with its configuration.
      */
-    public function __invoke() : array
+    public function __invoke(): array
     {
         return [
             'dependencies' => $this->getDependencies(),
-            'templates'    => $this->getTemplates(),
+            'templates' => $this->getTemplates(),
             'db' => [
-              #  'driver'   => 'Pdo_Sqlite',
-              #  'database' => __DIR__ . '/../../../data/sqlite.db',
+                #  'driver'   => 'Pdo_Sqlite',
+                #  'database' => __DIR__ . '/../../../data/sqlite.db',
                 'driver' => 'Pdo_Mysql',
                 'database' => 'backoffice',
                 'username' => 'backoffice',
@@ -170,7 +167,20 @@ class ConfigProvider
                 'persistent' => true,
             ],
             'authentication' => [
-                'redirect' => '/auth/login',
+                'redirect' => [
+                    'controller' => 'auth',
+                    'action' => 'login'
+                ],
+                'whitelist' => [
+                    [
+                        'controller' => 'auth',
+                        'action' => 'login'
+                    ],
+                    [
+                        'controller' => 'setup',
+                        'action' => 'index'
+                    ]
+                ],
                 'username' => 'login_username',
                 'password' => 'login_password'
             ],
@@ -180,7 +190,7 @@ class ConfigProvider
     /**
      * Returns the container dependencies
      */
-    public function getDependencies() : array
+    public function getDependencies(): array
     {
         return [
             'aliases' => [
@@ -189,7 +199,7 @@ class ConfigProvider
             ],
             'invokables' => [
             ],
-            'factories'  => [
+            'factories' => [
                 'SessionCache' => MemcachedCachePoolFactory::class,
                 AuthenticationMiddleware::class => AuthenticationMiddlewareFactory::class,
                 UserRepositoryInterface::class => UserRepositoryFactory::class,
@@ -206,13 +216,13 @@ class ConfigProvider
     /**
      * Returns the templates configuration
      */
-    public function getTemplates() : array
+    public function getTemplates(): array
     {
         return [
             'paths' => [
-                'error'  => [__DIR__ . '/../templates/error'],
+                'error' => [__DIR__ . '/../templates/error'],
                 'layout' => [__DIR__ . '/../templates/layout'],
-                'mvc'    => [__DIR__ . '/../templates/mvc'],
+                'mvc' => [__DIR__ . '/../templates/mvc'],
             ],
         ];
     }
