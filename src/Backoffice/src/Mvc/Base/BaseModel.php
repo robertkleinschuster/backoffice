@@ -7,6 +7,7 @@ use Base\Authentication\Bean\UserBean;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterAwareInterface;
 use Laminas\Db\Adapter\AdapterAwareTrait;
+use Laminas\Db\Adapter\Profiler\ProfilerInterface;
 use Mvc\Helper\ValidationHelperAwareInterface;
 use Mvc\Model\AbstractModel;
 use NiceshopsDev\Bean\BeanFinder\BeanFinderInterface;
@@ -222,5 +223,14 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
         $this->getValidationHelper()->addError('Permission', 'Sie haben nicht die Berechtigung diesen Eintrag zu bearbeiten.');
     }
 
+    /**
+     * @param string $search
+     */
+    public function handleSearch(string $search)
+    {
+        if ($this->hasFinder()) {
+            $this->getFinder()->getLoader()->addLike("%$search%", ...array_values($this->getFinder()->getLoader()->getFieldColumnMap()));
+        }
+    }
 
 }

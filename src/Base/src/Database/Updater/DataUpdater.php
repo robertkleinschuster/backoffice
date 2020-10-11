@@ -111,6 +111,11 @@ class DataUpdater extends AbstractUpdater
             'UserPermission_Active' => true,
         ];
 
+        $data_Map[] = [
+            'UserPermission_Code' => 'debug',
+            'UserPermission_Active' => true,
+        ];
+
         return $this->saveDataMap('UserPermission', 'UserPermission_Code', $data_Map);
     }
 

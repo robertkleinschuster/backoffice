@@ -10,6 +10,7 @@ use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\Db\Adapter\Driver\StatementInterface;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Expression;
+use Laminas\Db\Sql\Predicate\Like;
 use Laminas\Db\Sql\Predicate\Predicate;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
@@ -52,6 +53,11 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
     private $select_Map;
 
     /**
+     * @var array[]
+     */
+    private $like_Map;
+
+    /**
      * @var ResultSet
      */
     private $result;
@@ -87,6 +93,7 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
         $this->where_Map = [];
         $this->group_Map = [];
         $this->select_Map = [];
+        $this->like_Map = [];
     }
 
     /**
@@ -279,6 +286,16 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
         }
     }
 
+    /**
+     * @param string $str
+     * @param array $columns
+     * @return $this
+     */
+    public function addLike(string $str, ...$columns)
+    {
+        $this->like_Map[$str] = $columns;
+        return $this;
+    }
 
     /**
      * @param string $field
@@ -334,6 +351,19 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
         }
         if ($this->hasOffset()) {
             $select->offset($this->getOffset());
+        }
+        return $this;
+    }
+
+    /**
+     * @param Select $select
+     */
+    protected function handleLike(Select $select)
+    {
+        foreach ($this->like_Map as $str => $like) {
+            foreach ($like as $column) {
+                $select->where(new Like($column, $str), Predicate::OP_OR);
+            }
         }
         return $this;
     }
@@ -427,6 +457,7 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
         $select = $sql->select($this->getTable());
         $this->handleJoins($select);
         $this->handleWhere($select);
+        $this->handleLike($select);
         $this->handleGroup($select);
         if ($limit) {
             $this->handleLimit($select);

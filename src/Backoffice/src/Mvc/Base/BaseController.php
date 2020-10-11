@@ -6,6 +6,7 @@ namespace Backoffice\Mvc\Base;
 
 use Base\Authentication\Bean\UserBean;
 use Base\Database\DatabaseMiddleware;
+use Laminas\Db\Adapter\Profiler\ProfilerInterface;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Csrf\CsrfGuardInterface;
 use Mezzio\Csrf\CsrfMiddleware;
@@ -187,6 +188,9 @@ abstract class BaseController extends AbstractController implements AttributeAwa
 
         $this->getView()->addNavigation($navigation);
 
+        $this->getView()->setToolbar(new Toolbar());
+        $this->getView()->getToolbar()->getComponentModel()->setComponentDataBean(new ComponentDataBean());
+
         // Set Global Template vars
         $this->setTemplateVariable('logoutLink', $this->getPathHelper()->setController('auth')->setAction('logout')->getPath());
         if ($this->getUser()->hasData('User_Displayname')) {
@@ -194,7 +198,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         } else {
             $this->setTemplateVariable('logoutLabel', 'abmelden');
         }
-        $this->setTemplateVariable('searchAction', $this->getPathHelper()->setController('index')->setAction('search')->getPath());
+        $this->setTemplateVariable('searchAction', $this->getPathHelper()->getPath());
         $this->setTemplateVariable('searchLabel', 'Suchen');
     }
 
@@ -219,6 +223,33 @@ abstract class BaseController extends AbstractController implements AttributeAwa
             $alert->getComponentModel()->setComponentDataBean(new ComponentDataBean());
             foreach ($validationHelper->getErrorList('Permission') as $item) {
                 $alert->addText('', '')->setValue($item);
+            }
+            $this->getView()->addComponent($alert, true);
+        }
+
+        if ($this->getControllerRequest()->getAttribute('debug') == 'true') {
+            $this->getView()->getToolbar()->addButton($this->getPathHelper()->setParams(['debug' => 'false'])->getPath(), 'Debug')->setPermission('debug');
+
+            $this->getSession()->set('debug', true);
+        } elseif ($this->getControllerRequest()->getAttribute('debug') == 'false') {
+            $this->getView()->getToolbar()->addButton($this->getPathHelper()->setParams(['debug' => 'true'])->getPath(), 'Debug')->setPermission('debug');
+
+            $this->getSession()->set('debug', false);
+        } else {
+            $this->getView()->getToolbar()->addButton($this->getPathHelper()->setParams(['debug' => 'true'])->getPath(), 'Debug')->setPermission('debug');
+
+        }
+
+        $profiler = $this->getModel()->getDbAdpater()->getProfiler();
+        if ($profiler instanceof ProfilerInterface && $this->getSession()->get('debug', false)) {
+            $profiles = $profiler->getProfiles();
+            $alert = new Alert();
+            $alert->setHeading('Debug');
+            $alert->setStyle(Alert::STYLE_WARNING);
+            $alert->getComponentModel()->setComponentDataBean(new ComponentDataBean());
+            $alert->addText('queryCount', '')->setValue('Abfragen: ' . count($profiles) . '<br>' . array_sum(array_column($profiles, 'elapse')) . ' ms');
+            foreach ($profiles as $profile) {
+                $alert->addText('sql', '')->setValue($profile['sql'] . "<br>{$profile['elapse']} ms");
             }
             $this->getView()->addComponent($alert, true);
         }
@@ -284,18 +315,20 @@ abstract class BaseController extends AbstractController implements AttributeAwa
 
         if ($this->getModel()->getFinder()->hasLimit()) {
             $pages = $this->getModel()->getFinder()->count() / $this->getModel()->getFinder()->getLimit();
-            $pageNavigation = new PageNavigation();
-            for ($i = 0; $i < $pages; $i++) {
-                $element = new PageNavigationElement();
-                $element->setLink($this->getPathHelper()->setParams([ControllerRequest::ATTRIBUTE_LIMIT => $this->getModel()->getFinder()->getLimit(), ControllerRequest::ATTRIBUTE_PAGE => $i + 1])->getPath());
-                $pageNavigation->addElement($element);
+            if ($pages > 1) {
+                $pageNavigation = new PageNavigation();
+                for ($i = 0; $i < $pages; $i++) {
+                    $element = new PageNavigationElement();
+                    $element->setLink($this->getPathHelper()->setParams([ControllerRequest::ATTRIBUTE_LIMIT => $this->getModel()->getFinder()->getLimit(), ControllerRequest::ATTRIBUTE_PAGE => $i + 1])->getPath());
+                    $pageNavigation->addElement($element);
+                }
+                if ($this->getControllerRequest()->hasPage()) {
+                    $page = $this->getControllerRequest()->getPage();
+                    $page = $page > 0 ? $page : 1;
+                    $pageNavigation->setActive($page - 1);
+                }
+                $overview->getComponentModel()->setPageNavigation($pageNavigation);
             }
-            if ($this->getControllerRequest()->hasPage()) {
-                $page = $this->getControllerRequest()->getPage();
-                $page = $page > 0 ? $page : 1;
-                $pageNavigation->setActive($page - 1);
-            }
-            $overview->getComponentModel()->setPageNavigation($pageNavigation);
         }
 
         $this->getView()->addComponent($overview);
