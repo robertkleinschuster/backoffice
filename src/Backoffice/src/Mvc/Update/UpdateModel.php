@@ -33,16 +33,17 @@ class UpdateModel extends BaseModel
     }
 
     /**
-     * @param ControllerRequest $request
-     * @throws \NiceshopsDev\NiceCore\Exception
+     * @param string $submitModel
+     * @param array $viewIdMap
+     * @param array $attributes
      */
-    public function submit(ControllerRequest $request)
+    public function submit(string $submitModel, array $viewIdMap, array $attributes)
     {
-        switch ($request->getSubmit()) {
+        switch ($submitModel) {
             case 'schema':
                 if ($this->hasOption(self::OPTION_SCHEMA_ALLOWED)) {
                     $schemaUpdater = new SchemaUpdater($this->getDbAdpater());
-                    $schemaUpdater->execute($request->getAttributes());
+                    $schemaUpdater->execute($attributes);
                     $this->getValidationHelper()->addErrorFieldMap($schemaUpdater->getValidationHelper()->getErrorFieldMap());
                 } else {
                     $this->handlePermissionDenied();
@@ -51,7 +52,7 @@ class UpdateModel extends BaseModel
             case 'data':
                 if ($this->hasOption(self::OPTION_DATA_ALLOWED)) {
                     $schemaUpdater = new DataUpdater($this->getDbAdpater());
-                    $schemaUpdater->execute($request->getAttributes());
+                    $schemaUpdater->execute($attributes);
                     $this->getValidationHelper()->addErrorFieldMap($schemaUpdater->getValidationHelper()->getErrorFieldMap());
                 } else {
                     $this->handlePermissionDenied();

@@ -21,11 +21,11 @@ class UserRoleModel extends \Backoffice\Mvc\Base\BaseModel
     public function getRoleList(array $userPermissions): array
     {
         $beanList = $this->getFinder()->getBeanList();
-        $existing = $beanList->getData('UserRole_ID');
+        $existing = $beanList->getData('UserRole_Code');
         $finder = new RoleBeanFinder($this->getDbAdpater());
         $finder->find();
         $RoleList = [];
-        foreach ($finder->getBeanList() as $item) {
+        foreach ($finder->getBeanList(true) as $item) {
             $id = $item->getData('UserRole_ID');
             $code = $item->getData('UserRole_Code');
             $permissions = $item->getData('UserPermission_BeanList')->getData('UserPermission_Code');

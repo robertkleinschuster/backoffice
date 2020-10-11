@@ -66,7 +66,7 @@ class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterfa
     {
         $this->getLoader()->addWhere('User_Username', $credential);
         if ($this->find()) {
-            $bean = $this->getBean();
+            $bean = $this->getBean(true);
             if (password_verify($password, $bean->getData('User_Password'))) {
                 return $bean;
             }

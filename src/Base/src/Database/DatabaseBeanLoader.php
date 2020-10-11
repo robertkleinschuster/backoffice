@@ -13,12 +13,13 @@ use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Predicate\Predicate;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
+use NiceshopsDev\Bean\BeanFinder\AbstractBeanLoader;
 use NiceshopsDev\Bean\BeanFinder\BeanLoaderInterface;
 use NiceshopsDev\Bean\BeanInterface;
 use NiceshopsDev\NiceCore\Attribute\AttributeTrait;
 use NiceshopsDev\NiceCore\Option\OptionTrait;
 
-class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
+class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInterface
 {
     use OptionTrait;
     use AttributeTrait;
@@ -466,4 +467,29 @@ class DatabaseBeanLoader implements BeanLoaderInterface, AdapterAwareInterface
         $sql = new Sql($this->adapter);
         return $this->adapter->query($sql->buildSqlString($select));
     }
+
+    public function preloadValueList(string $field): array
+    {
+        $select = $this->buildSelect(true, false);
+        $select->reset(Select::COLUMNS);
+        $column = $this->getFieldColumnMap()[$field];
+        $select->columns([$column]);
+        $result = $this->getPreparedStatement($select)->execute();
+        $ret = [];
+        foreach ($result as $row) {
+            $ret[] = $row[$column];
+        }
+        return $ret;
+    }
+
+    public function key()
+    {
+        return $this->getResult()->key();
+    }
+
+    public function rewind()
+    {
+    }
+
+
 }
