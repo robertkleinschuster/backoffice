@@ -2,10 +2,6 @@
 
 declare(strict_types=1);
 
-use Laminas\ConfigAggregator\ConfigAggregator;
-use Laminas\Log\Formatter\Simple;
-use Laminas\Log\Logger;
-use Laminas\Log\Processor\RequestId;
 
 return [
     'mezzio-session-cache' => [

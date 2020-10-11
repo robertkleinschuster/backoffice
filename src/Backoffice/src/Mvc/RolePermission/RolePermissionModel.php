@@ -18,12 +18,12 @@ class RolePermissionModel extends BaseModel
 
     public function getPermissionList(array $userPermissions): array
     {
-        $beanList = $this->getFinder()->getBeanList();
+        $beanList = $this->getFinder()->getBeanGenerator();
         $existing = $beanList->getData('UserPermission_Code');
         $finder = new PermissionBeanFinder($this->getDbAdpater());
         $finder->find();
         $permissionList = [];
-        foreach ($finder->getBeanList() as $item) {
+        foreach ($finder->getBeanGenerator() as $item) {
             $code = $item->getData('UserPermission_Code');
             if (!in_array($code, $existing) && in_array($code, $userPermissions)) {
                 $permissionList[$code] = $code;

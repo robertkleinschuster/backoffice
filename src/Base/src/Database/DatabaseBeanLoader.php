@@ -24,6 +24,7 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
     use OptionTrait;
     use AttributeTrait;
     use AdapterAwareTrait;
+    use DatabaseInfoTrait;
 
     /**
      * @var string
@@ -56,11 +57,6 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
     private $result;
 
     /**
-     * @var array
-     */
-    private $column_List;
-
-    /**
      * @var string[]
      */
     private $fieldColumn_Map;
@@ -86,17 +82,11 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
     {
         $this->setDbAdapter($adapter);
         $this->table = $table;
+        $this->setTableList([$table]);
         $this->join_Map = [];
         $this->where_Map = [];
         $this->group_Map = [];
         $this->select_Map = [];
-        $this->column_List = $this->getMetadata()->getColumnNames($this->getTable(), $this->adapter->getCurrentSchema());
-    }
-
-
-    protected function getMetadata()
-    {
-        return \Laminas\Db\Metadata\Source\Factory::createSourceFromAdapter($this->adapter);
     }
 
     /**
@@ -202,7 +192,6 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
      */
     public function addJoin(string $table, string $column, ?string $remoteColumn = null)
     {
-        $this->column_List = array_merge($this->column_List, $this->getMetadata()->getColumnNames($table, $this->adapter->getCurrentSchema()));
         if (null === $remoteColumn) {
             $remoteColumn = $column;
         }
@@ -267,7 +256,7 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
 
     public function checkColumnExists(string $column)
     {
-        return in_array($column, $this->column_List);
+        return in_array($column, $this->getFieldColumnMap());
     }
 
 
@@ -299,7 +288,7 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
      */
     public function initByValueList(string $field, array $valueList)
     {
-        return $this->addWhere($field, $valueList);
+        return $this->addWhere($this->getFieldColumnMap()[$field], $valueList);
     }
 
     /**

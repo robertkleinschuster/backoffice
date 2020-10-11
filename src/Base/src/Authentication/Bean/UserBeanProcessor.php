@@ -31,13 +31,13 @@ class UserBeanProcessor extends AbstractBeanProcessor implements ValidationHelpe
         $this->adapter = $adapter;
         $saver = new DatabaseBeanSaver($adapter, 'Person', 'User');
         $saver->setFieldColumnMap([
-            'Person_ID' => 'Person_ID',
-            'Person_Firstname' => 'Person_Firstname',
-            'Person_Lastname' => 'Person_Lastname',
-            'User_Username' => 'User_Username',
-            'User_Displayname' => 'User_Displayname',
-            'User_Password' => 'User_Password',
-            'UserState_Code' => 'UserState_Code',
+            'Person_ID' => 'Person.Person_ID',
+            'Person_Firstname' => 'Person.Person_Firstname',
+            'Person_Lastname' => 'Person.Person_Lastname',
+            'User_Username' => 'User.User_Username',
+            'User_Displayname' => 'User.User_Displayname',
+            'User_Password' => 'User.User_Password',
+            'UserState_Code' => 'User.UserState_Code',
         ]);
         $saver->setPrimaryKeyList([
             'Person_ID'

@@ -105,18 +105,18 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
     }
 
     /**
-    * @return int
-    */
+     * @return int
+     */
     public function getPersonId(): int
     {
         return $this->personId;
     }
 
     /**
-    * @param int $personId
-    *
-    * @return $this
-    */
+     * @param int $personId
+     *
+     * @return $this
+     */
     public function setPersonId(int $personId): self
     {
         $this->personId = $personId;
@@ -124,8 +124,8 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
     }
 
     /**
-    * @return bool
-    */
+     * @return bool
+     */
     public function hasPersonId(): bool
     {
         return $this->personId !== null;
@@ -145,24 +145,61 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
         }
     }
 
-
+    /**
+     * @param BeanInterface $bean
+     * @return bool
+     * @throws \Exception
+     */
     protected function hasPrimaryKeyValue(BeanInterface $bean): bool
     {
         $keys = [];
         foreach ($this->getPrimaryKeyList() as $item) {
             $keys[] = $bean->hasData($this->getFieldNameByColumn($item));
         }
+
         $hasPrimaryKey = !in_array(false, $keys) && count($keys) > 0;
         return $hasPrimaryKey;
     }
 
-    protected function getFieldNameByColumn(string $column): string
+    /**
+     * @param string $column
+     * @return string
+     * @throws \Exception
+     */
+    protected function getFieldNameByColumn(string $column, string $table = null): string
     {
-        $name = array_flip($this->getFieldColumnMap())[$column];
-        if (null == $name) {
-            throw new \Exception("No bean field found for column $column.");
+        $columns = array_flip($this->getFieldColumnMap());
+        if ($table === null) {
+            foreach ($this->getTableList() as $table) {
+                if (!str_contains($column, '.')) {
+                    $column = "$table.$column";
+                }
+            }
+        } else {
+            $column = "$table.$column";
         }
-        return $name;
+        if (isset($columns[$column])) {
+            return $columns[$column];
+        }
+        throw new \Exception("No bean field found for column $column.");
+    }
+
+    /**
+     * @param string $dbColumn
+     * @param string|null $table
+     * @return bool
+     */
+    public function validateColumnName(string $dbColumn, string $table = null)
+    {
+        $exp = explode('.', $dbColumn);
+        if (is_array($exp) && count($exp) === 2 && !empty(trim($exp[0])) && !empty(trim($exp[1]))) {
+            if ($table === null) {
+                return true;
+            } elseif ($exp[0] == $table) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -173,16 +210,17 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
     protected function deleteBean(BeanInterface $bean): bool
     {
         $formatter = new DatabaseBeanFormatter();
-        $metadata = \Laminas\Db\Metadata\Source\Factory::createSourceFromAdapter($this->adapter);
-
         $result_List = [];
         $tableList = $this->getTableList();
         $tableList = array_reverse($tableList);
         foreach ($tableList as $table) {
-            $tableColumn_List = $metadata->getColumnNames($table, $this->adapter->getCurrentSchema());
             $deletedata = [];
             foreach ($this->getFieldColumnMap() as $dataName => $dbColumn) {
-                if ($bean->hasData($dataName) && in_array($dbColumn, $tableColumn_List)) {
+                if ($bean->hasData($dataName) && $this->validateColumnName($dbColumn, $table)) {
+                    $columnName = explode('.', $dbColumn)[0];
+                    if (in_array($columnName, $this->getPrimaryKeyList())) {
+                        $dbColumn = "$table.$columnName";
+                    }
                     $deletedata[$dbColumn] = $formatter->format($bean)->getValue($dataName);
                 }
             }
@@ -205,17 +243,21 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
     protected function insert(BeanInterface $bean): bool
     {
         $formatter = new DatabaseBeanFormatter();
-        $metadata = \Laminas\Db\Metadata\Source\Factory::createSourceFromAdapter($this->adapter);
         $result_List = [];
         foreach ($this->getTableList() as $table) {
-            $tableColumn_List = $metadata->getColumnNames($table, $this->adapter->getCurrentSchema());
             $insertdata = [];
 
             foreach ($this->getFieldColumnMap() as $dataName => $dbColumn) {
-                if ($bean->hasData($dataName) && in_array($dbColumn, $tableColumn_List)) {
-                    $insertdata[$dbColumn] = $formatter->format($bean)->getValue($dataName);
+                if ($bean->hasData($dataName) && $this->validateColumnName($dbColumn, $table)) {
+                    $insertdata[str_replace("$table.", '', $dbColumn)] = $formatter->format($bean)->getValue($dataName);
                 }
             }
+            foreach ($this->getPrimaryKeyList() as $pkColumn) {
+                if ($bean->hasData($this->getFieldNameByColumn($pkColumn))) {
+                    $insertdata[$pkColumn] = $bean->getData($this->getFieldNameByColumn($pkColumn));
+                }
+            }
+
             if (count($insertdata)) {
                 $dateTime = new \DateTime();
                 $insertdata['Timestamp_Create'] = $dateTime->format('Y-m-d H:i:s');
@@ -224,10 +266,12 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
                     $insertdata['Person_ID_Create'] = $this->getPersonId();
                     $insertdata['Person_ID_Edit'] = $this->getPersonId();
                 }
+
                 $sql = new Sql($this->adapter);
                 $insert = $sql->insert($table);
                 $insert->columns(array_keys($insertdata));
                 $insert->values(array_values($insertdata));
+
                 $result = $this->adapter->query($sql->buildSqlString($insert), $this->adapter::QUERY_MODE_EXECUTE);
                 if (count($this->getPrimaryKeyList()) == 1) {
                     foreach ($this->getPrimaryKeyList() as $item) {
@@ -248,13 +292,11 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
     protected function update(BeanInterface $bean): bool
     {
         $formatter = new DatabaseBeanFormatter();
-        $metadata = \Laminas\Db\Metadata\Source\Factory::createSourceFromAdapter($this->adapter);
         $result_List = [];
         foreach ($this->getTableList() as $table) {
-            $tableColumn_List = $metadata->getColumnNames($table, $this->adapter->getCurrentSchema());
             $insertdata = [];
             foreach ($this->getFieldColumnMap() as $dataName => $dbColumn) {
-                if ($bean->hasData($dataName) && in_array($dbColumn, $tableColumn_List)) {
+                if ($bean->hasData($dataName) && $this->validateColumnName($dbColumn, $table)) {
                     $insertdata[$dbColumn] = $formatter->format($bean)->getValue($dataName);
                 }
             }
@@ -267,7 +309,7 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
                 $sql = new Sql($this->adapter);
                 $update = $sql->update($table);
                 foreach ($this->getPrimaryKeyList() as $dbColumn) {
-                    $update->where(["$table.$dbColumn" => $insertdata[$dbColumn]]);
+                    $update->where(["$table.$dbColumn" => $bean->getData($this->getFieldNameByColumn($dbColumn))]);
                 }
                 $update->set($insertdata);
                 $result = $this->adapter->query($sql->buildSqlString($update), $this->adapter::QUERY_MODE_EXECUTE);
@@ -276,6 +318,5 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
         }
         return !in_array(false, $result_List, true) && count($result_List) > 0;
     }
-
 
 }

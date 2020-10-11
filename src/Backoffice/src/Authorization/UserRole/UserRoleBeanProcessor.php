@@ -18,8 +18,8 @@ class UserRoleBeanProcessor extends \NiceshopsDev\Bean\BeanProcessor\AbstractBea
     {
         $saver = new DatabaseBeanSaver($adapter, 'User_UserRole');
         $saver->setFieldColumnMap([
-            'Person_ID' => 'Person_ID',
-            'UserRole_ID' => 'UserRole_ID',
+            'Person_ID' => 'User_UserRole.Person_ID',
+            'UserRole_ID' => 'User_UserRole.UserRole_ID',
         ]);
         parent::__construct($saver);
     }

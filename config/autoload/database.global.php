@@ -15,6 +15,6 @@ return [
         'database' => 'backoffice',
         'username' => 'backoffice',
         'password' => 'backoffice',
-        'hostname' => '127.0.0.1'
+        'hostname' => '127.0.0.1',
     ]
 ];

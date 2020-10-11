@@ -19,8 +19,8 @@ class RolePermissionBeanProcessor extends \NiceshopsDev\Bean\BeanProcessor\Abstr
     {
         $saver = new DatabaseBeanSaver($adapter, 'UserRole_UserPermission');
         $saver->setFieldColumnMap([
-            'UserRole_ID' => 'UserRole_ID',
-            'UserPermission_Code' => 'UserPermission_Code',
+            'UserRole_ID' => 'UserRole_UserPermission.UserRole_ID',
+            'UserPermission_Code' => 'UserRole_UserPermission.UserPermission_Code',
         ]);
         parent::__construct($saver);
     }

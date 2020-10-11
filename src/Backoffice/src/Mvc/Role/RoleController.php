@@ -31,7 +31,7 @@ class RoleController extends BaseController
     public function indexAction()
     {
         $overview = $this->initOverviewTemplate(new RoleBeanFormatter());
-        $overview->getComponentModel()->setComponentDataBeanList($this->getModel()->getFinder()->getBeanList());
+        $overview->getComponentModel()->setComponentDataBeanList($this->getModel()->getFinder()->getBeanGenerator());
     }
 
     protected function getDetailPath(): PathHelper
