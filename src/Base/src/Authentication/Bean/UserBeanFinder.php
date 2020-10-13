@@ -33,24 +33,14 @@ class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterfa
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
-        $loader = new DatabaseBeanLoader($adapter, 'User');
-        $loader->addJoin('Person', 'Person_ID');
-        $loader->setFieldColumnMap([
-            'Person_ID' => 'Person_ID',
-            'Person_Firstname' => 'Person_Firstname',
-            'Person_Lastname' => 'Person_Lastname',
-            'User_Username' => 'User_Username',
-            'User_Displayname' => 'User_Displayname',
-            'User_Password' => 'User_Password',
-            'UserState_Code' => 'UserState_Code',
-        ]);
-        $loader->addSelect('Person_ID', 'Person');
-        $loader->addSelect('Person_Firstname', 'Person');
-        $loader->addSelect('Person_Lastname', 'Person');
-        $loader->addSelect('User_Username');
-        $loader->addSelect('User_Displayname');
-        $loader->addSelect('User_Password');
-        $loader->addSelect('UserState_Code');
+        $loader = new DatabaseBeanLoader($adapter);
+        $loader->addColumn('Person_ID', 'Person_ID', 'Person', 'Person_ID', true);
+        $loader->addColumn('Person_Firstname', 'Person_Firstname', 'Person', 'Person_ID');
+        $loader->addColumn('Person_Lastname', 'Person_Lastname', 'Person', 'Person_ID');
+        $loader->addColumn('User_Username', 'User_Username', 'User', 'Person_ID');
+        $loader->addColumn('User_Displayname', 'User_Displayname', 'User', 'Person_ID');
+        $loader->addColumn('User_Password', 'User_Password', 'User', 'Person_ID');
+        $loader->addColumn('UserState_Code', 'UserState_Code', 'User', 'Person_ID');
         parent::__construct($loader, new UserBeanFactory());
         $userRoleFinder = new UserRoleBeanFinder($adapter);
         $this->linkBeanFinder($userRoleFinder, 'UserRole_BeanList', 'Person_ID', 'Person_ID');

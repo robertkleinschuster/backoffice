@@ -13,16 +13,10 @@ class UserRoleBeanFinder extends AbstractBeanFinder
 {
     public function __construct(Adapter $adapter)
     {
-        $loader = new DatabaseBeanLoader($adapter, 'User_UserRole');
-        $loader->addJoin('UserRole', 'UserRole_ID');
-        $loader->setFieldColumnMap([
-            'Person_ID' => 'Person_ID',
-            'UserRole_ID' => 'UserRole_ID',
-            'UserRole_Code' => 'UserRole_Code',
-        ]);
-        $loader->addSelect('Person_ID');
-        $loader->addSelect('UserRole_ID');
-        $loader->addSelect('UserRole_Code', 'UserRole');
+        $loader = new DatabaseBeanLoader($adapter);
+        $loader->addColumn('UserRole_ID', 'UserRole_ID', 'User_UserRole', 'UserRole_ID', true);
+        $loader->addColumn('Person_ID', 'Person_ID', 'User_UserRole', 'UserRole_ID', true);
+        $loader->addColumn('UserRole_Code', 'UserRole_Code', 'UserRole', 'UserRole_ID');
         $factory = new UserRoleBeanFactory();
         parent::__construct($loader, $factory);
         $this->linkBeanFinder(new RolePermissionBeanFinder($adapter), 'UserPermission_BeanList', 'UserRole_ID', 'UserRole_ID');

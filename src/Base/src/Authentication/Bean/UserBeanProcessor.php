@@ -29,19 +29,14 @@ class UserBeanProcessor extends AbstractBeanProcessor implements ValidationHelpe
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
-        $saver = new DatabaseBeanSaver($adapter, 'Person', 'User');
-        $saver->setFieldColumnMap([
-            'Person_ID' => 'Person.Person_ID',
-            'Person_Firstname' => 'Person.Person_Firstname',
-            'Person_Lastname' => 'Person.Person_Lastname',
-            'User_Username' => 'User.User_Username',
-            'User_Displayname' => 'User.User_Displayname',
-            'User_Password' => 'User.User_Password',
-            'UserState_Code' => 'User.UserState_Code',
-        ]);
-        $saver->setPrimaryKeyList([
-            'Person_ID'
-        ]);
+        $saver = new DatabaseBeanSaver($adapter);
+        $saver->addColumn('Person_ID', 'Person_ID', 'Person', 'Person_ID', true);
+        $saver->addColumn('Person_Firstname', 'Person_Firstname', 'Person', 'Person_ID');
+        $saver->addColumn('Person_Lastname', 'Person_Lastname', 'Person', 'Person_ID');
+        $saver->addColumn('User_Username', 'User_Username', 'User', 'Person_ID');
+        $saver->addColumn('User_Displayname', 'User_Displayname', 'User', 'Person_ID');
+        $saver->addColumn('User_Password', 'User_Password', 'User', 'Person_ID');
+        $saver->addColumn('UserState_Code', 'UserState_Code', 'User', 'Person_ID');
         parent::__construct($saver);
 
     }

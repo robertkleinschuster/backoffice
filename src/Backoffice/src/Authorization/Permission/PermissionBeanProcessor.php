@@ -21,14 +21,9 @@ class PermissionBeanProcessor extends AbstractBeanProcessor implements Validatio
      */
     public function __construct(Adapter $adapter)
     {
-        $saver = new DatabaseBeanSaver($adapter, 'UserPermission');
-        $saver->setFieldColumnMap([
-            'UserPermission_Code' => 'UserPermission.UserPermission_Code',
-            'UserPermission_Active' => 'UserPermission.UserPermission_Active',
-        ]);
-        $saver->setPrimaryKeyList([
-            'UserPermission_Code',
-        ]);
+        $saver = new DatabaseBeanSaver($adapter);
+        $saver->addColumn('UserPermission_Code', 'UserPermission_Code', 'UserPermission', 'UserPermission_Code', true);
+        $saver->addColumn('UserPermission_Active', 'UserPermission_Active', 'UserPermission', 'UserPermission_Code');
         parent::__construct($saver);
     }
 

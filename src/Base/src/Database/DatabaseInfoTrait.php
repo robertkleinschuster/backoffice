@@ -4,136 +4,139 @@
 namespace Base\Database;
 
 
-use NiceshopsDev\Bean\BeanInterface;
-
 trait DatabaseInfoTrait
 {
-
     /**
-     * @var string[]
+     * @var array
      */
-    protected $table_List;
+    private array $dbInfo_Map = [];
 
     /**
-     * @var string[]
-     */
-    private $fieldColumn_Map;
-
-    /**
-     * @var string[]
-     */
-    private $primaryKey_List;
-
-    /**
-     * @return string[]
-     */
-    protected function getTableList(): array
-    {
-        return $this->table_List;
-    }
-
-    /**
-     * @param string[] $table_List
-     */
-    protected function setTableList(array $table_List): void
-    {
-        $this->table_List = $table_List;
-    }
-
-    /**
-     * @return string[]
-     * @throws \Exception
-     */
-    public function getFieldColumnMap(): array
-    {
-        if (null == $this->fieldColumn_Map) {
-            throw new \Exception('Field column map not initialized.');
-        }
-        return $this->fieldColumn_Map;
-    }
-
-    /**
-     * @param string[] $fieldColumn_Map
-     * @return $this
-     */
-    public function setFieldColumnMap(array $fieldColumn_Map)
-    {
-        $this->fieldColumn_Map = $fieldColumn_Map;
-        return $this;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getPrimaryKeyList(): array
-    {
-        return $this->primaryKey_List ?? [];
-    }
-
-    /**
-     * @param string[] $primaryKey_List
-     * @return $this
-     */
-    public function setPrimaryKeyList(array $primaryKey_List)
-    {
-        $this->primaryKey_List = $primaryKey_List;
-        return $this;
-    }
-
-    /**
-     * @param BeanInterface $bean
-     * @return bool
-     * @throws \Exception
-     */
-    protected function hasPrimaryKeyValue(BeanInterface $bean): bool
-    {
-        $keys = [];
-        foreach ($this->getPrimaryKeyList() as $item) {
-            $keys[] = $bean->hasData($this->getFieldNameByColumn($item));
-        }
-
-        $hasPrimaryKey = !in_array(false, $keys) && count($keys) > 0;
-        return $hasPrimaryKey;
-    }
-
-    /**
+     * @param string $field
      * @param string $column
+     * @param string $table
+     * @param string $joinField
+     * @param bool $isKey
+     * @param string|null $joinFieldSelf
+     * @return $this
+     */
+    public function addColumn(string $field, string $column, string $table, string $joinField, bool $isKey = false, string $joinFieldSelf = null)
+    {
+        if (null === $joinFieldSelf) {
+            $joinFieldSelf = $joinField;
+        }
+        $this->dbInfo_Map[$field] = ['column' => $column, 'table' => $table, 'joinField' => $joinField, 'isKey' => $isKey, 'joinFieldSelf' => $joinFieldSelf];
+        return $this;
+    }
+
+    /**
+     * @param string|null $table
+     * @return array
+     */
+    private function getField_List(string $table = null): array
+    {
+        if (null === $table) {
+            return array_keys($this->dbInfo_Map);
+        } else {
+            return array_keys(array_filter($this->dbInfo_Map, function ($item) use ($table) {return $item['table'] === $table;}));
+        }
+    }
+
+    /**
+     * @param string $field
+     * @return bool
+     */
+    private function hasField(string $field)
+    {
+        return isset($this->dbInfo_Map[$field]);
+    }
+
+    /**
+     * @return array
+     */
+    private function getTable_List(): array
+    {
+       return array_unique(array_column($this->dbInfo_Map, 'table'));
+    }
+
+    /**
+     * @param string $field
+     * @return array
+     * @throws \Exception
+     */
+    private function getTable(string $field): string
+    {
+        return $this->getInfo($field, 'table');
+    }
+
+    /**
+     * @param string $field
      * @return string
      * @throws \Exception
      */
-    protected function getFieldNameByColumn(string $column, string $table = null): string
+    private function getJoinField(string $field): string
     {
-        $columns = array_flip($this->getFieldColumnMap());
-        if ($table === null) {
-            foreach ($this->getTableList() as $table) {
-                if (!str_contains($column, '.')) {
-                    $column = "$table.$column";
-                }
-            }
-        } else {
-            $column = "$table.$column";
-        }
-        if (isset($columns[$column])) {
-            return $columns[$column];
-        }
-        throw new \Exception("No bean field found for column $column.");
+        return $this->getInfo($field, 'joinField');
     }
 
     /**
-     * @param string $dbColumn
-     * @param string|null $table
-     * @return bool
+     * @param string $field
+     * @return string
+     * @throws \Exception
      */
-    public function validateColumnName(string $dbColumn, string $table = null)
+    private function getJoinFieldSelf(string $field): string
     {
-        $exp = explode('.', $dbColumn);
-        if (is_array($exp) && count($exp) === 2 && !empty(trim($exp[0])) && !empty(trim($exp[1]))) {
-            if ($table === null) {
-                return true;
-            } elseif ($exp[0] == $table) {
-                return true;
+        return $this->getInfo($field, 'joinFieldSelf');
+    }
+
+    /**
+     * @param string $field
+     * @return mixed
+     * @throws \Exception
+     */
+    private function getColumn(string $field): string
+    {
+        if (!isset($this->dbInfo_Map[$field])) {
+            throw new \Exception('No column found for field ' . $field);
+        }
+        return $this->dbInfo_Map[$field]['column'];
+    }
+
+    /**
+     * @param string $field
+     * @param string $key
+     * @return string
+     * @throws \Exception
+     */
+    private function getInfo(string $field, string $key): string
+    {
+        if (!isset($this->dbInfo_Map[$field])) {
+            throw new \Exception("Field $field not found in db info.");
+        }
+        return $this->dbInfo_Map[$field][$key];
+    }
+
+    /**
+     * @return array
+     */
+    private function getKeyField_List(): array
+    {
+        return array_keys(array_filter($this->dbInfo_Map, function ($item) {return $item['isKey'];}));
+    }
+
+
+    /**
+     * @param string $column
+     * @return int|string
+     * @throws \Exception
+     */
+    private function getField(string $column): string
+    {
+        foreach ($this->dbInfo_Map as $field => $item) {
+            if ($item['column'] === $column) {
+                return $field;
             }
         }
-        return false;
+        throw new \Exception('No field found for column ' . $column);
     }
 }

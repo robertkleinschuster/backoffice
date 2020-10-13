@@ -7,7 +7,7 @@ namespace Base\Database;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterAwareInterface;
 use Laminas\Db\Adapter\AdapterAwareTrait;
-use Laminas\Db\Sql\Delete;
+use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Sql;
 use NiceshopsDev\Bean\BeanInterface;
 use NiceshopsDev\Bean\BeanProcessor\AbstractBeanSaver;
@@ -16,92 +16,20 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
 {
 
     use AdapterAwareTrait;
-
-    /**
-     * @var string[]
-     */
-    protected $table_List;
-
-    /**
-     * @var string[]
-     */
-    private $fieldColumn_Map;
-
-    /**
-     * @var string[]
-     */
-    private $primaryKey_List;
+    use DatabaseInfoTrait;
 
     /**
      * @var int
      */
-    private $personId;
+    private ?int $personId = null;
 
     /**
      * DatabaseBeanSaver constructor.
      * @param Adapter $adapter
-     * @param string[] $table
      */
-    public function __construct(Adapter $adapter, ...$table)
+    public function __construct(Adapter $adapter)
     {
         $this->setDbAdapter($adapter);
-        $this->setTableList($table);
-    }
-
-    /**
-     * @return string[]
-     */
-    protected function getTableList(): array
-    {
-        return $this->table_List;
-    }
-
-    /**
-     * @param string[] $table_List
-     */
-    protected function setTableList(array $table_List): void
-    {
-        $this->table_List = $table_List;
-    }
-
-    /**
-     * @return string[]
-     * @throws \Exception
-     */
-    public function getFieldColumnMap(): array
-    {
-        if (null == $this->fieldColumn_Map) {
-            throw new \Exception('Field column map not initialized.');
-        }
-        return $this->fieldColumn_Map;
-    }
-
-    /**
-     * @param string[] $fieldColumn_Map
-     * @return $this
-     */
-    public function setFieldColumnMap(array $fieldColumn_Map)
-    {
-        $this->fieldColumn_Map = $fieldColumn_Map;
-        return $this;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getPrimaryKeyList(): array
-    {
-        return $this->primaryKey_List ?? [];
-    }
-
-    /**
-     * @param string[] $primaryKey_List
-     * @return DatabaseBeanSaver
-     */
-    public function setPrimaryKeyList(array $primaryKey_List)
-    {
-        $this->primaryKey_List = $primaryKey_List;
-        return $this;
     }
 
     /**
@@ -135,71 +63,19 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
     /**
      * @param BeanInterface $bean
      * @return bool
+     * @throws \Exception
      */
     protected function saveBean(BeanInterface $bean): bool
     {
-        if ($this->hasPrimaryKeyValue($bean)) {
-            return $this->update($bean);
-        } else {
-            return $this->insert($bean);
-        }
-    }
-
-    /**
-     * @param BeanInterface $bean
-     * @return bool
-     * @throws \Exception
-     */
-    protected function hasPrimaryKeyValue(BeanInterface $bean): bool
-    {
-        $keys = [];
-        foreach ($this->getPrimaryKeyList() as $item) {
-            $keys[] = $bean->hasData($this->getFieldNameByColumn($item));
-        }
-
-        $hasPrimaryKey = !in_array(false, $keys) && count($keys) > 0;
-        return $hasPrimaryKey;
-    }
-
-    /**
-     * @param string $column
-     * @return string
-     * @throws \Exception
-     */
-    protected function getFieldNameByColumn(string $column, string $table = null): string
-    {
-        $columns = array_flip($this->getFieldColumnMap());
-        if ($table === null) {
-            foreach ($this->getTableList() as $table) {
-                if (!str_contains($column, '.')) {
-                    $column = "$table.$column";
-                }
-            }
-        } else {
-            $column = "$table.$column";
-        }
-        if (isset($columns[$column])) {
-            return $columns[$column];
-        }
-        throw new \Exception("No bean field found for column $column.");
-    }
-
-    /**
-     * @param string $dbColumn
-     * @param string|null $table
-     * @return bool
-     */
-    public function validateColumnName(string $dbColumn, string $table = null)
-    {
-        $exp = explode('.', $dbColumn);
-        if (is_array($exp) && count($exp) === 2 && !empty(trim($exp[0])) && !empty(trim($exp[1]))) {
-            if ($table === null) {
-                return true;
-            } elseif ($exp[0] == $table) {
-                return true;
+        $result = [];
+        foreach ($this->getTable_List() as $table) {
+            if ($this->beanExistsUnique($bean, $table)) {
+                $result[] = $this->update($bean, $table);
+            } else {
+                $result[] = $this->insert($bean, $table);
             }
         }
-        return false;
+        return !in_array(false, $result) && count($result) > 0;
     }
 
     /**
@@ -209,114 +85,165 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
      */
     protected function deleteBean(BeanInterface $bean): bool
     {
-        $formatter = new DatabaseBeanFormatter();
         $result_List = [];
-        $tableList = $this->getTableList();
+        $tableList = $this->getTable_List();
         $tableList = array_reverse($tableList);
         foreach ($tableList as $table) {
-            $deletedata = [];
-            foreach ($this->getFieldColumnMap() as $dataName => $dbColumn) {
-                if ($bean->hasData($dataName) && $this->validateColumnName($dbColumn, $table)) {
-                    $columnName = explode('.', $dbColumn)[0];
-                    if (in_array($columnName, $this->getPrimaryKeyList())) {
-                        $dbColumn = "$table.$columnName";
-                    }
-                    $deletedata[$dbColumn] = $formatter->format($bean)->getValue($dataName);
-                }
-            }
-            if (count($deletedata)) {
-                $delete = new Delete($table);
+            $deletedata = $this->getDataFromBean($bean, $table);
+            // ensure only a single row is deleted
+            if (count($deletedata) && $this->count($table, $deletedata) === 1) {
+                $sql = new Sql($this->adapter);
+                $delete = $sql->delete($table);
                 $delete->where($deletedata);
-                $result = $this->adapter->query($delete->getSqlString($this->adapter->getPlatform()))->execute();
+                $result = $this->adapter->query($sql->buildSqlString($delete), $this->adapter::QUERY_MODE_EXECUTE);
                 $result_List[] = $result->getAffectedRows() > 0;
             }
         }
         return !in_array(false, $result_List, true) && count($result_List) > 0;
+    }
 
+
+    /**
+     * @param BeanInterface $bean
+     * @param string $table
+     * @return bool
+     * @throws \Exception
+     */
+    protected function insert(BeanInterface $bean, string $table): bool
+    {
+        $insertdata = $this->getDataFromBean($bean, $table);
+        if (count($insertdata)) {
+            $dateTime = new \DateTime();
+            $insertdata['Timestamp_Create'] = $dateTime->format('Y-m-d H:i:s');
+            $insertdata['Timestamp_Edit'] = $dateTime->format('Y-m-d H:i:s');
+            if ($this->hasPersonId()) {
+                $insertdata['Person_ID_Create'] = $this->getPersonId();
+                $insertdata['Person_ID_Edit'] = $this->getPersonId();
+            }
+
+            $sql = new Sql($this->adapter);
+            $insert = $sql->insert($table);
+            $insert->columns(array_keys($insertdata));
+            $insert->values(array_values($insertdata));
+
+            $result = $this->adapter->query($sql->buildSqlString($insert), $this->adapter::QUERY_MODE_EXECUTE);
+            $keyField_List = $this->getKeyField_List();
+            if (count($keyField_List) == 1) {
+                foreach ($keyField_List as $field) {
+                    $bean->setData($field, $result->getGeneratedValue());
+                }
+            }
+            return $result->getAffectedRows() > 0;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * @param BeanInterface $bean
+     * @param string $table
+     * @return bool
+     * @throws \Exception
+     */
+    protected function update(BeanInterface $bean, string $table): bool
+    {
+        $data = $this->getDataFromBean($bean, $table);
+        // Ensure only a single row is changed
+        if (count($data) && $this->beanExistsUnique($bean, $table)) {
+            $dateTime = new \DateTime();
+            $data['Timestamp_Edit'] = $dateTime->format('Y-m-d H:i:s');
+            if ($this->hasPersonId()) {
+                $data['Person_ID_Edit'] = $this->getPersonId();
+            }
+            $sql = new Sql($this->adapter);
+            $update = $sql->update($table);
+            foreach ($this->getKeyField_List() as $field) {
+                if ($bean->hasData($field)) {
+                    $update->where([$this->getJoinField($field) => $bean->getData($field)]);
+                }
+            }
+            $update->set($data);
+            $result = $this->adapter->query($sql->buildSqlString($update), $this->adapter::QUERY_MODE_EXECUTE);
+            return $result->getAffectedRows() > 0;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * @param BeanInterface $bean
+     * @param string $table
+     * @return bool
+     * @throws \Exception
+     */
+    protected function beanExistsUnique(BeanInterface $bean, string $table): bool
+    {
+        if (count($this->getKeyDataFromBean($bean, $table))) {
+            return $this->count($table, $this->getKeyDataFromBean($bean, $table)) === 1;
+        } else {
+            return false;
+        }
     }
 
     /**
      * @param BeanInterface $bean
-     * @return bool
+     * @param string|null $table
+     * @param bool $includeKeys
+     * @return array
      * @throws \Exception
      */
-    protected function insert(BeanInterface $bean): bool
+    protected function getDataFromBean(BeanInterface $bean, string $table = null, bool $includeKeys = true): array
     {
         $formatter = new DatabaseBeanFormatter();
-        $result_List = [];
-        foreach ($this->getTableList() as $table) {
-            $insertdata = [];
-
-            foreach ($this->getFieldColumnMap() as $dataName => $dbColumn) {
-                if ($bean->hasData($dataName) && $this->validateColumnName($dbColumn, $table)) {
-                    $insertdata[str_replace("$table.", '', $dbColumn)] = $formatter->format($bean)->getValue($dataName);
-                }
-            }
-            foreach ($this->getPrimaryKeyList() as $pkColumn) {
-                if ($bean->hasData($this->getFieldNameByColumn($pkColumn))) {
-                    $insertdata[$pkColumn] = $bean->getData($this->getFieldNameByColumn($pkColumn));
-                }
-            }
-
-            if (count($insertdata)) {
-                $dateTime = new \DateTime();
-                $insertdata['Timestamp_Create'] = $dateTime->format('Y-m-d H:i:s');
-                $insertdata['Timestamp_Edit'] = $dateTime->format('Y-m-d H:i:s');
-                if ($this->hasPersonId()) {
-                    $insertdata['Person_ID_Create'] = $this->getPersonId();
-                    $insertdata['Person_ID_Edit'] = $this->getPersonId();
-                }
-
-                $sql = new Sql($this->adapter);
-                $insert = $sql->insert($table);
-                $insert->columns(array_keys($insertdata));
-                $insert->values(array_values($insertdata));
-
-                $result = $this->adapter->query($sql->buildSqlString($insert), $this->adapter::QUERY_MODE_EXECUTE);
-                if (count($this->getPrimaryKeyList()) == 1) {
-                    foreach ($this->getPrimaryKeyList() as $item) {
-                        $bean->setData($this->getFieldNameByColumn($item), $result->getGeneratedValue());
-                    }
-                }
-                $result_List[] = $result->getAffectedRows() > 0;
+        $data = [];
+        foreach ($this->getField_List($table) as $field) {
+            if ($bean->hasData($field)) {
+                $data[$this->getColumn($field)] = $formatter->format($bean)->getValue($field);
             }
         }
-        return !in_array(false, $result_List, true) && count($result_List) > 0;
+        if ($includeKeys) {
+            foreach ($this->getKeyField_List() as $field) {
+                if ($bean->hasData($field)) {
+                    $data[$this->getJoinField($field)] = $formatter->format($bean)->getValue($field);
+                }
+            }
+        }
+        return $data;
     }
 
     /**
      * @param BeanInterface $bean
-     * @return bool
+     * @param string $table
      * @throws \Exception
      */
-    protected function update(BeanInterface $bean): bool
+    protected function getKeyDataFromBean(BeanInterface $bean, string $table): array
     {
         $formatter = new DatabaseBeanFormatter();
-        $result_List = [];
-        foreach ($this->getTableList() as $table) {
-            $insertdata = [];
-            foreach ($this->getFieldColumnMap() as $dataName => $dbColumn) {
-                if ($bean->hasData($dataName) && $this->validateColumnName($dbColumn, $table)) {
-                    $insertdata[$dbColumn] = $formatter->format($bean)->getValue($dataName);
-                }
-            }
-            if (count($insertdata) && count($this->getPrimaryKeyList())) {
-                $dateTime = new \DateTime();
-                $insertdata['Timestamp_Edit'] = $dateTime->format('Y-m-d H:i:s');
-                if ($this->hasPersonId()) {
-                    $insertdata['Person_ID_Edit'] = $this->getPersonId();
-                }
-                $sql = new Sql($this->adapter);
-                $update = $sql->update($table);
-                foreach ($this->getPrimaryKeyList() as $dbColumn) {
-                    $update->where(["$table.$dbColumn" => $bean->getData($this->getFieldNameByColumn($dbColumn))]);
-                }
-                $update->set($insertdata);
-                $result = $this->adapter->query($sql->buildSqlString($update), $this->adapter::QUERY_MODE_EXECUTE);
-                $result_List[] = $result->getAffectedRows() > 0;
+        $data = [];
+        foreach ($this->getField_List($table) as $field) {
+            if ($bean->hasData($field) && in_array($field, $this->getKeyField_List())) {
+                $data[$this->getColumn($field)] = $formatter->format($bean)->getValue($field);
             }
         }
-        return !in_array(false, $result_List, true) && count($result_List) > 0;
+        return $data;
     }
+
+    /**
+     * @param string $table
+     * @param array $data
+     * @return int|mixed
+     */
+    protected function count(string $table, array $data): int
+    {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select($table);
+        $select->where($data);
+        $select->columns(['COUNT' => new Expression('COUNT(*)')], false);
+        $result = $this->adapter->query($sql->buildSqlString($select), $this->adapter::QUERY_MODE_EXECUTE);
+        return intval($result->current()['COUNT'] ?? 0);
+    }
+
 
 }

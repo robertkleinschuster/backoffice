@@ -15,7 +15,6 @@ use Laminas\Db\Sql\Predicate\Predicate;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
 use NiceshopsDev\Bean\BeanFinder\AbstractBeanLoader;
-use NiceshopsDev\Bean\BeanFinder\BeanLoaderInterface;
 use NiceshopsDev\Bean\BeanInterface;
 use NiceshopsDev\NiceCore\Attribute\AttributeTrait;
 use NiceshopsDev\NiceCore\Option\OptionTrait;
@@ -27,30 +26,11 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
     use AdapterAwareTrait;
     use DatabaseInfoTrait;
 
-    /**
-     * @var string
-     */
-    private $table;
-
-    /**
-     * @var string[]
-     */
-    private $join_Map;
 
     /**
      * @var string[]
      */
     private $where_Map;
-
-    /**
-     * @var string[]
-     */
-    private $group_Map;
-
-    /**
-     * @var string[]
-     */
-    private $select_Map;
 
     /**
      * @var array[]
@@ -63,15 +43,9 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
     private $result;
 
     /**
-     * @var string[]
-     */
-    private $fieldColumn_Map;
-
-    /**
      * @var int
      */
     private $limit;
-
 
     /**
      * @var
@@ -84,58 +58,13 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
      * @param Adapter $adapter
      * @param string $table
      */
-    public function __construct(Adapter $adapter, string $table)
+    public function __construct(Adapter $adapter)
     {
         $this->setDbAdapter($adapter);
-        $this->table = $table;
-        $this->setTableList([$table]);
-        $this->join_Map = [];
         $this->where_Map = [];
-        $this->group_Map = [];
-        $this->select_Map = [];
         $this->like_Map = [];
     }
 
-    /**
-     * @param string $table
-     * @return DatabaseBeanLoader
-     */
-    public function setTable(string $table)
-    {
-        $this->table = $table;
-        return $this;
-    }
-
-
-    /**
-     * @return string
-     */
-    protected function getTable(): string
-    {
-        return $this->table;
-    }
-
-    /**
-     * @return string[]
-     * @throws \Exception
-     */
-    public function getFieldColumnMap(): array
-    {
-        if (null == $this->fieldColumn_Map) {
-            throw new \Exception('Field column map not initialized.');
-        }
-        return $this->fieldColumn_Map;
-    }
-
-    /**
-     * @param string[] $fieldColumn_Map
-     * @return DatabaseBeanLoader
-     */
-    public function setFieldColumnMap(array $fieldColumn_Map)
-    {
-        $this->fieldColumn_Map = $fieldColumn_Map;
-        return $this;
-    }
 
     /**
      * @return int
@@ -191,112 +120,6 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
         return $this->offset !== null;
     }
 
-
-    /**
-     * @param string $table
-     * @param string $column
-     * @param string|null $remoteColumn
-     */
-    public function addJoin(string $table, string $column, ?string $remoteColumn = null)
-    {
-        if (null === $remoteColumn) {
-            $remoteColumn = $column;
-        }
-        $this->join_Map[$table] = [
-            'local' => $column,
-            'remote' => $remoteColumn
-        ];
-    }
-
-    /**
-     * @param string $key
-     * @param $value
-     * @param string $table
-     * @param string $logic
-     * @return DatabaseBeanLoader
-     * @throws \Exception
-     */
-    public function addWhere(string $key, $value, string $table = null, $logic = Predicate::OP_AND)
-    {
-        if ($this->checkColumnExists($key)) {
-            if (null === $table) {
-                $table = $this->getTable();
-            }
-            $this->where_Map[$logic]["$table.$key"] = $value;
-        }
-        return $this;
-    }
-
-    /**
-     * @param string $key
-     * @param string|null $table
-     * @return $this
-     * @throws \Exception
-     */
-    public function addGroup(string $key, string $table = null)
-    {
-        if ($this->checkColumnExists($key)) {
-            if (null === $table) {
-                $table = $this->getTable();
-            }
-            $this->group_Map[] = "$table.$key";
-        }
-        return $this;
-    }
-
-    /**
-     * @param string $key
-     * @param string|null $table
-     * @return $this
-     * @throws \Exception
-     */
-    public function addSelect(string $key, string $table = null)
-    {
-        if ($this->checkColumnExists($key)) {
-            if (null === $table) {
-                $table = $this->getTable();
-            }
-            $this->select_Map[$key] = "$table.$key";
-        }
-        return $this;
-    }
-
-    public function checkColumnExists(string $column)
-    {
-        return in_array($column, $this->getFieldColumnMap());
-    }
-
-
-
-    /**
-     * @param array $idMap
-     * @throws \Exception
-     */
-    public function initByIdMap(array $idMap)
-    {
-        foreach ($idMap as $key => $value) {
-            if ($value) {
-                $explode = explode('.', $key);
-                if (count($explode) == 1) {
-                    $this->addWhere($explode[0], $value);
-                } elseif (count($explode) == 2) {
-                    $this->addWhere($explode[1], $value, $explode[0]);
-                }
-            }
-        }
-    }
-
-    /**
-     * @param string $str
-     * @param array $columns
-     * @return $this
-     */
-    public function addLike(string $str, ...$columns)
-    {
-        $this->like_Map[$str] = $columns;
-        return $this;
-    }
-
     /**
      * @param string $field
      * @param array $valueList
@@ -305,19 +128,68 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
      */
     public function initByValueList(string $field, array $valueList)
     {
-        return $this->addWhere($this->getFieldColumnMap()[$field], $valueList);
+        return $this->addWhere($field, $valueList);
     }
 
     /**
+     * @param string $field
+     * @param $value
+     * @param string $logic
+     * @return DatabaseBeanLoader
+     * @throws \Exception
+     */
+    public function addWhere(string $field, $value, $logic = Predicate::OP_AND)
+    {
+        if ($this->hasField($field)) {
+            $this->where_Map[$logic]["{$this->getTable($field)}.{$this->getColumn($field)}"] = $value;
+        }
+        return $this;
+    }
+
+
+    /**
+     * @param array $idMap
+     * @throws \Exception
+     */
+    public function initByIdMap(array $idMap)
+    {
+        foreach ($idMap as $field => $value) {
+            if (!empty($value)) {
+                $this->addWhere($field, $value);
+            }
+        }
+    }
+
+    /**
+     * @param string $str
+     * @param array $fields
+     * @return $this
+     */
+    public function addLike(string $str, ...$fields)
+    {
+        $this->like_Map[$str] = $fields;
+        return $this;
+    }
+
+
+
+    /**
      * @param Select $select
+     * @throws \Exception
      */
     protected function handleJoins(Select $select)
     {
         $self = $select->getRawState(Select::TABLE);
-        foreach ($this->join_Map as $table => $item) {
-            $local = $item['local'];
-            $remote = $item['remote'];
-            $select->join($table, "$self.$local = $table.$remote", []);
+        foreach ($this->getField_List() as $field) {
+            $table = $this->getTable($field);
+            if ($table !== $self) {
+                $joins = $select->getRawState(Select::JOINS);
+                if (!in_array($table, array_column($joins->getJoins(), 'name'))) {
+                    $column = $this->getColumn($this->getJoinField($field));
+                    $columnSelf = $this->getColumn($this->getJoinFieldSelf($field));
+                    $select->join($table, "$self.$columnSelf = $table.$column", []);
+                }
+            }
         }
     }
 
@@ -333,16 +205,7 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
 
     /**
      * @param Select $select
-     */
-    protected function handleGroup(Select $select)
-    {
-        foreach ($this->group_Map as $group) {
-            $select->group($group);
-        }
-    }
-
-    /**
-     * @param Select $select
+     * @return DatabaseBeanLoader
      */
     protected function handleLimit(Select $select)
     {
@@ -357,6 +220,7 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
 
     /**
      * @param Select $select
+     * @return DatabaseBeanLoader
      */
     protected function handleLike(Select $select)
     {
@@ -441,7 +305,10 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
     {
         $parser = new DatabaseBeanParser();
         $data = $this->data();
-        $beanData = array_intersect_key($data, array_flip($this->getFieldColumnMap()));
+        $beanData = [];
+        foreach ($this->getField_List() as $field) {
+            $beanData[$field] = $data["{$this->getTable($field)}.{$this->getColumn($field)}"];
+        }
         return $parser->parse($beanData, $bean)->toBean();
     }
 
@@ -454,28 +321,32 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
     protected function buildSelect(bool $limit = false, bool $selectColumns = false): Select
     {
         $sql = new Sql($this->adapter);
-        $select = $sql->select($this->getTable());
+        $table_List = $this->getTable_List();
+        $select = $sql->select(reset($table_List));
         $this->handleJoins($select);
         $this->handleWhere($select);
         $this->handleLike($select);
-        $this->handleGroup($select);
         if ($limit) {
             $this->handleLimit($select);
         }
         if ($selectColumns) {
             $this->handleSelect($select);
         }
+
         return $select;
     }
 
     /**
      * @param $select
+     * @throws \Exception
      */
     protected function handleSelect(Select $select)
     {
-        if (count($this->select_Map)) {
-            $select->columns($this->select_Map, false);
+        $columns = [];
+        foreach ($this->getField_List() as $field) {
+            $columns[] = "{$this->getTable($field)}.{$this->getColumn($field)}";
         }
+        $select->columns($columns, false);
     }
 
     /**
@@ -484,15 +355,14 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
      */
     protected function getPreparedStatement(Select $select)
     {
-        $sql = new Sql($this->adapter);
-        return $this->adapter->query($sql->buildSqlString($select));
+        return $this->adapter->query((new Sql($this->adapter))->buildSqlString($select));
     }
 
     public function preloadValueList(string $field): array
     {
         $select = $this->buildSelect(true, false);
         $select->reset(Select::COLUMNS);
-        $column = $this->getFieldColumnMap()[$field];
+        $column = $this->getColumn($field);
         $select->columns([$column]);
         $result = $this->getPreparedStatement($select)->execute();
         $ret = [];
@@ -501,15 +371,5 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
         }
         return $ret;
     }
-
-    public function key()
-    {
-        return $this->getResult()->key();
-    }
-
-    public function rewind()
-    {
-    }
-
 
 }

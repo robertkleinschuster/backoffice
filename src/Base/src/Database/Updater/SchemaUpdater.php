@@ -78,7 +78,7 @@ class SchemaUpdater extends AbstractUpdater
         $this->addColumnToTable($table, new Integer('UserRole_ID'));
         $this->addConstraintToTable($table, new PrimaryKey(['Person_ID', 'UserRole_ID']));
         $this->addConstraintToTable($table, new ForeignKey(null, 'Person_ID', 'User', 'Person_ID', 'CASCADE'));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'UserRole_ID', 'UserRole', 'UserRole_ID'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'UserRole_ID', 'UserRole', 'UserRole_ID', 'CASCADE'));
         $this->addDefaultColumnsToTable($table);
 
         return $this->query($table);
@@ -102,8 +102,8 @@ class SchemaUpdater extends AbstractUpdater
         $this->addColumnToTable($table, new Integer('UserRole_ID'));
         $this->addColumnToTable($table, new Varchar('UserPermission_Code', 255));
         $this->addConstraintToTable($table, new PrimaryKey(['UserRole_ID', 'UserPermission_Code']));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'UserRole_ID', 'UserRole', 'UserRole_ID'));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'UserPermission_Code', 'UserPermission', 'UserPermission_Code'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'UserRole_ID', 'UserRole', 'UserRole_ID', 'CASCADE'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'UserPermission_Code', 'UserPermission', 'UserPermission_Code', 'CASCADE'));
         $this->addDefaultColumnsToTable($table);
 
         return $this->query($table);
