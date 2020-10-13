@@ -8,8 +8,11 @@ use Base\Authentication\Bean\UserBeanFactory;
 use Base\Authentication\UserRepositoryFactory;
 use Base\Database\DatabaseMiddleware;
 use Base\Database\DatabaseMiddlewareFactory;
+use Base\Localization\LocalizationMiddleware;
 use Base\Logging\LoggingErrorListenerDelegatorFactory;
 use Base\Session\Cache\MemcachedCachePoolFactory;
+use Base\Translation\TranslatorMiddleware;
+use Base\Translation\TranslatorMiddlewareFactory;
 use Laminas\Stratigility\Middleware\ErrorHandler;
 use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\Session\PhpSession;
@@ -25,6 +28,7 @@ return [
             AuthenticationInterface::class => PhpSession::class,
         ],
         'invokables' => [
+            LocalizationMiddleware::class
         ],
         'factories' => [
             'SessionCache' => MemcachedCachePoolFactory::class,
@@ -32,6 +36,8 @@ return [
             UserRepositoryInterface::class => UserRepositoryFactory::class,
             UserInterface::class => UserBeanFactory::class,
             DatabaseMiddleware::class => DatabaseMiddlewareFactory::class,
+            TranslatorMiddleware::class => TranslatorMiddlewareFactory::class,
+            \Base\Logging\LoggingMiddleware::class => \Base\Logging\LoggingMiddlewareFactory::class,
         ],
         'delegators' => [
             ErrorHandler::class => [

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Base\Localization\LocalizationMiddleware;
+use Base\Translation\TranslatorMiddleware;
 use Laminas\Stratigility\Middleware\ErrorHandler;
 use Mezzio\Application;
 use Mezzio\Handler\NotFoundHandler;
@@ -21,6 +23,7 @@ use Psr\Container\ContainerInterface;
 return function (Application $app, MiddlewareFactory $factory, ContainerInterface $container) : void {
     // The error handler should be the first (most outer) middleware to catch
     // all Exceptions.
+    $app->pipe(\Base\Logging\LoggingMiddleware::class);
     $app->pipe(ErrorHandler::class);
     $app->pipe(ServerUrlMiddleware::class);
     $app->pipe(\Mezzio\Session\SessionMiddleware::class);
@@ -62,6 +65,9 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
 
     // Seed the UrlHelper with the routing results:
     $app->pipe(UrlHelperMiddleware::class);
+
+    $app->pipe(LocalizationMiddleware::class);
+    $app->pipe(TranslatorMiddleware::class);
 
     // Add more middleware here that needs to introspect the routing results; this
     // might include:

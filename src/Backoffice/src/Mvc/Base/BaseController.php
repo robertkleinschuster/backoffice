@@ -6,7 +6,9 @@ namespace Backoffice\Mvc\Base;
 
 use Base\Authentication\Bean\UserBean;
 use Base\Database\DatabaseMiddleware;
+use Base\Translation\TranslatorMiddleware;
 use Laminas\Db\Adapter\Profiler\ProfilerInterface;
+use Laminas\I18n\Translator\TranslatorInterface;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Csrf\CsrfGuardInterface;
 use Mezzio\Csrf\CsrfMiddleware;
@@ -63,6 +65,12 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         if ($this->checkPermission($delete)) {
             $this->getModel()->addOption(BaseModel::OPTION_DELETE_ALLOWED);
         }
+    }
+
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->getControllerRequest()->getServerRequest()->getAttribute(TranslatorMiddleware::TRANSLATOR_ATTRIBUTE);
     }
 
     /**

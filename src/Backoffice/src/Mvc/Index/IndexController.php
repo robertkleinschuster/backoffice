@@ -11,7 +11,6 @@ class IndexController extends BaseController
     public function indexAction()
     {
         $this->getView()->getViewModel()->setTitle('Startseite');
-
     }
 
     public function searchAction() {
