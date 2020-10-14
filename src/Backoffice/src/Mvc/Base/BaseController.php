@@ -203,6 +203,21 @@ abstract class BaseController extends AbstractController implements AttributeAwa
 
         $this->getView()->addNavigation($navigation);
 
+        $navigation = new Navigation($this->translate('navigation.account'), Navigation::POSITION_HEADER);
+        $navigation->setPermissionList($this->getUser()->getPermission_List());
+        $element =  new Element(
+            $this->translate('navigation.account.logout'),
+            $this->getPathHelper()
+                ->setController('auth')
+                ->setAction('logout')
+                ->getPath()
+        );
+        $element->setPermission('user');
+        $navigation->addElement($element);
+        $this->getView()->addNavigation($navigation);
+
+
+
         $this->getView()->setToolbar(new Toolbar());
         $this->getView()->getToolbar()->setBean(new ComponentDataBean());
     }
