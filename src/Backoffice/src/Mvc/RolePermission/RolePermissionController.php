@@ -15,19 +15,22 @@ use Mvc\View\Components\Edit\Edit;
  */
 class RolePermissionController extends BaseController
 {
-    protected function initView()
+
+    protected function initModel()
     {
-        parent::initView();
+        parent::initModel();
         $this->setPermissions('rolepermission.create', 'rolepermission.edit', 'rolepermission.delete');
-        if (!$this->checkPermission('rolepermission')) {
-            throw new \Exception('Unauthorized');
-        }
+    }
+
+    public function isAuthorized(): bool
+    {
+        return $this->checkPermission('rolepermission');
     }
 
 
     public function createAction()
     {
-        $this->getView()->getViewModel()->setTitle($this->translate('rolepermission.create.title'));
+        $this->getView()->setHeading($this->translate('rolepermission.create.title'));
         $edit = $this->initCreateTemplate($this->getRoleDetailRedirectPath()->getPath());
         $bean = $this->getModel()->getFinder()->getFactory()->createBean();
         $edit->setBean($bean);

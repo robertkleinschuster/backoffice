@@ -13,7 +13,6 @@ class SetupController extends \Backoffice\Mvc\Base\BaseController
     {
         parent::initView();
         $this->getView()->setLayout('layout/default');
-
     }
 
     public function init()
@@ -43,6 +42,7 @@ class SetupController extends \Backoffice\Mvc\Base\BaseController
 
     public function indexAction()
     {
+        $this->getView()->setHeading($this->translate('setup.title'));
         $edit = $this->initCreateTemplate();
         $bean = $this->getModel()->getFinder()->getFactory()->createBean();
         $edit->setBean($bean);
@@ -51,7 +51,6 @@ class SetupController extends \Backoffice\Mvc\Base\BaseController
             $bean->setData($item->getKey(), $this->getControllerRequest()->getAttribute($item->getKey()));
         }
         $bean->setFromArray($this->getPreviousAttributes());
-        $this->getView()->getViewModel()->setTitle('Einrichtung');
     }
 
     protected function addEditFields(Edit $edit): void

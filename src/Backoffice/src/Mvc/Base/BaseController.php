@@ -329,17 +329,17 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         if ($this->getModel()->getFinder()->hasLimit()) {
             $pages = $this->getModel()->getFinder()->count() / $this->getModel()->getFinder()->getLimit();
             if ($pages > 1) {
-                $pageNavigation = new Pagination();
+                $pagination = new Pagination();
                 for ($i = 0; $i < $pages; $i++) {
                     $link = $this->getPathHelper()->setParams([ControllerRequest::ATTRIBUTE_LIMIT => $this->getModel()->getFinder()->getLimit(), ControllerRequest::ATTRIBUTE_PAGE => $i + 1])->getPath();
-                    $pageNavigation->addLink($link);
+                    $pagination->addLink($link);
                 }
                 if ($this->getControllerRequest()->hasPage()) {
                     $page = $this->getControllerRequest()->getPage();
                     $page = $page > 0 ? $page : 1;
-                    $pageNavigation->setActive($page - 1);
+                    $pagination->setActive($page - 1);
                 }
-                $this->getView()->addComponent($pageNavigation);
+                $this->getView()->addComponent($pagination);
             }
         }
         return $overview;

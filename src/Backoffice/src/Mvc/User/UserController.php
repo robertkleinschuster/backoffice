@@ -28,11 +28,20 @@ class UserController extends BaseController
     protected function initView()
     {
         parent::initView();
-        $this->setActiveNavigation('user', 'index');
+    }
+
+    protected function initModel()
+    {
+        parent::initModel();
         $this->setPermissions('user.create', 'user.edit', 'user.delete');
-        if (!$this->checkPermission('user')) {
-            throw new \Exception('Unauthorized');
-        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAuthorized(): bool
+    {
+        return $this->checkPermission('user');
     }
 
 

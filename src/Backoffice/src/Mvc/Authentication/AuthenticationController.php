@@ -9,7 +9,6 @@ use Backoffice\Mvc\Base\BaseController;
 use Mezzio\Authentication\UserInterface;
 use Mvc\Controller\ControllerRequest;
 use Mvc\View\ComponentDataBean;
-use Mvc\View\ComponentModel;
 use Mvc\View\Components\Alert\Alert;
 use Mvc\View\Components\Edit\Edit;
 use Mvc\View\Components\Edit\Fields\Text;
@@ -40,22 +39,21 @@ class AuthenticationController extends BaseController
             $this->getView()->addComponent($alert);
         }
 
-        $this->getView()->getViewModel()->setTitle($this->translate('login.title'));
+        $this->getView()->setHeading($this->translate('login.title'));
 
-        $this->getView()->setLayout('layout/default');
-        $componentModel = new ComponentModel();
+        $this->getView()->setLayout('layout/signin');
         $componentDataBean = new ComponentDataBean();
         $componentDataBean->setData('login_username', '');
         $componentDataBean->setData('login_password', '');
         $componentDataBean->setFromArray($this->getControllerRequest()->getAttributes());
-        $componentModel->setComponentDataBean($componentDataBean);
-        $editComponent = new Edit('', $componentModel);
+        $editComponent = new Edit('');
+        $editComponent->setBean($componentDataBean);
         $editComponent->addText('login_username', $this->translate('login.username'))->setType(Text::TYPE_TEXT)->setRequired();
         $editComponent->addText('login_password', $this->translate('login.password'))->setType(Text::TYPE_PASSWORD)->setRequired();
         $editComponent->addSubmit('login', $this->translate('login.submit'));
         $editComponent->addSubmitAttribute('login_token', $this->getGuard()->generateToken('login_token'));
         $editComponent->addSubmitAttribute(ControllerRequest::ATTRIBUTE_REDIRECT, $this->getPathHelper()->setController('index')->setAction('index')->getPath());
-        $editComponent->getComponentModel()->getValidationHelper()->addErrorFieldMap($this->getValidationErrorMap());
+        $editComponent->getValidationHelper()->addErrorFieldMap($this->getValidationErrorMap());
         $this->getView()->addComponent($editComponent);
 
     }

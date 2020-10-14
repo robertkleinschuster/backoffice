@@ -6,8 +6,6 @@ namespace Backoffice\Mvc\Update;
 use Base\Database\Updater\AbstractUpdater;
 use Backoffice\Mvc\Base\BaseController;
 use Mvc\View\ComponentDataBean;
-use Mvc\View\ComponentModel;
-use Mvc\View\Components\Base\AbstractComponent;
 use Mvc\View\Components\Edit\Edit;
 
 
@@ -18,19 +16,20 @@ use Mvc\View\Components\Edit\Edit;
  */
 class UpdateController extends BaseController
 {
-    protected function initView()
+    protected function initModel()
     {
-        parent::initView();
-        $this->setActiveNavigation('update', 'index');
+        parent::initModel();
         if ($this->checkPermission('update.schema')) {
             $this->getModel()->addOption(UpdateModel::OPTION_SCHEMA_ALLOWED);
         }
         if ($this->checkPermission('update.data')) {
             $this->getModel()->addOption(UpdateModel::OPTION_DATA_ALLOWED);
         }
-        if (!$this->checkPermission('update')) {
-            throw new \Exception('Unauthorized');
-        }
+    }
+
+    public function isAuthorized(): bool
+    {
+        return $this->checkPermission('update');
     }
 
 

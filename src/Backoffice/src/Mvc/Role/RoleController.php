@@ -17,14 +17,15 @@ use Mvc\View\Components\Toolbar\Toolbar;
  */
 class RoleController extends BaseController
 {
-    protected function initView()
+    protected function initModel()
     {
-        parent::initView();
-        $this->setActiveNavigation('role', 'index');
+        parent::initModel();
         $this->setPermissions('role.create', 'role.edit', 'role.delete');
-        if (!$this->checkPermission('role')) {
-            throw new \Exception('Unauthorized');
-        }
+    }
+
+    public function isAuthorized(): bool
+    {
+        return $this->checkPermission('role');
     }
 
 
