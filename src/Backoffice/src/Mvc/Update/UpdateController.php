@@ -36,12 +36,12 @@ class UpdateController extends BaseController
 
     public function indexAction()
     {
-        $this->getView()->getViewModel()->setTitle('Updates');
-        $navigation = new \Mvc\View\Components\Navigation\Navigation('Datenbank Updates', new ComponentModel());
-        $dataComponent = $this->getUpdaterComponent($this->getModel()->getDataUpdater(), 'Daten Update', 'data');
+        $this->getView()->setHeading('Updates');
+        $navigation = new \Mvc\View\Components\Navigation\Navigation($this->translate('update.database'));
+        $dataComponent = $this->getUpdaterComponent($this->getModel()->getDataUpdater(), $this->translate('update.database.data'), 'data');
         $dataComponent->setPermission('update.data');
         $navigation->addComponent($dataComponent);
-        $schemaComponent = $this->getUpdaterComponent($this->getModel()->getSchemaUpdater(),'Schema Update', 'schema');
+        $schemaComponent = $this->getUpdaterComponent($this->getModel()->getSchemaUpdater(),$this->translate('update.database.schema'), 'schema');
         $schemaComponent->setPermission('update.schema');
         $navigation->addComponent($schemaComponent);
         $navigation->setPermission('update');
@@ -52,9 +52,9 @@ class UpdateController extends BaseController
     public function getUpdaterComponent(AbstractUpdater $updater, string $title, string $submitAction)
     {
         $previewList = $updater->getPreviewMap();
-        $edit = new Edit($title, new ComponentModel());
-        $edit->getComponentModel()->setComponentDataBean(new ComponentDataBean());
-        $edit->getComponentModel()->getValidationHelper()->addErrorFieldMap($this->getValidationErrorMap());
+        $edit = new Edit($title);
+        $edit->setBean(new ComponentDataBean());
+        $edit->getValidationHelper()->addErrorFieldMap($this->getValidationErrorMap());
 
         $edit->setCols(1);
         foreach ($previewList as $key => $item) {
@@ -63,7 +63,7 @@ class UpdateController extends BaseController
                 ->setChecked(true)
                 ->setHint('<pre>' . json_encode($item, JSON_PRETTY_PRINT) . '</pre>');
         }
-        $edit->addSubmit($submitAction, 'Update');
+        $edit->addSubmit($submitAction, $this->translate('update.submit'));
         return $edit;
     }
 }

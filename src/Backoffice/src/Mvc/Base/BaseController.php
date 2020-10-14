@@ -6,6 +6,7 @@ namespace Backoffice\Mvc\Base;
 
 use Base\Authentication\Bean\UserBean;
 use Base\Database\DatabaseMiddleware;
+use Base\Logging\LoggingMiddleware;
 use Base\Translation\TranslatorMiddleware;
 use Laminas\Db\Adapter\Profiler\ProfilerInterface;
 use Laminas\I18n\Translator\TranslatorInterface;
@@ -19,18 +20,15 @@ use Mvc\Controller\ControllerRequest;
 use Mvc\Helper\PathHelper;
 use Mvc\Helper\ValidationHelper;
 use Mvc\View\ComponentDataBean;
-use Mvc\View\ComponentModel;
 use Mvc\View\Components\Alert\Alert;
 use Mvc\View\Components\Detail\Detail;
 use Mvc\View\Components\Edit\Edit;
 use Mvc\View\Components\Overview\Overview;
+use Mvc\View\Components\Pagination\Pagination;
 use Mvc\View\Components\Toolbar\Toolbar;
 use Mvc\View\Navigation\Element;
 use Mvc\View\Navigation\Navigation;
-use Mvc\View\Navigation\PageNavigation;
-use Mvc\View\Navigation\PageNavigationElement;
 use Mvc\View\View;
-use Mvc\View\ViewModel;
 use Mezzio\Session\LazySession;
 use Mezzio\Session\SessionMiddleware;
 use NiceshopsDev\Bean\BeanFormatter\BeanFormatterInterface;
@@ -71,6 +69,15 @@ abstract class BaseController extends AbstractController implements AttributeAwa
     protected function getTranslator(): TranslatorInterface
     {
         return $this->getControllerRequest()->getServerRequest()->getAttribute(TranslatorMiddleware::TRANSLATOR_ATTRIBUTE);
+    }
+
+    /**
+     * @param string $code
+     * @return string
+     */
+    protected function translate(string $code)
+    {
+        return $this->getTranslator()->translate($code, 'backoffice');
     }
 
     /**
@@ -158,15 +165,15 @@ abstract class BaseController extends AbstractController implements AttributeAwa
 
     protected function initView()
     {
-        $this->setView(new View('Backoffice', new ViewModel()));
-        $this->getView()->setLayout('layout/dashboard');
+        $this->setView(new View('layout/dashboard'));
+        $this->getView()->setTitle('Backoffice');
         $this->getView()->setBeanFormatter(new BackofficeBeanFormatter());
         $this->getView()->setPermissionList($this->getUser()->getPermission_List());
 
-        $navigation = new Navigation('System');
+        $navigation = new Navigation($this->translate('navigation.system'));
         $navigation->setPermissionList($this->getUser()->getPermission_List());
         $element =  new Element(
-            'Benutzer',
+            $this->translate('navigation.system.user'),
             $this->getPathHelper()
                 ->setController('user')
                 ->setAction('index')
@@ -175,7 +182,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         $element->setPermission('user');
         $navigation->addElement($element);
         $element = new Element(
-            'Rollen',
+            $this->translate('navigation.system.role'),
             $this->getPathHelper()
                 ->setController('role')
                 ->setAction('index')
@@ -185,7 +192,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         $navigation->addElement($element);
 
         $element =  new Element(
-            'Update',
+            $this->translate('navigation.system.update'),
             $this->getPathHelper()
                 ->setController('update')
                 ->setAction('index')
@@ -197,23 +204,14 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         $this->getView()->addNavigation($navigation);
 
         $this->getView()->setToolbar(new Toolbar());
-        $this->getView()->getToolbar()->getComponentModel()->setComponentDataBean(new ComponentDataBean());
-
-        // Set Global Template vars
-        $this->setTemplateVariable('logoutLink', $this->getPathHelper()->setController('auth')->setAction('logout')->getPath());
-        if ($this->getUser()->hasData('User_Displayname')) {
-            $this->setTemplateVariable('logoutLabel', $this->getUser()->getData('User_Displayname') . ' abmelden');
-        } else {
-            $this->setTemplateVariable('logoutLabel', 'abmelden');
-        }
-        $this->setTemplateVariable('searchAction', $this->getPathHelper()->getPath());
-        $this->setTemplateVariable('searchLabel', 'Suchen');
+        $this->getView()->getToolbar()->setBean(new ComponentDataBean());
     }
 
     protected function initModel()
     {
         $this->getModel()->setDbAdapter($this->getControllerRequest()->getServerRequest()->getAttribute(DatabaseMiddleware::ADAPTER_ATTRIBUTE));
         $this->getModel()->setUser($this->getUser());
+        $this->getModel()->setTranslator($this->getTranslator());
         $this->getModel()->init();
     }
 
@@ -228,7 +226,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         if (count($validationHelper->getErrorList('Permission'))) {
             $alert = new Alert();
             $alert->setHeading('Zugriff verweigert!');
-            $alert->getComponentModel()->setComponentDataBean(new ComponentDataBean());
+            $alert->setBean(new ComponentDataBean());
             foreach ($validationHelper->getErrorList('Permission') as $item) {
                 $alert->addText('', '')->setValue($item);
             }
@@ -254,7 +252,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
             $alert = new Alert();
             $alert->setHeading('Debug');
             $alert->setStyle(Alert::STYLE_WARNING);
-            $alert->getComponentModel()->setComponentDataBean(new ComponentDataBean());
+            $alert->setBean(new ComponentDataBean());
             $alert->addText('queryCount', '')->setValue('Abfragen: ' . count($profiles) . '<br>' . array_sum(array_column($profiles, 'elapse')) . ' ms');
             foreach ($profiles as $profile) {
                 $alert->addText('sql', '')->setValue($profile['sql'] . "<br>{$profile['elapse']} ms");
@@ -270,7 +268,9 @@ abstract class BaseController extends AbstractController implements AttributeAwa
      */
     public function error(\Throwable $exception)
     {
-        $alert = new Alert('', new ComponentModel());
+        $this->getControllerRequest()->getServerRequest()->getAttribute(LoggingMiddleware::LOGGER_ATTRIBUTE)->error("Error: ", ['exception' => $exception]);
+
+        $alert = new Alert('');
         $alert->setHeading("Es ist ein Fehler aufgetreten.");
         if ($this->getControllerResponse()->getStatusCode() == 404) {
             $alert->setStyle(Alert::STYLE_DARK);
@@ -281,25 +281,29 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         $alert->addText('message', 'Fehler');
         $alert->addText('', 'Details')->setValue("{file}:{line}");
         $alert->addText('trace', 'Trace');
-        $alert->getComponentModel()->setComponentDataBean(new ComponentDataBean());
-        $alert->getComponentModel()->getComponentDataBean()->setData('message', $exception->getMessage());
-        $alert->getComponentModel()->getComponentDataBean()->setData('file', $exception->getFile());
-        $alert->getComponentModel()->getComponentDataBean()->setData('line', $exception->getLine());
+        $alert->setBean(new ComponentDataBean());
+        $alert->getBean()->setData('message', $exception->getMessage());
+        $alert->getBean()->setData('file', $exception->getFile());
+        $alert->getBean()->setData('line', $exception->getLine());
         $trace = explode(PHP_EOL, $exception->getTraceAsString());
         $trace = array_slice($trace, 0, 5);
-        $alert->getComponentModel()->getComponentDataBean()->setData('trace', implode('<br>', $trace));
+        $alert->getBean()->setData('trace', implode('<br>', $trace));
 
         $this->getView()->addComponent($alert, true);
     }
 
+    public function unauthorized()
+    {
+        // TODO: Implement unauthorized() method.
+    }
 
 
     protected function initOverviewTemplate(BeanFormatterInterface $formatter)
     {
-        $this->getView()->getViewModel()->setTitle('Übersicht');
+        $this->getView()->setHeading($this->translate('overview.title'));
         $toolbar = new Toolbar();
-        $toolbar->getComponentModel()->setComponentDataBean(new ComponentDataBean());
-        $button = $toolbar->addButton($this->getPathHelper()->setAction('create')->getPath(), 'Hinzufügen');
+        $toolbar->setBean(new ComponentDataBean());
+        $button = $toolbar->addButton($this->getPathHelper()->setAction('create')->getPath(), $this->translate('overview.create'));
         if ($this->hasAttribute(self::ATTRIBUTE_CREATE_PERMISSION)) {
             $button->setPermission($this->getAttribute(self::ATTRIBUTE_CREATE_PERMISSION));
         }
@@ -320,32 +324,30 @@ abstract class BaseController extends AbstractController implements AttributeAwa
             $deleteButton->setPermission($this->getAttribute(self::ATTRIBUTE_DELETE_PERMISSION));
         }
         $this->addOverviewFields($overview);
+        $this->getView()->addComponent($overview);
 
         if ($this->getModel()->getFinder()->hasLimit()) {
             $pages = $this->getModel()->getFinder()->count() / $this->getModel()->getFinder()->getLimit();
             if ($pages > 1) {
-                $pageNavigation = new PageNavigation();
+                $pageNavigation = new Pagination();
                 for ($i = 0; $i < $pages; $i++) {
-                    $element = new PageNavigationElement();
-                    $element->setLink($this->getPathHelper()->setParams([ControllerRequest::ATTRIBUTE_LIMIT => $this->getModel()->getFinder()->getLimit(), ControllerRequest::ATTRIBUTE_PAGE => $i + 1])->getPath());
-                    $pageNavigation->addElement($element);
+                    $link = $this->getPathHelper()->setParams([ControllerRequest::ATTRIBUTE_LIMIT => $this->getModel()->getFinder()->getLimit(), ControllerRequest::ATTRIBUTE_PAGE => $i + 1])->getPath();
+                    $pageNavigation->addLink($link);
                 }
                 if ($this->getControllerRequest()->hasPage()) {
                     $page = $this->getControllerRequest()->getPage();
                     $page = $page > 0 ? $page : 1;
                     $pageNavigation->setActive($page - 1);
                 }
-                $overview->getComponentModel()->setPageNavigation($pageNavigation);
+                $this->getView()->addComponent($pageNavigation);
             }
         }
-
-        $this->getView()->addComponent($overview);
         return $overview;
     }
 
     protected function initDetailTemplate()
     {
-        $this->getView()->getViewModel()->setTitle('Details');
+        $this->getView()->setHeading($this->translate('detail.title'));
         if (!count($this->getControllerRequest()->getViewIdMap())) {
             $this->getControllerResponse()->setRedirect($this->getPathHelper()->setAction('index')->getPath());
         }
@@ -365,12 +367,12 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         if (null === $redirect) {
             $redirect = $this->getIndexRedirectLink();
         }
-        $this->getView()->getViewModel()->setTitle('Hinzufügen');
+        $this->getView()->setHeading($this->translate('create.title'));
         $edit = new Edit();
         $this->addEditFields($edit);
         $edit->addSubmit(ControllerRequest::SUBMIT_MODE_CREATE, 'Speichern', $redirect);
         $edit->addCancel($redirect, 'Abbrechen', true);
-        $edit->getComponentModel()->getValidationHelper()->addErrorFieldMap($this->getValidationErrorMap());
+        $edit->getValidationHelper()->addErrorFieldMap($this->getValidationErrorMap());
         $this->getView()->addComponent($edit);
         return $edit;
     }
@@ -380,12 +382,12 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         if (null === $redirect) {
             $redirect = $this->getIndexRedirectLink();
         }
-        $this->getView()->getViewModel()->setTitle('Bearbeiten');
+        $this->getView()->setHeading($this->translate('edit.title'));
         $edit = new Edit();
         $this->addEditFields($edit);
         $edit->addSubmit(ControllerRequest::SUBMIT_MODE_SAVE, 'Speichern', $redirect);
         $edit->addCancel($redirect, 'Abbrechen', true);
-        $edit->getComponentModel()->getValidationHelper()->addErrorFieldMap($this->getValidationErrorMap());
+        $edit->getValidationHelper()->addErrorFieldMap($this->getValidationErrorMap());
         $this->getView()->addComponent($edit);
         return $edit;
     }
@@ -396,14 +398,14 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         if (null === $redirect) {
             $redirect = $this->getIndexRedirectLink();
         }
-        $this->getView()->getViewModel()->setTitle('Löschen');
+        $this->getView()->setHeading($this->translate('delete.title'));
         $alert = new Alert();
-        $alert->addText("", "")->setValue('Sind sie sicher, dass sie den Eintrag löschen wollen?');
-        $alert->getComponentModel()->setComponentDataBean(new ComponentDataBean());
+        $alert->addText("", "")->setValue($this->translate('delete.message'));
+        $alert->setBean(new ComponentDataBean());
         $this->getView()->addComponent($alert);
         $edit = new Edit();
-        $edit->addSubmit(ControllerRequest::SUBMIT_MODE_DELETE, 'Löschen', $redirect);
-        $edit->addCancel($redirect, 'Abbrechen', true);
+        $edit->addSubmit(ControllerRequest::SUBMIT_MODE_DELETE, $this->translate('delete.submit'), $redirect);
+        $edit->addCancel($redirect, $this->translate('delete.cancel'), true);
         $this->getView()->addComponent($edit);
         return $edit;
     }

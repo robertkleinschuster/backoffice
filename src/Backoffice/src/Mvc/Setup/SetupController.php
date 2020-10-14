@@ -45,7 +45,7 @@ class SetupController extends \Backoffice\Mvc\Base\BaseController
     {
         $edit = $this->initCreateTemplate();
         $bean = $this->getModel()->getFinder()->getFactory()->createBean();
-        $edit->getComponentModel()->setComponentDataBean($bean);
+        $edit->setBean($bean);
         $bean->setData('User_Password', '');
         foreach ($edit->getFieldList() as $item) {
             $bean->setData($item->getKey(), $this->getControllerRequest()->getAttribute($item->getKey()));
@@ -57,24 +57,24 @@ class SetupController extends \Backoffice\Mvc\Base\BaseController
     protected function addEditFields(Edit $edit): void
     {
         $edit->setCols(2);
-        $edit->addText('Person_Firstname', 'Vorname')
-            ->setChapter('Persönliche Daten')
+        $edit->addText('Person_Firstname', $this->translate('person.firstname'))
+            ->setChapter($this->translate('user.chapter.personaldata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_GIVEN_NAME)
             ->setAppendToColumnPrevious(true);
-        $edit->addText('Person_Lastname', 'Nachname')
-            ->setChapter('Persönliche Daten')
+        $edit->addText('Person_Lastname', $this->translate('person.lastname'))
+            ->setChapter($this->translate('user.chapter.personaldata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_FAMILY_NAME)
             ->setAppendToColumnPrevious(true);
-        $edit->addText('User_Displayname', 'Anzeigename')
-            ->setChapter('Persönliche Daten')
+        $edit->addText('User_Displayname', $this->translate('person.displayname'))
+            ->setChapter($this->translate('user.chapter.personaldata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_NICKNAME)
             ->setAppendToColumnPrevious(true);
-        $edit->addText('User_Username', 'Benutzername')
-            ->setChapter('Anmeldedaten')
+        $edit->addText('User_Username', $this->translate('person.username'))
+            ->setChapter($this->translate('user.chapter.logindata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_USERNAME);
-        $edit->addText('User_Password', 'Passwort')
+        $edit->addText('User_Password', $this->translate('person.password'))
             ->setType(Text::TYPE_PASSWORD)
-            ->setChapter('Anmeldedaten')
+            ->setChapter($this->translate('user.chapter.logindata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_NEW_PASSWORD)
             ->setAppendToColumnPrevious(true);
         $edit->addSubmitAttribute('UserState_Code', UserBean::STATE_ACTIVE)

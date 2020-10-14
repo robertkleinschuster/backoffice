@@ -6,6 +6,9 @@ namespace Backoffice\Mvc\User;
 use Base\Authentication\Bean\UserBean;
 use Backoffice\Mvc\Base\BaseController;
 use Backoffice\Mvc\Role\RoleBeanFormatter;
+use Mvc\Exception\ActionNotFoundException;
+use Mvc\Exception\ControllerNotFoundException;
+use Mvc\Exception\NotFoundException;
 use Mvc\Helper\PathHelper;
 use Mvc\View\ComponentDataBean;
 use Mvc\View\Components\Detail\Detail;
@@ -36,7 +39,7 @@ class UserController extends BaseController
     public function indexAction()
     {
         $overview = $this->initOverviewTemplate(new RoleBeanFormatter());
-        $overview->getComponentModel()->setComponentDataBeanList($this->getModel()->getFinder()->getBeanGenerator());
+        $overview->setBeanList($this->getModel()->getFinder()->getBeanGenerator());
     }
 
     public function detailAction()
@@ -44,16 +47,16 @@ class UserController extends BaseController
         $detail = $this->initDetailTemplate();
 
         $bean = $this->getModel()->getFinder()->getBean();
-        $detail->getComponentModel()->setComponentDataBean($bean);
-        $toolbar = new Toolbar('Rollen');
-        $toolbar->getComponentModel()->addComponentDataBean(new ComponentDataBean());
+        $detail->setBean($bean);
+        $toolbar = new Toolbar($this->translate('user.detail.role.title'));
+        $toolbar->setBean(new ComponentDataBean());
         $toolbar->addButton(
             $this->getPathHelper()
                 ->setController('userrole')
                 ->setAction('create')
                 ->setViewIdMap(['Person_ID' => $bean->getData('Person_ID')])
                 ->getPath(),
-            'Hinzufügen'
+            $this->translate('user.detail.role.create')
         )->setPermission('userrole.create');
         $this->getView()->addComponent($toolbar);
 
@@ -68,8 +71,8 @@ class UserController extends BaseController
                 ])
                 ->getPath()
         )->setWidth(45)->setPermission('userrole.delete');
-        $overview->addText('UserRole_Code', 'Code');
-        $overview->getComponentModel()->setComponentDataBeanList($bean->getData('UserRole_BeanList'));
+        $overview->addText('UserRole_Code', $this->translate('userrole.code'));
+        $overview->setBeanList($bean->getData('UserRole_BeanList'));
         $this->getView()->addComponent($overview);
     }
 
@@ -77,7 +80,7 @@ class UserController extends BaseController
     {
         $edit = $this->initCreateTemplate();
         $bean = $this->getModel()->getFinder()->getFactory()->createBean();
-        $edit->getComponentModel()->setComponentDataBean($bean);
+        $edit->setBean($bean);
         $bean->setData('User_Password', '');
         foreach ($edit->getFieldList() as $item) {
             $bean->setData($item->getKey(), $this->getControllerRequest()->getAttribute($item->getKey()));
@@ -89,14 +92,14 @@ class UserController extends BaseController
     {
         $edit = $this->initEditTemplate();
         $bean = $this->getModel()->getFinder()->getBean();
-        $edit->getComponentModel()->setComponentDataBean($bean);
+        $edit->setBean($bean);
         $bean->setData('User_Password', '');
     }
 
     public function deleteAction()
     {
         $edit = $this->initDeleteTemplate();
-        $edit->getComponentModel()->setComponentDataBean($this->getModel()->getFinder()->getBean());
+        $edit->setBean($this->getModel()->getFinder()->getBean());
 
     }
 
@@ -108,44 +111,44 @@ class UserController extends BaseController
 
     protected function addOverviewFields(Overview $overview): void
     {
-        $overview->addBadge('User_Active', 'Status')
+        $overview->addBadge('User_Active', $this->translate('user.active'))
             ->setValue('Aktiv')
             ->setStyle(Badge::STYLE_SUCCESS)->setWidth(50);
-        $overview->addText('User_Username', 'Benutzername');
-        $overview->addText('Person_Firstname', 'Vorname');
-        $overview->addText('Person_Lastname', 'Nachname');
-        $overview->addText('User_Displayname', 'Anzeigename');
+        $overview->addText('User_Username', $this->translate('user.username'));
+        $overview->addText('Person_Firstname', $this->translate('person.firstname'));
+        $overview->addText('Person_Lastname', $this->translate('person.lastname'));
+        $overview->addText('User_Displayname', $this->translate('user.displayname'));
     }
 
     protected function addDetailFields(Detail $detail): void
     {
-        $detail->addText('User_Username', 'Benutzername');
-        $detail->addText('User_Displayname', 'Anzeigename');
-        $detail->addText('Person_Firstname', 'Name');
-        $detail->addText('Person_Lastname', 'Nachname');
+        $detail->addText('User_Username', $this->translate('user.username'));
+        $detail->addText('User_Displayname', $this->translate('user.displayname'));
+        $detail->addText('Person_Firstname', $this->translate('person.firstname'));
+        $detail->addText('Person_Lastname', $this->translate('person.lastname'));
     }
 
     protected function addEditFields(Edit $edit): void
     {
         $edit->setCols(2);
-        $edit->addText('Person_Firstname', 'Vorname')
-            ->setChapter('Persönliche Daten')
+        $edit->addText('Person_Firstname', $this->translate('person.firstname'))
+            ->setChapter($this->translate('user.edit.personaldata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_GIVEN_NAME)
             ->setAppendToColumnPrevious(true);
-        $edit->addText('Person_Lastname', 'Nachname')
-            ->setChapter('Persönliche Daten')
+        $edit->addText('Person_Lastname', $this->translate('person.lastname'))
+            ->setChapter($this->translate('user.edit.personaldata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_FAMILY_NAME)
             ->setAppendToColumnPrevious(true);
-        $edit->addText('User_Displayname', 'Anzeigename')
-            ->setChapter('Persönliche Daten')
+        $edit->addText('User_Displayname', $this->translate('user.displayname'))
+            ->setChapter($this->translate('user.edit.personaldata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_NICKNAME)
             ->setAppendToColumnPrevious(true);
-        $edit->addText('User_Username', 'Benutzername')
-            ->setChapter('Anmeldedaten')
+        $edit->addText('User_Username', $this->translate('user.username'))
+            ->setChapter($this->translate('user.edit.signindata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_USERNAME);
-        $edit->addText('User_Password', 'Passwort')
+        $edit->addText('User_Password', $this->translate('user.password'))
             ->setType(Text::TYPE_PASSWORD)
-            ->setChapter('Anmeldedaten')
+            ->setChapter($this->translate('user.edit.signindata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_NEW_PASSWORD)
             ->setAppendToColumnPrevious(true);
         $edit->addSubmitAttribute('UserState_Code', UserBean::STATE_ACTIVE)

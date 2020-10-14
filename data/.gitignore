@@ -1,6 +1,6 @@
 *
 !cache
-!translation/*
+!translation
 !cache/.gitkeep
 !session/.gitkeep
 !.gitignore

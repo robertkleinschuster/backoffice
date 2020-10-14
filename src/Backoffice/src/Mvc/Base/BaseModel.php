@@ -8,14 +8,17 @@ use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterAwareInterface;
 use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\Db\Adapter\Profiler\ProfilerInterface;
+use Laminas\I18n\Translator\TranslatorAwareInterface;
+use Laminas\I18n\Translator\TranslatorAwareTrait;
 use Mvc\Helper\ValidationHelperAwareInterface;
 use Mvc\Model\AbstractModel;
 use NiceshopsDev\Bean\BeanFinder\BeanFinderInterface;
 use NiceshopsDev\Bean\BeanProcessor\BeanProcessorInterface;
 
-abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
+abstract class BaseModel extends AbstractModel implements AdapterAwareInterface, TranslatorAwareInterface
 {
     use AdapterAwareTrait;
+    use TranslatorAwareTrait;
 
     /**
      * @var BeanFinderInterface
@@ -220,7 +223,7 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
 
     protected function handlePermissionDenied()
     {
-        $this->getValidationHelper()->addError('Permission', 'Sie haben nicht die Berechtigung diesen Eintrag zu bearbeiten.');
+        $this->getValidationHelper()->addError('Permission', $this->getTranslator()->translate('permission.edit.denied'));
     }
 
     /**
@@ -229,7 +232,7 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface
     public function handleSearch(string $search)
     {
         if ($this->hasFinder()) {
-            $this->getFinder()->getLoader()->addLike("%$search%", ...array_values($this->getFinder()->getLoader()->getFieldColumnMap()));
+          #  $this->getFinder()->getLoader()->addLike("%$search%", ...array_values($this->getFinder()->getLoader()->getField_List()));
         }
     }
 

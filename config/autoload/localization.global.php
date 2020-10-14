@@ -11,6 +11,13 @@ return [
                 'text_domain' => 'default'
 
             ],
+            [
+                'type'     => Laminas\I18n\Translator\Loader\PhpArray::class,
+                'base_dir' => __DIR__ . '/../../data/translation/backoffice',
+                'pattern'  => '%s.php',
+                'text_domain' => 'backoffice'
+
+            ],
         ],
         'translation_files' => [
             [

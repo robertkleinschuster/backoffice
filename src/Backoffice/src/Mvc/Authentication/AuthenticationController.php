@@ -34,13 +34,14 @@ class AuthenticationController extends BaseController
         $login_error = $this->getFlashMessanger()->getFlash('login_error');
         if ($login_error) {
             $alert = new Alert();
-            $alert->getComponentModel()->setComponentDataBean(new ComponentDataBean());;
-            $alert->setHeading('Fehler bei der Anmeldung');
+            $alert->setBean(new ComponentDataBean());;
+            $alert->setHeading($this->translate('login.error'));
             $alert->addText('login_error', '')->setValue($login_error);
             $this->getView()->addComponent($alert);
         }
 
-        $this->getView()->getViewModel()->setTitle('Anmelden');
+        $this->getView()->getViewModel()->setTitle($this->translate('login.title'));
+
         $this->getView()->setLayout('layout/default');
         $componentModel = new ComponentModel();
         $componentDataBean = new ComponentDataBean();
@@ -49,9 +50,9 @@ class AuthenticationController extends BaseController
         $componentDataBean->setFromArray($this->getControllerRequest()->getAttributes());
         $componentModel->setComponentDataBean($componentDataBean);
         $editComponent = new Edit('', $componentModel);
-        $editComponent->addText('login_username', 'Benutzername')->setType(Text::TYPE_TEXT)->setRequired();
-        $editComponent->addText('login_password', 'Passwort')->setType(Text::TYPE_PASSWORD)->setRequired();
-        $editComponent->addSubmit('login', 'Anmelden');
+        $editComponent->addText('login_username', $this->translate('login.username'))->setType(Text::TYPE_TEXT)->setRequired();
+        $editComponent->addText('login_password', $this->translate('login.password'))->setType(Text::TYPE_PASSWORD)->setRequired();
+        $editComponent->addSubmit('login', $this->translate('login.submit'));
         $editComponent->addSubmitAttribute('login_token', $this->getGuard()->generateToken('login_token'));
         $editComponent->addSubmitAttribute(ControllerRequest::ATTRIBUTE_REDIRECT, $this->getPathHelper()->setController('index')->setAction('index')->getPath());
         $editComponent->getComponentModel()->getValidationHelper()->addErrorFieldMap($this->getValidationErrorMap());

@@ -21,10 +21,9 @@ class UserRoleController extends BaseController
 
     public function createAction()
     {
-        $this->getView()->getViewModel()->setTitle('Hinzufügen');
         $edit = $this->initCreateTemplate($this->getRoleDetailRedirectPath()->getPath());
         $bean = $this->getModel()->getFinder()->getFactory()->createBean();
-        $edit->getComponentModel()->setComponentDataBean($bean);
+        $edit->setBean($bean);
     }
 
     protected function addEditFields(Edit $edit): void
@@ -39,7 +38,7 @@ class UserRoleController extends BaseController
         $viewId = $this->getControllerRequest()->getViewIdMap();
         unset($viewId['UserRole_ID']);
         $edit = $this->initDeleteTemplate($this->getRoleDetailRedirectPath()->setViewIdMap($viewId)->getPath());
-        $edit->getComponentModel()->setComponentDataBean($this->getModel()->getFinder()->getBean());
+        $edit->setBean($this->getModel()->getFinder()->getBean());
     }
 
     protected function getRoleDetailRedirectPath(): PathHelper

@@ -31,7 +31,7 @@ class RoleController extends BaseController
     public function indexAction()
     {
         $overview = $this->initOverviewTemplate(new RoleBeanFormatter());
-        $overview->getComponentModel()->setComponentDataBeanList($this->getModel()->getFinder()->getBeanGenerator());
+        $overview->setBeanList($this->getModel()->getFinder()->getBeanGenerator());
     }
 
     protected function getDetailPath(): PathHelper
@@ -42,27 +42,27 @@ class RoleController extends BaseController
     protected function addOverviewFields(Overview $overview): void
     {
         parent::addOverviewFields($overview);
-        $overview->addBadge('UserRole_Active', 'Status')->setWidth(50);
-        $overview->addText('UserRole_Code', 'Code');
+        $overview->addBadge('UserRole_Active', $this->translate('userrole.state'))->setWidth(50);
+        $overview->addText('UserRole_Code', $this->translate('userrole.code'));
     }
 
     public function editAction()
     {
         $edit = $this->initEditTemplate();
-        $edit->getComponentModel()->setComponentDataBean($this->getModel()->getFinder()->getBean());
+        $edit->setBean($this->getModel()->getFinder()->getBean());
     }
 
     protected function addEditFields(Edit $edit): void
     {
         parent::addEditFields($edit);
-        $edit->addText('UserRole_Code', 'Code');
+        $edit->addText('UserRole_Code', $this->translate('userrole.code'));
     }
 
     public function createAction()
     {
         $edit = $this->initCreateTemplate();
         $bean = $this->getModel()->getFinder()->getFactory()->createBean();
-        $edit->getComponentModel()->setComponentDataBean($bean);
+        $edit->setBean($bean);
         foreach ($edit->getFieldList() as $item) {
             $bean->setData($item->getKey(), $this->getControllerRequest()->getAttribute($item->getKey()));
         }
@@ -74,24 +74,24 @@ class RoleController extends BaseController
     {
         $edit = $this->initDeleteTemplate();
         $bean = $this->getModel()->getFinder()->getBean();
-        $edit->getComponentModel()->setComponentDataBean($bean);
+        $edit->setBean($bean);
     }
 
     public function detailAction() {
 
         $detail = $this->initDetailTemplate();
         $bean = $this->getModel()->getFinder()->getBean();
-        $detail->getComponentModel()->setComponentDataBean($bean);
+        $detail->setBean($bean);
 
-        $toolbar = new Toolbar('Berechtigungen');
-        $toolbar->getComponentModel()->setComponentDataBean(new ComponentDataBean());
+        $toolbar = new Toolbar($this->translate('userrole.detail.permission.title'));
+        $toolbar->setBean(new ComponentDataBean());
         $toolbar->addButton(
             $this->getPathHelper()
                 ->setController('rolepermission')
                 ->setAction('create')
                 ->setViewIdMap(['UserRole_ID' => $bean->getData('UserRole_ID')])
                 ->getPath(),
-            'Hinzufügen')->setPermission('rolepermission.create');
+            $this->translate('userrole.detail.permission.create'))->setPermission('rolepermission.create');
         $this->getView()->addComponent($toolbar);
 
         $overview = new Overview();
@@ -105,14 +105,14 @@ class RoleController extends BaseController
                 ])
                 ->getPath()
         )->setWidth(45)->setPermission('rolepermission.delete');
-        $overview->addText('UserPermission_Code', 'Code');
-        $overview->getComponentModel()->setComponentDataBeanList($bean->getData('UserPermission_BeanList'));
+        $overview->addText('UserPermission_Code', $this->translate('userpermission.code'));
+        $overview->setBeanList($bean->getData('UserPermission_BeanList'));
         $this->getView()->addComponent($overview);
     }
 
     protected function addDetailFields(Detail $detail): void
     {
         parent::addDetailFields($detail);
-        $detail->addText('UserRole_Code', 'Code');
+        $detail->addText('UserRole_Code', $this->translate('userrole.code'));
     }
 }
