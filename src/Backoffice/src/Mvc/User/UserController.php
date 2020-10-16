@@ -184,18 +184,18 @@ class UserController extends BaseController
             $localeSelect->setValue($this->getTranslator()->getLocale());
         }
 
-        $edit->addSelect('UserState_Code', $this->translate('userstate.code'))
-            ->setChapter($this->translate('user.edit.signindata'))
-            ->setSelectOptions($this->getModel()->getUserState_Options());
-
         $edit->addText('User_Username', $this->translate('user.username'))
             ->setChapter($this->translate('user.edit.signindata'))
-            ->setAppendToColumnPrevious(true)
             ->setAutocomplete(Text::AUTOCOMPLETE_USERNAME);
         $edit->addText('User_Password', $this->translate('user.password'))
             ->setType(Text::TYPE_PASSWORD)
             ->setChapter($this->translate('user.edit.signindata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_NEW_PASSWORD)
             ->setAppendToColumnPrevious(true);
+        $edit->addSelect('UserState_Code', $this->translate('userstate.code'))
+            ->setChapter($this->translate('user.edit.signindata'))
+            ->setSelectOptions($this->getModel()->getUserState_Options())
+            ->setAppendToColumnPrevious(true)
+            ->setPermission('user.edit.state');
     }
 }

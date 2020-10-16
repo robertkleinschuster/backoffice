@@ -46,6 +46,10 @@ class DataUpdater extends AbstractUpdater
             'UserPermission_Code' => 'user.edit',
             'UserPermission_Active' => true,
         ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'user.edit.state',
+            'UserPermission_Active' => true,
+        ];
 
         $data_Map[] = [
             'UserPermission_Code' => 'role',

@@ -7,6 +7,7 @@ return [
     'user.displayname.empty' => 'Der Anzeigename darf nicht leer sein!',
     'user.password.empty' => 'Das Passwort darf nicht leer sein!',
     'user.password.min_length' => 'Das Passwort muss länger als 5 Zeichen sein!',
+    'userstate.code.lock_self' => 'Aktuell angemeldeter Benutzer kann nicht gesperrt werden!',
     'person.firstname.empty' => 'Der Vorname darf nicht leer sein!',
     'person.lastname.empty' => 'Der Nachname darf nicht leer sein!',
 ];

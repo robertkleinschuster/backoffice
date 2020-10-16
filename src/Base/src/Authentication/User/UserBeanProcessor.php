@@ -64,7 +64,9 @@ class UserBeanProcessor extends AbstractBeanProcessor implements ValidationHelpe
         if ($bean->hasData('User_Username') && strlen(trim($bean->getData('User_Username')))) {
             $finder = new UserBeanFinder($this->adapter);
             $finder->setUser_Username($bean->getData('User_Username'));
-            $finder->setPerson_ID($bean->getData('Person_ID'), true);
+            if ($bean->hasData('Person_ID')) {
+                $finder->setPerson_ID($bean->getData('Person_ID'), true);
+            }
             if ($finder->count() !== 0) {
                 $this->getValidationHelper()->addError('User_Username', $this->translate('user.username.unique'));
             }
@@ -90,6 +92,13 @@ class UserBeanProcessor extends AbstractBeanProcessor implements ValidationHelpe
         } elseif (!$bean->hasData('Person_ID')) {
             $this->getValidationHelper()->addError('User_Password', $this->translate('user.password.empty'));
         }
+        if ($bean->hasData('Person_ID')) {
+            if ($bean->getData('UserState_Code') !== UserBean::STATE_ACTIVE && $bean->getData('Person_ID') == $this->getSaver()->getPersonId()) {
+                $this->getValidationHelper()->addError('UserState_Code', $this->translate('userstate.code.lock_self'));
+
+            }
+        }
+
         return !$this->getValidationHelper()->hasError();
     }
 
