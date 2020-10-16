@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Base\Localization\LocalizationMiddleware;
 use Base\Translation\TranslatorMiddleware;
 use Laminas\Stratigility\Middleware\ErrorHandler;
 use Mezzio\Application;
@@ -64,6 +65,7 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
 
     // Seed the UrlHelper with the routing results:
     $app->pipe(UrlHelperMiddleware::class);
+    $app->pipe(LocalizationMiddleware::class);
 
     $app->pipe(TranslatorMiddleware::class);
 

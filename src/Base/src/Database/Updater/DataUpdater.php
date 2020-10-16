@@ -99,6 +99,23 @@ class DataUpdater extends AbstractUpdater
         ];
 
         $data_Map[] = [
+            'UserPermission_Code' => 'translation',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'translation.delete',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'translation.create',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'translation.edit',
+            'UserPermission_Active' => true,
+        ];
+
+        $data_Map[] = [
             'UserPermission_Code' => 'update',
             'UserPermission_Active' => true,
         ];

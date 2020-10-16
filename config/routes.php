@@ -43,7 +43,6 @@ use Psr\Container\ContainerInterface;
 return static function (Application $app, MiddlewareFactory $factory, ContainerInterface $container): void {
 
     $app->any(MvcHandler::getRoute('/{locale}'), [
-        LocalizationMiddleware::class,
         DatabaseMiddleware::class,
         AuthenticationMiddleware::class,
         MvcHandler::class

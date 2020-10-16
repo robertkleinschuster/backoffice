@@ -143,8 +143,8 @@ class AbstractUpdater implements ValidationHelperAwareInterface, AdapterAwareInt
         $this->setMode(self::MODE_EXECUTE);
         $methodList = $this->getUpdateMethodList();
         $resultMap = [];
-        foreach ($methods as $method) {
-            if (in_array($method, $methodList)) {
+        foreach ($methods as $method => $enabled) {
+            if (boolval($enabled) && in_array($method, $methodList)) {
                 $resultMap[$method] = $this->executeMethod($method);
             }
         }

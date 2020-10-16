@@ -4,10 +4,13 @@
 namespace Base\Translation;
 
 
+use Base\Database\DatabaseMiddleware;
 use Base\Localization\LocalizationMiddleware;
 use Base\Logging\LoggingMiddleware;
+use Base\Translation\TranslationLoader\TranslationBeanFinder;
+use Base\Translation\TranslationLoader\TranslationLoaderFactory;
+use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\I18n\Translator\Translator;
-use Laminas\I18n\Translator\TranslatorAwareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -54,6 +57,10 @@ class TranslatorMiddleware implements MiddlewareInterface
                 }
             );
         }
+
+        $this->translator->getPluginManager()->setFactory(TranslationBeanFinder::class, function($container) {
+            return new TranslationBeanFinder($container->get(AdapterInterface::class));
+        });
 
         return $handler->handle($request->withAttribute(self::TRANSLATOR_ATTRIBUTE, $this->translator));
     }

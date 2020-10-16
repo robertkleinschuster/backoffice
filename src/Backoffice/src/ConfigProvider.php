@@ -14,6 +14,8 @@ use Backoffice\Mvc\RolePermission\RolePermissionController;
 use Backoffice\Mvc\RolePermission\RolePermissionModel;
 use Backoffice\Mvc\Setup\SetupController;
 use Backoffice\Mvc\Setup\SetupModel;
+use Backoffice\Mvc\Translation\TranslationController;
+use Backoffice\Mvc\Translation\TranslationModel;
 use Backoffice\Mvc\Update\UpdateController;
 use Backoffice\Mvc\Update\UpdateModel;
 use Backoffice\Mvc\User\UserController;
@@ -88,6 +90,7 @@ class ConfigProvider
                         'role' => RoleController::class,
                         'rolepermission' => RolePermissionController::class,
                         'userrole' => UserRoleController::class,
+                        'translation' => TranslationController::class,
                     ],
                     'models' => [
                         'setup' => SetupModel::class,
@@ -98,6 +101,7 @@ class ConfigProvider
                         'role' => RoleModel::class,
                         'rolepermission' => RolePermissionModel::class,
                         'userrole' => UserRoleModel::class,
+                        'translation' => TranslationModel::class,
                     ],
                 ]
             ]

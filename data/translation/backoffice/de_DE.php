@@ -17,6 +17,8 @@ return [
     'delete.submit'   => 'Löschen',
     'delete.cancel'   => 'Abbrechen',
     'delete.message' => 'Sind sie sicher, dass sie den Eintrag löschen wollen?',
+    'navigation.content' => 'Inhalte',
+    'navigation.content.translation' => 'Übersetzungen',
     'navigation.system' => 'System',
     'navigation.system.user' => 'Benutzer',
     'navigation.system.role' => 'Rollen',
@@ -40,4 +42,7 @@ return [
     'userrole.code' => 'Code',
     'userrole.active.true' => 'Aktiv',
     'userrole.active.false' => 'Inaktiv',
+    'translation.locale' => 'Sprache/Land',
+    'translation.code' => 'Code',
+    'translation.text' => 'Text',
 ];

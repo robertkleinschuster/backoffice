@@ -1,5 +1,7 @@
 <?php
 
+use Base\Translation\TranslationLoader\TranslationBeanFinder;
+
 return [
     'translator' => [
         'locale' => ['de_DE', 'en_US'],
@@ -36,8 +38,7 @@ return [
         ],
         'remote_translation' => [
             [
-                'type' => '',
-                'text_domain' => '',
+                'type' => TranslationBeanFinder::class,
             ]
         ],
        /* 'cache' => [

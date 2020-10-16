@@ -17,6 +17,8 @@ return [
     'delete.submit'   => 'Delete',
     'delete.cancel'   => 'Cancel',
     'delete.message' => 'Are you sure you want to delte this entry?',
+    'navigation.content' => 'Content',
+    'navigation.content.translation' => 'Translations',
     'navigation.system' => 'System',
     'navigation.system.user' => 'Users',
     'navigation.system.role' => 'Roles',
@@ -40,4 +42,7 @@ return [
     'userrole.code' => 'Code',
     'userrole.active.true' => 'Active',
     'userrole.active.false' => 'Inactive',
+    'translation.locale' => 'Language/Country',
+    'translation.code' => 'Code',
+    'translation.text' => 'Text',
 ];

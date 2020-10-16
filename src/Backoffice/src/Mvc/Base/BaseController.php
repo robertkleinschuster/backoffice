@@ -189,6 +189,19 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         $this->getView()->setBeanFormatter(new BackofficeBeanFormatter());
         $this->getView()->setPermissionList($this->getUser()->getPermission_List());
 
+        $navigation = new Navigation($this->translate('navigation.content'));
+        $navigation->setPermissionList($this->getUser()->getPermission_List());
+        $element =  new Element(
+            $this->translate('navigation.content.translation'),
+            $this->getPathHelper()
+                ->setController('translation')
+                ->setAction('index')
+                ->getPath()
+        );
+        $element->setPermission('translation');
+        $navigation->addElement($element);
+        $this->getView()->addNavigation($navigation);
+
         $navigation = new Navigation($this->translate('navigation.system'));
         $navigation->setPermissionList($this->getUser()->getPermission_List());
         $element =  new Element(

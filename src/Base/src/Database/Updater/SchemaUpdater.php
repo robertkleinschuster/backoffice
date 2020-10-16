@@ -5,6 +5,7 @@ namespace Base\Database\Updater;
 
 use Laminas\Db\Sql\Ddl\Column\Boolean;
 use Laminas\Db\Sql\Ddl\Column\Integer;
+use Laminas\Db\Sql\Ddl\Column\Text;
 use Laminas\Db\Sql\Ddl\Column\Varchar;
 use Laminas\Db\Sql\Ddl\Constraint\ForeignKey;
 use Laminas\Db\Sql\Ddl\Constraint\PrimaryKey;
@@ -104,6 +105,23 @@ class SchemaUpdater extends AbstractUpdater
         $this->addConstraintToTable($table, new PrimaryKey(['UserRole_ID', 'UserPermission_Code']));
         $this->addConstraintToTable($table, new ForeignKey(null, 'UserRole_ID', 'UserRole', 'UserRole_ID', 'CASCADE'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'UserPermission_Code', 'UserPermission', 'UserPermission_Code', 'CASCADE'));
+        $this->addDefaultColumnsToTable($table);
+
+        return $this->query($table);
+    }
+
+    public function updateTableTranslation()
+    {
+        $table = $this->getTableStatement('Translation');
+        $this->addColumnToTable($table, new Integer('Translation_ID'))
+            ->setOption('AUTO_INCREMENT', true);;
+        $this->addColumnToTable($table, new Varchar('Translation_Code', 255));
+        $this->addColumnToTable($table, new Varchar('Translation_Locale', 255));
+        $this->addColumnToTable($table, new Varchar('Translation_Namespace', 255));
+        $this->addColumnToTable($table, new Text('Translation_Text', 65535));
+        $this->addConstraintToTable($table, new PrimaryKey('Translation_ID'));
+        $this->addConstraintToTable($table, new UniqueKey(['Translation_Code', 'Translation_Locale', 'Translation_Namespace']));
+
         $this->addDefaultColumnsToTable($table);
 
         return $this->query($table);

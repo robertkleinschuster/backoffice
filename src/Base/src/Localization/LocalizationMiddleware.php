@@ -33,7 +33,7 @@ class LocalizationMiddleware implements MiddlewareInterface
         return $handler->handle($request->withAttribute(self::LOCALIZATION_ATTRIBUTE, $locale));
     }
 
-    public function getLocaleList(): array
+    public static function getLocaleList(): array
     {
         return array(
             'af_NA' => 'Afrikaans (Namibia)',
