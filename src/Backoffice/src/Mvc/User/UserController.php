@@ -3,12 +3,10 @@
 
 namespace Backoffice\Mvc\User;
 
-use Base\Authentication\User\UserBean;
 use Backoffice\Mvc\Base\BaseController;
 use Backoffice\Mvc\Role\RoleBeanFormatter;
-use Mvc\Exception\ActionNotFoundException;
-use Mvc\Exception\ControllerNotFoundException;
-use Mvc\Exception\NotFoundException;
+use Base\Authentication\User\UserBean;
+use Base\Localization\LocalizationMiddleware;
 use Mvc\Helper\PathHelper;
 use Mvc\View\ComponentDataBean;
 use Mvc\View\Components\Detail\Detail;
@@ -106,6 +104,16 @@ class UserController extends BaseController
         $bean->setData('User_Password', '');
     }
 
+    public function edit_meAction()
+    {
+        $edit = $this->initEditTemplate($this->getPathHelper()->setController('index')->setAction('index')->getPath());
+        $bean = $this->getModel()->getFinder()->getBean();
+        $edit->setBean($bean);
+        $bean->setData('User_Password', '');
+        $this->getView()->setHeading($this->translate('user.edit_me.title'));
+
+    }
+
     public function deleteAction()
     {
         $edit = $this->initDeleteTemplate();
@@ -123,20 +131,20 @@ class UserController extends BaseController
     {
         $overview->addBadge('UserState_Code', $this->translate('userstate.code'))
             ->setWidth(50)
-        ->setFormat(function (BeanInterface $bean, Badge $badge) {
-            switch ($bean->getData('UserState_Code')) {
-                case UserBean::STATE_ACTIVE:
-                    $badge->setStyle(Badge::STYLE_SUCCESS);
-                    return $this->translate('userstate.code.active');
-                case UserBean::STATE_INACTIVE:
-                    $badge->setStyle(Badge::STYLE_WARNING);
-                    return $this->translate('userstate.code.inactive');
-                case UserBean::STATE_LOCKED:
-                    $badge->setStyle(Badge::STYLE_DANGER);
-                    return $this->translate('userstate.code.locked');
-            }
-            return $bean->getData('UserState_Code');
-        });
+            ->setFormat(function (BeanInterface $bean, Badge $badge) {
+                switch ($bean->getData('UserState_Code')) {
+                    case UserBean::STATE_ACTIVE:
+                        $badge->setStyle(Badge::STYLE_SUCCESS);
+                        return $this->translate('userstate.code.active');
+                    case UserBean::STATE_INACTIVE:
+                        $badge->setStyle(Badge::STYLE_WARNING);
+                        return $this->translate('userstate.code.inactive');
+                    case UserBean::STATE_LOCKED:
+                        $badge->setStyle(Badge::STYLE_DANGER);
+                        return $this->translate('userstate.code.locked');
+                }
+                return $bean->getData('UserState_Code');
+            });
         $overview->addText('User_Username', $this->translate('user.username'));
         $overview->addText('Person_Firstname', $this->translate('person.firstname'));
         $overview->addText('Person_Lastname', $this->translate('person.lastname'));
@@ -154,6 +162,7 @@ class UserController extends BaseController
     protected function addEditFields(Edit $edit): void
     {
         $edit->setCols(2);
+
         $edit->addText('Person_Firstname', $this->translate('person.firstname'))
             ->setChapter($this->translate('user.edit.personaldata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_GIVEN_NAME)
@@ -166,9 +175,19 @@ class UserController extends BaseController
             ->setChapter($this->translate('user.edit.personaldata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_NICKNAME)
             ->setAppendToColumnPrevious(true);
+        $localeSelect = $edit->addSelect('User_Locale', $this->translate('user.locale'))
+            ->setChapter($this->translate('user.edit.personaldata'))
+            ->setAppendToColumnPrevious(true)
+            ->setSelectOptions(LocalizationMiddleware::getLocaleList());
+
+        if (!$this->getControllerRequest()->hasViewIdMap()) {
+            $localeSelect->setValue($this->getTranslator()->getLocale());
+        }
+
         $edit->addSelect('UserState_Code', $this->translate('userstate.code'))
             ->setChapter($this->translate('user.edit.signindata'))
             ->setSelectOptions($this->getModel()->getUserState_Options());
+
         $edit->addText('User_Username', $this->translate('user.username'))
             ->setChapter($this->translate('user.edit.signindata'))
             ->setAppendToColumnPrevious(true)

@@ -28,7 +28,6 @@ return [
             AuthenticationInterface::class => PhpSession::class,
         ],
         'invokables' => [
-            LocalizationMiddleware::class
         ],
         'factories' => [
             'SessionCache' => MemcachedCachePoolFactory::class,
@@ -38,6 +37,8 @@ return [
             DatabaseMiddleware::class => DatabaseMiddlewareFactory::class,
             TranslatorMiddleware::class => TranslatorMiddlewareFactory::class,
             \Base\Logging\LoggingMiddleware::class => \Base\Logging\LoggingMiddlewareFactory::class,
+            LocalizationMiddleware::class => \Base\Localization\LocalizationMiddlewareFactory::class
+
         ],
         'delegators' => [
             ErrorHandler::class => [

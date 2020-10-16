@@ -40,6 +40,7 @@ class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterfa
         $loader->addColumn('User_Username', 'User_Username', 'User', 'Person_ID');
         $loader->addColumn('User_Displayname', 'User_Displayname', 'User', 'Person_ID');
         $loader->addColumn('User_Password', 'User_Password', 'User', 'Person_ID');
+        $loader->addColumn('User_Locale', 'User_Locale', 'User', 'Person_ID');
         $loader->addColumn('UserState_Code', 'UserState_Code', 'User', 'Person_ID');
         parent::__construct($loader, new UserBeanFactory());
         $userRoleFinder = new UserRoleBeanFinder($adapter);

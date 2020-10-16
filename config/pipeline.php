@@ -65,9 +65,6 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
 
     // Seed the UrlHelper with the routing results:
     $app->pipe(UrlHelperMiddleware::class);
-    $app->pipe(LocalizationMiddleware::class);
-
-    $app->pipe(TranslatorMiddleware::class);
 
     // Add more middleware here that needs to introspect the routing results; this
     // might include:
@@ -75,6 +72,8 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
     // - route-based authentication
     // - route-based validation
     // - etc.
+    $app->pipe(LocalizationMiddleware::class);
+    $app->pipe(TranslatorMiddleware::class);
 
     // Register the dispatch middleware in the middleware pipeline
     $app->pipe(DispatchMiddleware::class);

@@ -46,7 +46,7 @@ class SchemaUpdater extends AbstractUpdater
         $this->addColumnToTable($table, new Varchar('User_Username', 255));
         $this->addColumnToTable($table, new Varchar('User_Displayname', 255));
         $this->addColumnToTable($table, new Varchar('User_Password', 255));
-
+        $this->addColumnToTable($table, new Varchar('User_Locale', 255));
         $this->addConstraintToTable($table, new PrimaryKey('Person_ID'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'Person_ID', 'Person', 'Person_ID', 'CASCADE'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'UserState_Code', 'UserState', 'UserState_Code'));

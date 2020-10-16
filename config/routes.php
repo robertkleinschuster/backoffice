@@ -42,7 +42,7 @@ use Psr\Container\ContainerInterface;
  */
 return static function (Application $app, MiddlewareFactory $factory, ContainerInterface $container): void {
 
-    $app->any(MvcHandler::getRoute('/{locale}'), [
+    $app->any(MvcHandler::getRoute('/backoffice'), [
         DatabaseMiddleware::class,
         AuthenticationMiddleware::class,
         MvcHandler::class

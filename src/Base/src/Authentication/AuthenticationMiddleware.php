@@ -8,6 +8,7 @@ use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Flash\FlashMessageMiddleware;
+use Mezzio\Session\SessionMiddleware;
 use Mvc\Helper\PathHelper;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -83,6 +84,9 @@ class AuthenticationMiddleware implements MiddlewareInterface
         }
 
         if ($user !== null) {
+            if ($user->hasData('User_Locale')) {
+                $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE)->set('locale', $user->getData('User_Locale'));
+            }
             return $handler->handle($request->withAttribute(UserInterface::class, $user));
         }
 

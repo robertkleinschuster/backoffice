@@ -26,6 +26,7 @@ class UserBean extends AbstractJsonSerializableBean implements UserInterface
         $this->setDataType('User_Username', self::DATA_TYPE_STRING, true);
         $this->setDataType('User_Displayname', self::DATA_TYPE_STRING, true);
         $this->setDataType('User_Password', self::DATA_TYPE_STRING, true);
+        $this->setDataType('User_Locale', self::DATA_TYPE_STRING, true);
         $this->setDataType('UserState_Code', self::DATA_TYPE_STRING, true);
         $this->setDataType('Roles', self::DATA_TYPE_ARRAY, true);
         $this->setDataType('UserRole_BeanList', self::DATA_TYPE_ITERABLE, true);

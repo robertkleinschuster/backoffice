@@ -204,6 +204,17 @@ abstract class BaseController extends AbstractController implements AttributeAwa
 
         $navigation = new Navigation($this->translate('navigation.system'));
         $navigation->setPermissionList($this->getUser()->getPermission_List());
+
+        $element =  new Element(
+            $this->translate('navigation.system.edit_me'),
+            $this->getPathHelper()
+                ->setController('user')
+                ->setAction('edit_me')
+                ->setViewIdMap(['Person_ID' => $this->getUser()->getData('Person_ID')])
+                ->getPath()
+        );
+        $navigation->addElement($element);
+
         $element =  new Element(
             $this->translate('navigation.system.user'),
             $this->getPathHelper()

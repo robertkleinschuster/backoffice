@@ -37,6 +37,7 @@ class UserBeanProcessor extends AbstractBeanProcessor implements ValidationHelpe
         $saver->addColumn('User_Username', 'User_Username', 'User', 'Person_ID');
         $saver->addColumn('User_Displayname', 'User_Displayname', 'User', 'Person_ID');
         $saver->addColumn('User_Password', 'User_Password', 'User', 'Person_ID');
+        $saver->addColumn('User_Locale', 'User_Locale', 'User', 'Person_ID');
         $saver->addColumn('UserState_Code', 'UserState_Code', 'User', 'Person_ID');
         parent::__construct($saver);
 

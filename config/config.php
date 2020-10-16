@@ -43,7 +43,6 @@ $aggregator = new ConfigAggregator([
     // Module config here to overwrite default config
     \Base\ConfigProvider::class,
     \Backoffice\ConfigProvider::class,
-    \Cms\ConfigProvider::class,
 
     // Load application config in a pre-defined order in such a way that local settings
     // overwrite global settings. (Loaded as first to last):

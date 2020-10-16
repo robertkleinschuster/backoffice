@@ -4,8 +4,9 @@
 namespace Base\Localization;
 
 
-use Laminas\Diactoros\Response\RedirectResponse;
 use Locale;
+use Mezzio\Session\SessionMiddleware;
+use Mvc\Helper\PathHelper;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -13,24 +14,35 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class LocalizationMiddleware implements MiddlewareInterface
 {
+
+    /**
+     * @var PathHelper
+     */
+    private $pathHelpter;
+
+
+
     public const LOCALIZATION_ATTRIBUTE = 'locale';
+
+    /**
+     * LocalizationMiddleware constructor.
+     * @param PathHelper $pathHelpter
+     */
+    public function __construct(PathHelper $pathHelpter)
+    {
+        $this->pathHelpter = $pathHelpter;
+    }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
+        $session = $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
         // Get locale from route, fallback to the user's browser preference
-        $locale = $request->getAttribute('locale');
-        if (!in_array($locale, array_keys($this->getLocaleList()))) {
-            $locale = Locale::acceptFromHttp(
-                $request->getServerParams()['HTTP_ACCEPT_LANGUAGE'] ?? 'en_US'
-            );
-            if (!in_array($locale, array_keys($this->getLocaleList()))) {
-                $locale = 'en_US';
-            }
-            return new RedirectResponse('/' . $locale);
-        }
+        $locale = $request->getAttribute('locale', Locale::acceptFromHttp(
+            $request->getServerParams()['HTTP_ACCEPT_LANGUAGE'] ?? 'en_US'
+        ));
 
         // Store the locale as a request attribute
-        return $handler->handle($request->withAttribute(self::LOCALIZATION_ATTRIBUTE, $locale));
+        return $handler->handle($request->withAttribute(self::LOCALIZATION_ATTRIBUTE, $session->get('locale', $locale)));
     }
 
     public static function getLocaleList(): array
