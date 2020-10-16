@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Base\Authentication\AuthenticationMiddleware;
 use Base\Database\DatabaseMiddleware;
+use Base\Localization\LocalizationMiddleware;
 use Mezzio\Application;
 use Mezzio\MiddlewareFactory;
 use Mvc\Handler\MvcHandler;
@@ -41,7 +42,8 @@ use Psr\Container\ContainerInterface;
  */
 return static function (Application $app, MiddlewareFactory $factory, ContainerInterface $container): void {
 
-    $app->any(MvcHandler::getRoute(), [
+    $app->any(MvcHandler::getRoute('/{locale}'), [
+        LocalizationMiddleware::class,
         DatabaseMiddleware::class,
         AuthenticationMiddleware::class,
         MvcHandler::class

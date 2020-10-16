@@ -21,6 +21,7 @@ class RolePermissionModel extends BaseModel
         $beanList = $this->getFinder()->getBeanGenerator();
         $existing = $beanList->getData('UserPermission_Code');
         $finder = new PermissionBeanFinder($this->getDbAdpater());
+        $finder->setUserPermission_Active(true);
         $finder->find();
         $permissionList = [];
         foreach ($finder->getBeanGenerator() as $item) {

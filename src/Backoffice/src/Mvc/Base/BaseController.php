@@ -403,8 +403,8 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         $this->getView()->setHeading($this->translate('create.title'));
         $edit = new Edit();
         $this->addEditFields($edit);
-        $edit->addSubmit(ControllerRequest::SUBMIT_MODE_CREATE, 'Speichern', $redirect);
-        $edit->addCancel($redirect, 'Abbrechen', true);
+        $edit->addSubmit(ControllerRequest::SUBMIT_MODE_CREATE, $this->translate('create.submit'), $redirect);
+        $edit->addCancel($redirect, $this->translate('create.cancel'), true);
         $edit->getValidationHelper()->addErrorFieldMap($this->getValidationErrorMap());
         $this->getView()->addComponent($edit);
         return $edit;
@@ -418,8 +418,8 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         $this->getView()->setHeading($this->translate('edit.title'));
         $edit = new Edit();
         $this->addEditFields($edit);
-        $edit->addSubmit(ControllerRequest::SUBMIT_MODE_SAVE, 'Speichern', $redirect);
-        $edit->addCancel($redirect, 'Abbrechen', true);
+        $edit->addSubmit(ControllerRequest::SUBMIT_MODE_SAVE, $this->translate('edit.submit'), $redirect);
+        $edit->addCancel($redirect, $this->translate('edit.cancel'), true);
         $edit->getValidationHelper()->addErrorFieldMap($this->getValidationErrorMap());
         $this->getView()->addComponent($edit);
         return $edit;

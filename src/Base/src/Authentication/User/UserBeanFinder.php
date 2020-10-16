@@ -24,7 +24,7 @@ class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterfa
     /**
      * @var Adapter
      */
-    private $adapter;
+    private Adapter $adapter;
 
     /**
      * UserBeanFinder constructor.
@@ -43,6 +43,7 @@ class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterfa
         $loader->addColumn('UserState_Code', 'UserState_Code', 'User', 'Person_ID');
         parent::__construct($loader, new UserBeanFactory());
         $userRoleFinder = new UserRoleBeanFinder($adapter);
+        $userRoleFinder->setUserRole_Active(true);
         $this->linkBeanFinder($userRoleFinder, 'UserRole_BeanList', 'Person_ID', 'Person_ID');
     }
 
@@ -54,8 +55,8 @@ class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterfa
      */
     public function authenticate(string $credential, string $password = null): ?UserInterface
     {
-        $this->getLoader()->addWhere('User_Username', $credential);
-        $this->getLoader()->addWhere('UserState_Code', UserBean::STATE_ACTIVE);
+        $this->setUser_Username($credential);
+        $this->setUserState_Code(UserBean::STATE_ACTIVE);
         if ($this->find()) {
             $bean = $this->getBean(true);
             if (password_verify($password, $bean->getData('User_Password'))) {
@@ -65,5 +66,43 @@ class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterfa
         return null;
     }
 
+    /**
+     * @param int $person_id
+     * @param bool $exclude
+     * @return $this
+     * @throws \Exception
+     */
+    public function setPerson_ID(int $person_id, bool $exclude = false): self
+    {
+        if ($exclude) {
+            $this->getLoader()->excludeValue('Person_ID', $person_id);
+        } else {
+            $this->getLoader()->filterValue('Person_ID', $person_id);
+        }
+        return $this;
+    }
+
+    /**
+     * @param string $user_username
+     * @return $this
+     * @throws \Exception
+     */
+    public function setUser_Username(string $user_username): self
+    {
+        $this->getLoader()->filterValue('User_Username', $user_username);
+        return $this;
+    }
+
+
+    /**
+     * @param string $userState_Code
+     * @return $this
+     * @throws \Exception
+     */
+    public function setUserState_Code(string $userState_Code): self
+    {
+        $this->getLoader()->filterValue('UserState_Code', $userState_Code);
+        return $this;
+    }
 
 }

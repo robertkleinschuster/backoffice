@@ -6,16 +6,17 @@ namespace Base\Authentication\User;
 
 use Base\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
-use Mvc\Helper\ValidationHelper;
+use Laminas\I18n\Translator\TranslatorAwareInterface;
+use Laminas\I18n\Translator\TranslatorAwareTrait;
 use Mvc\Helper\ValidationHelperAwareInterface;
 use Mvc\Helper\ValidationHelperAwareTrait;
 use NiceshopsDev\Bean\BeanInterface;
 use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
 
-class UserBeanProcessor extends AbstractBeanProcessor implements ValidationHelperAwareInterface
+class UserBeanProcessor extends AbstractBeanProcessor implements ValidationHelperAwareInterface, TranslatorAwareInterface
 {
     use ValidationHelperAwareTrait;
-
+    use TranslatorAwareTrait;
 
     /**
      * @var Adapter
@@ -42,6 +43,17 @@ class UserBeanProcessor extends AbstractBeanProcessor implements ValidationHelpe
     }
 
     /**
+     * @param string $code
+     * @return string
+     */
+    protected function translate(string $code) {
+        if ($this->hasTranslator()) {
+            return $this->getTranslator()->translate($code, 'validation');
+        }
+        return $code;
+    }
+
+    /**
      * @param BeanInterface $bean
      * @return bool
      * @throws \NiceshopsDev\Bean\BeanException
@@ -50,36 +62,32 @@ class UserBeanProcessor extends AbstractBeanProcessor implements ValidationHelpe
     {
         if ($bean->hasData('User_Username') && strlen(trim($bean->getData('User_Username')))) {
             $finder = new UserBeanFinder($this->adapter);
-            $finder->getLoader()->initByIdMap(['User_Username' => $bean->getData('User_Username')]);
-            $count = $finder->count();
-            if ($count) {
-                $finder->find();
-                $foundBean = $finder->getBean();
-                if (!$bean->hasData('Person_ID') || $bean->getData('Person_ID') != $foundBean->getData('Person_ID')) {
-                    $this->getValidationHelper()->addError('User_Username', 'Der Benutzername ist bereits vergeben.');
-                }
+            $finder->setUser_Username($bean->getData('User_Username'));
+            $finder->setPerson_ID($bean->getData('Person_ID'), true);
+            if ($finder->count() !== 0) {
+                $this->getValidationHelper()->addError('User_Username', $this->translate('user.username.unique'));
             }
         } else {
-            $this->getValidationHelper()->addError('User_Username', 'Der Benutzername darf nicht leer sein.');
+            $this->getValidationHelper()->addError('User_Username', $this->translate('user.username.empty'));
         }
         if (!$bean->hasData('User_Displayname') || !strlen(trim($bean->getData('User_Displayname')))) {
-            $this->getValidationHelper()->addError('User_Displayname', 'Der Anzeigename darf nicht leer sein.');
+            $this->getValidationHelper()->addError('User_Displayname', $this->translate('user.displayname.empty'));
         }
         if (!$bean->hasData('Person_Firstname') || !strlen(trim($bean->getData('Person_Firstname')))) {
-            $this->getValidationHelper()->addError('Person_Firstname', 'Der Vorname darf nicht leer sein.');
+            $this->getValidationHelper()->addError('Person_Firstname', $this->translate('person.firstname.empty'));
         }
         if (!$bean->hasData('Person_Lastname') || !strlen(trim($bean->getData('Person_Lastname')))) {
-            $this->getValidationHelper()->addError('Person_Lastname', 'Der Nachname darf nicht leer sein.');
+            $this->getValidationHelper()->addError('Person_Lastname', $this->translate('person.lastname.empty'));
         }
         if ($bean->hasData('User_Password') && $bean->getData('User_Password') == '') {
             $bean->removeData("User_Password");
         }
         if ($bean->hasData('User_Password')) {
             if (strlen($bean->getData('User_Password')) < 5) {
-                $this->getValidationHelper()->addError('User_Password','Das Passwort muss länger als 5 Zeichen sein.');
+                $this->getValidationHelper()->addError('User_Password',$this->translate('user.password.min_length'));
             }
         } elseif (!$bean->hasData('Person_ID')) {
-            $this->getValidationHelper()->addError('User_Password', 'Das Passwort darf nicht leer sein.');
+            $this->getValidationHelper()->addError('User_Password', $this->translate('user.password.empty'));
         }
         return !$this->getValidationHelper()->hasError();
     }

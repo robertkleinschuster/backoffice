@@ -4,11 +4,8 @@
 namespace Base\Authentication\UserState;
 
 
-use Base\Authorization\UserRole\UserRoleBeanFinder;
 use Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
-use Mezzio\Authentication\UserInterface;
-use Mezzio\Authentication\UserRepositoryInterface;
 use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
 
 /**

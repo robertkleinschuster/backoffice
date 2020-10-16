@@ -23,6 +23,7 @@ class UserRoleModel extends \Backoffice\Mvc\Base\BaseModel
         $beanList = $this->getFinder()->getBeanGenerator();
         $existing = $beanList->getData('UserRole_Code');
         $finder = new RoleBeanFinder($this->getDbAdpater());
+        $finder->setUserRole_Active(true);
         $finder->find();
         $RoleList = [];
         foreach ($finder->getBeanGenerator() as $item) {

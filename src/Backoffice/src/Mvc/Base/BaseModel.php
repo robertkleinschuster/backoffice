@@ -13,6 +13,7 @@ use Laminas\I18n\Translator\TranslatorAwareTrait;
 use Mvc\Helper\ValidationHelperAwareInterface;
 use Mvc\Model\AbstractModel;
 use NiceshopsDev\Bean\BeanFinder\BeanFinderInterface;
+use NiceshopsDev\Bean\BeanInterface;
 use NiceshopsDev\Bean\BeanProcessor\BeanProcessorInterface;
 
 abstract class BaseModel extends AbstractModel implements AdapterAwareInterface, TranslatorAwareInterface
@@ -23,17 +24,17 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface,
     /**
      * @var BeanFinderInterface
      */
-    private $finder;
+    private ?BeanFinderInterface $finder = null;
 
     /**
      * @var BeanProcessorInterface
      */
-    private $processor;
+    private ?BeanProcessorInterface $processor = null;
 
     /**
      * @var UserBean
      */
-    private $user;
+    private ?UserBean $user = null;
 
     /**
      * @return Adapter
@@ -85,6 +86,9 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface,
      */
     public function setProcessor(BeanProcessorInterface $processor): self
     {
+        if ($processor instanceof TranslatorAwareInterface) {
+            $processor->setTranslator($this->getTranslator());
+        }
         $this->processor = $processor;
         return $this;
     }
@@ -164,22 +168,14 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface,
             $bean = $this->getFinder()->getFactory()->createBean();
             $parser = new BackofficeBeanParser();
             $bean = $parser->parse(array_replace($attributes, $viewIdMap), $bean)->toBean();
-            $beanList = $this->getFinder()->getFactory()->createBeanList();
-            $beanList->addBean($bean);
-            if ($this->hasUser() && $this->getUser()->hasData('Person_ID')) {
-                $this->getProcessor()->getSaver()->setPersonId($this->getUser()->getData('Person_ID'));
-            }
-            $this->getProcessor()->setBeanList($beanList);
-            $this->getProcessor()->save();
-            if ($this->getProcessor() instanceof ValidationHelperAwareInterface) {
-                $this->getValidationHelper()->addErrorFieldMap($this->getProcessor()->getValidationHelper()->getErrorFieldMap());
-            }
+            $this->saveBeanWithProcessor($bean);
         }
     }
 
     /**
      * @param array $attributes
      * @return mixed|void
+     * @throws \NiceshopsDev\Bean\BeanException
      */
     protected function save(array $attributes)
     {
@@ -187,16 +183,24 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface,
             $bean = $this->getFinder()->getBean();
             $parser = new BackofficeBeanParser();
             $bean = $parser->parse($attributes, $bean)->toBean();
-            $beanList = $this->getFinder()->getFactory()->createBeanList();
-            $beanList->addBean($bean);
-            if ($this->hasUser() && $this->getUser()->hasData('Person_ID')) {
-                $this->getProcessor()->getSaver()->setPersonId($this->getUser()->getData('Person_ID'));
-            }
-            $this->getProcessor()->setBeanList($beanList);
-            $this->getProcessor()->save();
-            if ($this->getProcessor() instanceof ValidationHelperAwareInterface) {
-                $this->getValidationHelper()->addErrorFieldMap($this->getProcessor()->getValidationHelper()->getErrorFieldMap());
-            }
+            $this->saveBeanWithProcessor($bean);
+        }
+    }
+
+    /**
+     * @param BeanInterface $bean
+     * @throws \NiceshopsDev\Bean\BeanException
+     */
+    private function saveBeanWithProcessor(BeanInterface $bean) {
+        $beanList = $this->getFinder()->getFactory()->createBeanList();
+        $beanList->addBean($bean);
+        if ($this->hasUser() && $this->getUser()->hasData('Person_ID')) {
+            $this->getProcessor()->getSaver()->setPersonId($this->getUser()->getData('Person_ID'));
+        }
+        $this->getProcessor()->setBeanList($beanList);
+        $this->getProcessor()->save();
+        if ($this->getProcessor() instanceof ValidationHelperAwareInterface) {
+            $this->getValidationHelper()->addErrorFieldMap($this->getProcessor()->getValidationHelper()->getErrorFieldMap());
         }
     }
 

@@ -14,6 +14,7 @@ class UserRoleBean extends AbstractJsonSerializableBean
         $this->setDataType('Person_ID', self::DATA_TYPE_INT);
         $this->setDataType('UserRole_ID', self::DATA_TYPE_INT);
         $this->setDataType('UserRole_Code', self::DATA_TYPE_STRING);
+        $this->setDataType('UserRole_Active', self::DATA_TYPE_BOOL);
         $this->setDataType('UserPermission_BeanList', self::DATA_TYPE_ITERABLE);
         $this->setData('UserPermission_BeanList', new PermissionBeanList());
 

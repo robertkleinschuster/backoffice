@@ -14,6 +14,7 @@ use Laminas\Db\Sql\Predicate\Like;
 use Laminas\Db\Sql\Predicate\Predicate;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
+use Laminas\Db\Sql\Where;
 use NiceshopsDev\Bean\BeanException;
 use NiceshopsDev\Bean\BeanFinder\AbstractBeanLoader;
 use NiceshopsDev\Bean\BeanInterface;
@@ -32,6 +33,12 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
      * @var string[]
      */
     private $where_Map;
+
+    /**
+     * @var string[]
+     */
+    private $exclude_Map;
+
 
     /**
      * @var array[]
@@ -63,6 +70,7 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
     {
         $this->setDbAdapter($adapter);
         $this->where_Map = [];
+        $this->exclude_Map = [];
         $this->like_Map = [];
     }
 
@@ -129,7 +137,7 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
      */
     public function initByValueList(string $field, array $valueList)
     {
-        return $this->addWhere($field, $valueList);
+        return $this->filterValue($field, $valueList);
     }
 
     /**
@@ -139,12 +147,25 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
      * @return DatabaseBeanLoader
      * @throws \Exception
      */
-    public function addWhere(string $field, $value, $logic = Predicate::OP_AND)
+    public function filterValue(string $field, $value, $logic = Predicate::OP_AND)
     {
         if ($this->hasField($field)) {
             $this->where_Map[$logic]["{$this->getTable($field)}.{$this->getColumn($field)}"] = $value;
         }
         return $this;
+    }
+
+    /**
+     * @param string $field
+     * @param $value
+     * @param string $logic
+     * @throws \Exception
+     */
+    public function excludeValue(string $field, $value, $logic = Predicate::OP_AND)
+    {
+        if ($this->hasField($field)) {
+            $this->exclude_Map[$logic]["{$this->getTable($field)}.{$this->getColumn($field)}"] = $value;
+        }
     }
 
 
@@ -156,7 +177,7 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
     {
         foreach ($idMap as $field => $value) {
             if (!empty($value)) {
-                $this->addWhere($field, $value);
+                $this->filterValue($field, $value);
             }
         }
     }
@@ -199,6 +220,14 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
      */
     protected function handleWhere(Select $select)
     {
+        foreach ($this->exclude_Map as $logic => $map) {
+            foreach ($map as $column => $value) {
+                $where = new Predicate();
+                $where->notEqualTo($column, $value);
+                $select->where($where);
+            }
+        }
+
         foreach ($this->where_Map as $logic => $map) {
             $select->where($map, $logic);
         }
@@ -362,6 +391,11 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
         return $this->adapter->query((new Sql($this->adapter))->buildSqlString($select));
     }
 
+    /**
+     * @param string $field
+     * @return array
+     * @throws \Exception
+     */
     public function preloadValueList(string $field): array
     {
         $select = $this->buildSelect(true, false);
@@ -374,6 +408,14 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
             $ret[] = $row[$column];
         }
         return $ret;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastQuery(): string
+    {
+        return $this->adapter->getProfiler()->getLastProfile()['sql'];
     }
 
 }

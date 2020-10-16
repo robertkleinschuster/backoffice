@@ -10,6 +10,7 @@ class RolePermissionBean extends \NiceshopsDev\Bean\JsonSerializable\AbstractJso
     {
         $this->setDataType('UserRole_ID', self::DATA_TYPE_INT);
         $this->setDataType('UserPermission_Code', self::DATA_TYPE_STRING);
+        $this->setDataType('UserPermission_Active', self::DATA_TYPE_BOOL);
     }
 
 }

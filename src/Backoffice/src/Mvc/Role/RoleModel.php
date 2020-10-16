@@ -23,10 +23,4 @@ class RoleModel extends BaseModel
         $this->setProcessor(new RoleBeanProcessor($this->adapter));
     }
 
-    protected function save(array $attributes)
-    {
-        parent::save($attributes);
-    }
-
-
 }

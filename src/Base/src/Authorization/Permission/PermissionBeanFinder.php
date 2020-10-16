@@ -19,4 +19,22 @@ class PermissionBeanFinder extends AbstractBeanFinder
         parent::__construct($loader, new PermissionBeanFactory());
     }
 
+    /**
+     * @param string $userPermission_code
+     * @return $this
+     */
+    public function setUserPermission_Code(string $userPermission_code): self {
+        $this->getLoader()->filterValue('UserPermission_Code', $userPermission_code);
+        return $this;
+    }
+
+    /**
+     * @param string $userPermission_active
+     * @return $this
+     */
+    public function setUserPermission_Active(bool $userPermission_active): self {
+        $this->getLoader()->filterValue('UserPermission_Active', $userPermission_active);
+        return $this;
+    }
+
 }
