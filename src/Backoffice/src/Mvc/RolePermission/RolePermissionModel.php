@@ -2,9 +2,9 @@
 namespace Backoffice\Mvc\RolePermission;
 
 
-use Backoffice\Authorization\Permission\PermissionBeanFinder;
-use Backoffice\Authorization\RolePermission\RolePermissionBeanFinder;
-use Backoffice\Authorization\RolePermission\RolePermissionBeanProcessor;
+use Base\Authorization\Permission\PermissionBeanFinder;
+use Base\Authorization\RolePermission\RolePermissionBeanFinder;
+use Base\Authorization\RolePermission\RolePermissionBeanProcessor;
 use Backoffice\Mvc\Base\BaseModel;
 
 class RolePermissionModel extends BaseModel

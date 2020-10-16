@@ -47,4 +47,7 @@ return [
         'hostname' => '127.0.0.1',
         'profiler' => true
     ],
+    'mezzio-session-cache' => [
+        'cookie_secure' => false,
+    ]
 ];

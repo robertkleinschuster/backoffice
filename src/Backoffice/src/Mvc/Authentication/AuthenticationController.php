@@ -4,7 +4,7 @@
 namespace Backoffice\Mvc\Authentication;
 
 
-use Base\Authentication\Bean\UserBeanFinder;
+use Base\Authentication\User\UserBeanFinder;
 use Backoffice\Mvc\Base\BaseController;
 use Mezzio\Authentication\UserInterface;
 use Mvc\Controller\ControllerRequest;
@@ -51,7 +51,7 @@ class AuthenticationController extends BaseController
         $editComponent->addText('login_username', $this->translate('login.username'))->setType(Text::TYPE_TEXT)->setRequired();
         $editComponent->addText('login_password', $this->translate('login.password'))->setType(Text::TYPE_PASSWORD)->setRequired();
         $editComponent->addSubmit('login', $this->translate('login.submit'));
-        $editComponent->addSubmitAttribute('login_token', $this->getGuard()->generateToken('login_token'));
+        $editComponent->addSubmitAttribute('login_token', $this->generateToken('login_token'));
         $editComponent->addSubmitAttribute(ControllerRequest::ATTRIBUTE_REDIRECT, $this->getPathHelper()->setController('index')->setAction('index')->getPath());
         $editComponent->getValidationHelper()->addErrorFieldMap($this->getValidationErrorMap());
         $this->getView()->addComponent($editComponent);
@@ -59,7 +59,7 @@ class AuthenticationController extends BaseController
     }
 
     public function logoutAction() {
-        $this->getSession()->clear();
+        $this->getSession()->unset(UserInterface::class);
         return $this->getControllerResponse()->setRedirect($this->getPathHelper()->setController('auth')->setAction('login')->getPath());
     }
 

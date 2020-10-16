@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Base\Authentication\AuthenticationMiddleware;
 use Base\Authentication\AuthenticationMiddlewareFactory;
-use Base\Authentication\Bean\UserBeanFactory;
+use Base\Authentication\User\UserBeanFactory;
 use Base\Authentication\UserRepositoryFactory;
 use Base\Database\DatabaseMiddleware;
 use Base\Database\DatabaseMiddlewareFactory;

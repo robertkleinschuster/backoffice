@@ -10,12 +10,13 @@ return [
         'cache_item_pool_service' => 'SessionCache',
 
         'filesystem_folder' => __DIR__ . '/../../../data/session',
+
         'memcached_host' => 'localhost',
         'memcached_port' => 11211,
 
         // The name of the session cookie. This name must comply with
         // the syntax outlined in https://tools.ietf.org/html/rfc6265.html
-        'cookie_name' => 'SessionId',
+        'cookie_name' => 'HEBRNCIPTC-ID',
 
         // The (sub)domain that the cookie is available to. Setting this
         // to a subdomain (such as 'www.example.com') will make the cookie
@@ -32,12 +33,12 @@ return [
         // Indicates that the cookie should only be transmitted over a
         // secure HTTPS connection from the client. When set to TRUE, the
         // cookie will only be set if a secure connection exists.
-        'cookie_secure' => false,
+        'cookie_secure' => true,
 
         // When TRUE the cookie will be made accessible only through the
         // HTTP protocol. This means that the cookie won't be accessible
         // by scripting languages, such as JavaScript.
-        'cookie_http_only' => false,
+        'cookie_http_only' => true,
 
         // Available since 1.4.0
         //
@@ -65,7 +66,7 @@ return [
 
         // When the cache and the cookie should expire, in seconds. Defaults
         // to 180 minutes.
-        'cache_expire' => 86400,
+        'cache_expire' => 86400000,
 
         // An integer value indicating when the resource to which the session
         // applies was last modified. If not provided, it uses the last

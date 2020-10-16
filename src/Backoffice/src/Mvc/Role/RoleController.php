@@ -8,8 +8,10 @@ use Mvc\Helper\PathHelper;
 use Mvc\View\ComponentDataBean;
 use Mvc\View\Components\Detail\Detail;
 use Mvc\View\Components\Edit\Edit;
+use Mvc\View\Components\Overview\Fields\Badge;
 use Mvc\View\Components\Overview\Overview;
 use Mvc\View\Components\Toolbar\Toolbar;
+use NiceshopsDev\Bean\BeanInterface;
 
 /**
  * Class UserRoleController
@@ -43,7 +45,16 @@ class RoleController extends BaseController
     protected function addOverviewFields(Overview $overview): void
     {
         parent::addOverviewFields($overview);
-        $overview->addBadge('UserRole_Active', $this->translate('userrole.state'))->setWidth(50);
+        $overview->addBadge('UserRole_Active', $this->translate('userrole.active'))->setWidth(50)
+        ->setFormat(function(BeanInterface $bean, Badge $badge){
+            if ($bean->getData('UserRole_Active')) {
+                $badge->setStyle(Badge::STYLE_SUCCESS);
+                return $this->translate('userrole.active.true');
+            } else {
+                $badge->setStyle(Badge::STYLE_DANGER);
+                return $this->translate('userrole.active.false');
+            }
+        });
         $overview->addText('UserRole_Code', $this->translate('userrole.code'));
     }
 
@@ -57,6 +68,7 @@ class RoleController extends BaseController
     {
         parent::addEditFields($edit);
         $edit->addText('UserRole_Code', $this->translate('userrole.code'));
+        $edit->addCheckbox('UserRole_Active', $this->translate('userrole.active'));
     }
 
     public function createAction()

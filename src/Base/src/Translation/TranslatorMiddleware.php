@@ -44,7 +44,7 @@ class TranslatorMiddleware implements MiddlewareInterface
             $this->translator->getEventManager()->attach(
                 \Laminas\I18n\Translator\Translator::EVENT_MISSING_TRANSLATION,
                 static function (\Laminas\EventManager\EventInterface $event) use ($logger) {
-                    $logger->error('Missing translation', $event->getParams());
+                    $logger->warning('Missing translation', $event->getParams());
                 }
             );
             $this->translator->getEventManager()->attach(

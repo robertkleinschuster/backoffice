@@ -4,7 +4,7 @@
 namespace Backoffice\Mvc\Base;
 
 
-use Base\Authentication\Bean\UserBean;
+use Base\Authentication\User\UserBean;
 use Base\Database\DatabaseMiddleware;
 use Base\Logging\LoggingMiddleware;
 use Base\Translation\TranslatorMiddleware;
@@ -115,15 +115,34 @@ abstract class BaseController extends AbstractController implements AttributeAwa
      */
     protected function handleSubmitSecurity(): bool
     {
-        return $this->getGuard()->validateToken($this->getControllerRequest()->getAttribute('token') ?? '');
+        return $this->validateToken('submit_token', $this->getControllerRequest()->getAttribute('token') ?? '');
     }
 
     /**
      * @return CsrfGuardInterface
      */
-    public function getGuard(): CsrfGuardInterface
+    protected function getGuard(): CsrfGuardInterface
     {
         return $this->getControllerRequest()->getServerRequest()->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);
+    }
+
+    protected function validateToken(string $name, $token) {
+        $result = $this->getGuard()->validateToken($token, $name);
+        $this->generateToken($name);
+        return $result;
+    }
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    protected function generateToken(string $name): string
+    {
+        if (!$this->getSession()->get($name, false)) {
+            return $this->getGuard()->generateToken($name);
+        } else {
+            return $this->getSession()->get($name);
+        }
     }
 
     /**
@@ -212,7 +231,6 @@ abstract class BaseController extends AbstractController implements AttributeAwa
                 ->setAction('logout')
                 ->getPath()
         );
-        $element->setPermission('user');
         $navigation->addElement($element);
         $this->getView()->addNavigation($navigation);
 
@@ -235,7 +253,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
      */
     public function end()
     {
-        $this->setTemplateVariable('token', $this->getGuard()->generateToken());
+        $this->getView()->setData('token', $this->generateToken('submit_token'));
         $validationHelper = new ValidationHelper();
         $validationHelper->addErrorFieldMap($this->getValidationErrorMap());
         if (count($validationHelper->getErrorList('Permission'))) {

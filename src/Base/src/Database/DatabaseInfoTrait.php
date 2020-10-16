@@ -18,14 +18,15 @@ trait DatabaseInfoTrait
      * @param string $joinField
      * @param bool $isKey
      * @param string|null $joinFieldSelf
+     * @param array $table_List
      * @return $this
      */
-    public function addColumn(string $field, string $column, string $table, string $joinField, bool $isKey = false, string $joinFieldSelf = null)
+    public function addColumn(string $field, string $column, string $table, string $joinField, bool $isKey = false, string $joinFieldSelf = null, array $table_List = [])
     {
         if (null === $joinFieldSelf) {
             $joinFieldSelf = $joinField;
         }
-        $this->dbInfo_Map[$field] = ['column' => $column, 'table' => $table, 'joinField' => $joinField, 'isKey' => $isKey, 'joinFieldSelf' => $joinFieldSelf];
+        $this->dbInfo_Map[$field] = ['column' => $column, 'table' => $table, 'joinField' => $joinField, 'isKey' => $isKey, 'joinFieldSelf' => $joinFieldSelf, 'table_List' => $table_List];
         return $this;
     }
 
@@ -38,7 +39,7 @@ trait DatabaseInfoTrait
         if (null === $table) {
             return array_keys($this->dbInfo_Map);
         } else {
-            return array_keys(array_filter($this->dbInfo_Map, function ($item) use ($table) {return $item['table'] === $table;}));
+            return array_keys(array_filter($this->dbInfo_Map, function ($item) use ($table) {return $item['table'] === $table || in_array($table, $item['table_List']);}));
         }
     }
 

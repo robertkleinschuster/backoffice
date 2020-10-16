@@ -4,9 +4,9 @@
 namespace Backoffice\Mvc\UserRole;
 
 
-use Backoffice\Authorization\Role\RoleBeanFinder;
-use Backoffice\Authorization\UserRole\UserRoleBeanFinder;
-use Backoffice\Authorization\UserRole\UserRoleBeanProcessor;
+use Base\Authorization\Role\RoleBeanFinder;
+use Base\Authorization\UserRole\UserRoleBeanFinder;
+use Base\Authorization\UserRole\UserRoleBeanProcessor;
 
 class UserRoleModel extends \Backoffice\Mvc\Base\BaseModel
 {

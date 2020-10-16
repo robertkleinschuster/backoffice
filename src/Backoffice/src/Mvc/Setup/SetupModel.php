@@ -2,18 +2,18 @@
 namespace Backoffice\Mvc\Setup;
 
 
-use Backoffice\Authorization\Role\RoleBeanFinder;
-use Backoffice\Authorization\Role\RoleBeanProcessor;
-use Backoffice\Authorization\UserRole\UserRoleBeanFinder;
-use Backoffice\Authorization\UserRole\UserRoleBeanProcessor;
+use Base\Authorization\Role\RoleBeanFinder;
+use Base\Authorization\Role\RoleBeanProcessor;
+use Base\Authorization\UserRole\UserRoleBeanFinder;
+use Base\Authorization\UserRole\UserRoleBeanProcessor;
 use Mvc\Helper\ValidationHelperAwareInterface;
 
 class SetupModel extends \Backoffice\Mvc\Base\BaseModel
 {
     public function init()
     {
-        $this->setProcessor(new \Base\Authentication\Bean\UserBeanProcessor($this->getDbAdpater()));
-        $this->setFinder(new \Base\Authentication\Bean\UserBeanFinder($this->getDbAdpater()));
+        $this->setProcessor(new \Base\Authentication\User\UserBeanProcessor($this->getDbAdpater()));
+        $this->setFinder(new \Base\Authentication\User\UserBeanFinder($this->getDbAdpater()));
     }
 
     protected function create(array $viewIdMap, array $attributes)
@@ -41,11 +41,11 @@ class SetupModel extends \Backoffice\Mvc\Base\BaseModel
 
             if ($roleFinder->find() == 1) {
                 $role = $roleFinder->getBean();
-                $permissionFinder = new \Backoffice\Authorization\Permission\PermissionBeanFinder($this->getDbAdpater());
+                $permissionFinder = new \Base\Authorization\Permission\PermissionBeanFinder($this->getDbAdpater());
                 $permissionFinder->find();
                 $permissionBeanList = $permissionFinder->getBeanList();
 
-                $rolePermissionFinder = new \Backoffice\Authorization\RolePermission\RolePermissionBeanFinder($this->getDbAdpater());
+                $rolePermissionFinder = new \Base\Authorization\RolePermission\RolePermissionBeanFinder($this->getDbAdpater());
                 $rolePermissionBeanList = $rolePermissionFinder->getFactory()->createBeanList();
 
                 foreach ($permissionBeanList as $permission) {
@@ -55,7 +55,7 @@ class SetupModel extends \Backoffice\Mvc\Base\BaseModel
                     $rolePermissionBeanList->addBean($rolePermission);
                 }
 
-                $rolePermissionProcessor = new \Backoffice\Authorization\RolePermission\RolePermissionBeanProcessor($this->getDbAdpater());
+                $rolePermissionProcessor = new \Base\Authorization\RolePermission\RolePermissionBeanProcessor($this->getDbAdpater());
                 $rolePermissionProcessor->setBeanList($rolePermissionBeanList);
                 $rolePermissionProcessor->save();
 

@@ -2,7 +2,7 @@
 namespace Base\Database\Updater;
 
 
-use Base\Authentication\Bean\UserBean;
+use Base\Authentication\User\UserBean;
 
 class DataUpdater extends AbstractUpdater
 {

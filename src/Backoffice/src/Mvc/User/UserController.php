@@ -3,7 +3,7 @@
 
 namespace Backoffice\Mvc\User;
 
-use Base\Authentication\Bean\UserBean;
+use Base\Authentication\User\UserBean;
 use Backoffice\Mvc\Base\BaseController;
 use Backoffice\Mvc\Role\RoleBeanFormatter;
 use Mvc\Exception\ActionNotFoundException;
@@ -17,6 +17,7 @@ use Mvc\View\Components\Edit\Fields\Text;
 use Mvc\View\Components\Overview\Fields\Badge;
 use Mvc\View\Components\Overview\Overview;
 use Mvc\View\Components\Toolbar\Toolbar;
+use NiceshopsDev\Bean\BeanInterface;
 
 /**
  * Class UserController
@@ -120,9 +121,22 @@ class UserController extends BaseController
 
     protected function addOverviewFields(Overview $overview): void
     {
-        $overview->addBadge('User_Active', $this->translate('user.active'))
-            ->setValue('Aktiv')
-            ->setStyle(Badge::STYLE_SUCCESS)->setWidth(50);
+        $overview->addBadge('UserState_Code', $this->translate('userstate.code'))
+            ->setWidth(50)
+        ->setFormat(function (BeanInterface $bean, Badge $badge) {
+            switch ($bean->getData('UserState_Code')) {
+                case UserBean::STATE_ACTIVE:
+                    $badge->setStyle(Badge::STYLE_SUCCESS);
+                    return $this->translate('userstate.code.active');
+                case UserBean::STATE_INACTIVE:
+                    $badge->setStyle(Badge::STYLE_WARNING);
+                    return $this->translate('userstate.code.inactive');
+                case UserBean::STATE_LOCKED:
+                    $badge->setStyle(Badge::STYLE_DANGER);
+                    return $this->translate('userstate.code.locked');
+            }
+            return $bean->getData('UserState_Code');
+        });
         $overview->addText('User_Username', $this->translate('user.username'));
         $overview->addText('Person_Firstname', $this->translate('person.firstname'));
         $overview->addText('Person_Lastname', $this->translate('person.lastname'));
@@ -152,15 +166,17 @@ class UserController extends BaseController
             ->setChapter($this->translate('user.edit.personaldata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_NICKNAME)
             ->setAppendToColumnPrevious(true);
+        $edit->addSelect('UserState_Code', $this->translate('userstate.code'))
+            ->setChapter($this->translate('user.edit.signindata'))
+            ->setSelectOptions($this->getModel()->getUserState_Options());
         $edit->addText('User_Username', $this->translate('user.username'))
             ->setChapter($this->translate('user.edit.signindata'))
+            ->setAppendToColumnPrevious(true)
             ->setAutocomplete(Text::AUTOCOMPLETE_USERNAME);
         $edit->addText('User_Password', $this->translate('user.password'))
             ->setType(Text::TYPE_PASSWORD)
             ->setChapter($this->translate('user.edit.signindata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_NEW_PASSWORD)
-            ->setAppendToColumnPrevious(true);
-        $edit->addSubmitAttribute('UserState_Code', UserBean::STATE_ACTIVE)
             ->setAppendToColumnPrevious(true);
     }
 }

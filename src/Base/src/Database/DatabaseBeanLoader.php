@@ -14,6 +14,7 @@ use Laminas\Db\Sql\Predicate\Like;
 use Laminas\Db\Sql\Predicate\Predicate;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
+use NiceshopsDev\Bean\BeanException;
 use NiceshopsDev\Bean\BeanFinder\AbstractBeanLoader;
 use NiceshopsDev\Bean\BeanInterface;
 use NiceshopsDev\NiceCore\Attribute\AttributeTrait;
@@ -40,7 +41,7 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
     /**
      * @var ResultSet
      */
-    private $result;
+    private $result = null;
 
     /**
      * @var int
@@ -281,6 +282,9 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
      */
     public function fetch(): bool
     {
+        if ($this->result === null) {
+            throw new BeanException('Could not fetch data. Run find first.');
+        }
         if ($this->result->key() < $this->result->count() - 1) {
             $this->result->next();
             return true;

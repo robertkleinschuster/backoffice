@@ -4,8 +4,8 @@
 namespace Backoffice\Mvc\Role;
 
 
-use Backoffice\Authorization\Role\RoleBeanFinder;
-use Backoffice\Authorization\Role\RoleBeanProcessor;
+use Base\Authorization\Role\RoleBeanFinder;
+use Base\Authorization\Role\RoleBeanProcessor;
 use Backoffice\Mvc\Base\BaseModel;
 
 /**
@@ -22,5 +22,11 @@ class RoleModel extends BaseModel
         $this->setFinder(new RoleBeanFinder($this->adapter));
         $this->setProcessor(new RoleBeanProcessor($this->adapter));
     }
+
+    protected function save(array $attributes)
+    {
+        parent::save($attributes);
+    }
+
 
 }

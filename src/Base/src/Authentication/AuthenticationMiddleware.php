@@ -3,9 +3,6 @@
 
 namespace Base\Authentication;
 
-use Base\Authentication\Bean\UserBeanFinder;
-use Base\Database\DatabaseMiddleware;
-use Laminas\Db\Adapter\Adapter;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\UserInterface;

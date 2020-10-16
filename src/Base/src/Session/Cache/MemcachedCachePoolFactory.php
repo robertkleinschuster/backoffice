@@ -16,7 +16,9 @@ class MemcachedCachePoolFactory
         $port = $config['mezzio-session-cache']['memcached_port'];
         $client = new \Memcached();
         $client->addServer($host, $port);
-        return new MemcachedCachePool($client);
+        $cachePool = new MemcachedCachePool($client);
+        $cachePool->setLogger($container->get('Logger'));
+        return $cachePool;
     }
 
 }

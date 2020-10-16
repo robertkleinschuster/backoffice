@@ -2,7 +2,7 @@
 
 namespace Base\Authentication;
 
-use Base\Authentication\Bean\UserBeanFinder;
+use Base\Authentication\User\UserBeanFinder;
 use Laminas\Db\Adapter\AdapterInterface;
 use Psr\Container\ContainerInterface;
 
