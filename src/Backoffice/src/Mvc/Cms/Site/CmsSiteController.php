@@ -8,7 +8,9 @@ use Backoffice\Mvc\Base\BackofficeBeanFormatter;
 use Mvc\Helper\PathHelper;
 use Mvc\View\ComponentDataBean;
 use Mvc\View\Components\Detail\Detail;
+use Mvc\View\Components\Detail\Fields\Link;
 use Mvc\View\Components\Edit\Edit;
+use Mvc\View\Components\Edit\Fields\Button;
 use Mvc\View\Components\Overview\Overview;
 use Mvc\View\Components\Toolbar\Toolbar;
 
@@ -39,6 +41,13 @@ class CmsSiteController extends \Backoffice\Mvc\Base\BaseController
     public function detailAction()
     {
         $bean = $this->getModel()->getFinder()->getBean();
+
+        $toolbar = new Toolbar();
+        $toolbar->addButton('/{ArticleTranslation_Code}', $this->translate('site.toolbar.frontend'))
+        ->setTarget(Link::TARGET_BLANK)->setStyle(Link::STYLE_INFO);
+        $toolbar->addBean($bean);
+        $this->getView()->addComponent($toolbar);
+
         $detail = $this->initDetailTemplate();
         $detail->setBean($bean);
 

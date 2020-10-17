@@ -4,7 +4,7 @@ use Base\Translation\TranslationLoader\TranslationBeanFinder;
 
 return [
     'translator' => [
-        'locale' => ['de_DE', 'de_DE'],
+        'locale' => ['de_DE'],
         'translation_file_patterns' => [
             [
                 'type'     => Laminas\I18n\Translator\Loader\PhpArray::class,
@@ -33,6 +33,11 @@ return [
         'remote_translation' => [
             [
                 'type' => TranslationBeanFinder::class,
+                'text_domain' => 'default'
+            ],
+            [
+                'type' => TranslationBeanFinder::class,
+                'text_domain' => 'backoffice'
             ]
         ],
         'cache' => [

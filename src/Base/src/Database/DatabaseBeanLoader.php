@@ -40,7 +40,6 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
      */
     private $exclude_Map;
 
-
     /**
      * @var array[]
      */

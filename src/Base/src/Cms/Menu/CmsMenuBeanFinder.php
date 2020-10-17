@@ -6,6 +6,8 @@ namespace Base\Cms\Menu;
 
 use Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Join;
+use Laminas\Db\Sql\Predicate\Expression;
 use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
 
 class CmsMenuBeanFinder extends AbstractBeanFinder
@@ -25,12 +27,13 @@ class CmsMenuBeanFinder extends AbstractBeanFinder
     }
 
     /**
-     * @param string $locale_Code
+     * @param string $locale
      * @return $this
      */
-    public function setLocale_Code(string $locale_Code): self
+    public function setLocale_Code(string $locale): self
     {
-        $this->getLoader()->filterValue('Locale_Code', $locale_Code);
+        $expression = new Expression("Article.Article_ID = ArticleTranslation.Article_ID AND ArticleTranslation.Locale_Code = ?", $locale);
+        $this->getLoader()->addJoinInfo('ArticleTranslation', Join::JOIN_LEFT, $expression);
         return $this;
     }
 

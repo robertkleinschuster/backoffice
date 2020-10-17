@@ -6,6 +6,7 @@ namespace Backoffice\Mvc\Base;
 
 use Base\Authentication\User\UserBean;
 use Base\Database\DatabaseMiddleware;
+use Base\Localization\Locale\LocaleBeanFinder;
 use Base\Logging\LoggingMiddleware;
 use Base\Translation\TranslatorMiddleware;
 use Laminas\Db\Adapter\Profiler\ProfilerInterface;
@@ -22,6 +23,7 @@ use Mvc\Helper\PathHelper;
 use Mvc\Helper\ValidationHelper;
 use Mvc\View\ComponentDataBean;
 use Mvc\View\Components\Alert\Alert;
+use Mvc\View\Components\Base\Fields\AbstractButton;
 use Mvc\View\Components\Detail\Detail;
 use Mvc\View\Components\Edit\Edit;
 use Mvc\View\Components\Overview\Overview;
@@ -200,7 +202,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
                 ->setAction('index')
                 ->getPath()
         );
-        #   $element->setPermission('cmsmenu');
+           $element->setPermission('cmsmenu');
         $navigation->addElement($element);
 
         $element =  new Element(
@@ -210,7 +212,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
                 ->setAction('index')
                 ->getPath()
         );
-     #   $element->setPermission('cmssite');
+        $element->setPermission('cmssite');
         $navigation->addElement($element);
 
         $element =  new Element(
@@ -220,11 +222,19 @@ abstract class BaseController extends AbstractController implements AttributeAwa
                 ->setAction('index')
                 ->getPath()
         );
-     #   $element->setPermission('cmsparagraph');
+        $element->setPermission('cmsparagraph');
         $navigation->addElement($element);
 
+
+        $this->getView()->addNavigation($navigation);
+
+        $navigation = new Navigation($this->translate('navigation.system'));
+        $navigation->setPermissionList($this->getUser()->getPermission_List());
+
+
+
         $element =  new Element(
-            $this->translate('navigation.content.translation'),
+            $this->translate('navigation.system.translation'),
             $this->getPathHelper()
                 ->setController('translation')
                 ->setAction('index')
@@ -232,10 +242,17 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         );
         $element->setPermission('translation');
         $navigation->addElement($element);
-        $this->getView()->addNavigation($navigation);
 
-        $navigation = new Navigation($this->translate('navigation.system'));
-        $navigation->setPermissionList($this->getUser()->getPermission_List());
+
+        $element = new Element(
+            $this->translate('navigation.system.locale'),
+            $this->getPathHelper()
+                ->setController('locale')
+                ->setAction('index')
+                ->getPath()
+        );
+        $element->setPermission('locale');
+        $navigation->addElement($element);
 
         $element =  new Element(
             $this->translate('navigation.system.user'),
@@ -256,15 +273,6 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         $element->setPermission('role');
         $navigation->addElement($element);
 
-        $element = new Element(
-            $this->translate('navigation.system.locale'),
-            $this->getPathHelper()
-                ->setController('locale')
-                ->setAction('index')
-                ->getPath()
-        );
-        $element->setPermission('locale');
-        $navigation->addElement($element);
 
         $element =  new Element(
             $this->translate('navigation.system.update'),
@@ -274,7 +282,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
                 ->getPath()
         );
         $element->setPermission('update');
-        $navigation->addElement($element);
+     #   $navigation->addElement($element);
 
         $this->getView()->addNavigation($navigation);
 
@@ -314,25 +322,11 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         $validationHelper->addErrorFieldMap($this->getValidationErrorMap());
         if (count($validationHelper->getErrorList('Permission'))) {
             $alert = new Alert();
-            $alert->setHeading('Zugriff verweigert!');
             $alert->setBean(new ComponentDataBean());
             foreach ($validationHelper->getErrorList('Permission') as $item) {
                 $alert->addText('', '')->setValue($item);
             }
             $this->getView()->addComponent($alert, true);
-        }
-
-        if ($this->getControllerRequest()->getAttribute('debug') == 'true') {
-            $this->getView()->getToolbar()->addButton($this->getPathHelper()->setParams(['debug' => 'false'])->getPath(), 'Debug')->setPermission('debug');
-
-            $this->getSession()->set('debug', true);
-        } elseif ($this->getControllerRequest()->getAttribute('debug') == 'false') {
-            $this->getView()->getToolbar()->addButton($this->getPathHelper()->setParams(['debug' => 'true'])->getPath(), 'Debug')->setPermission('debug');
-
-            $this->getSession()->set('debug', false);
-        } else {
-            $this->getView()->getToolbar()->addButton($this->getPathHelper()->setParams(['debug' => 'true'])->getPath(), 'Debug')->setPermission('debug');
-
         }
 
         $profiler = $this->getModel()->getDbAdpater()->getProfiler();
@@ -440,6 +434,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
 
     protected function initDetailTemplate()
     {
+        $this->addLocaleButtons();
         $this->getView()->setHeading($this->translate('detail.title'));
         if (!count($this->getControllerRequest()->getViewIdMap())) {
             $this->getControllerResponse()->setRedirect($this->getPathHelper()->setAction('index')->getPath());
@@ -452,7 +447,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
 
     protected function getIndexRedirectLink()
     {
-        return $this->getPathHelper()->setAction('index')->getPath();
+        return $this->getPathHelper()->setAction('index')->setParams(['locale' => $this->getUser()->getData('Locale_Code')])->getPath();
     }
 
     protected function initCreateTemplate(string $redirect = null)
@@ -470,11 +465,29 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         return $edit;
     }
 
+    protected function addLocaleButtons(bool $temporary = true)
+    {
+        if ($temporary) {
+            $param = 'locale_tmp';
+
+        } else {
+            $param = 'locale';
+        }
+        $localeFinder = new LocaleBeanFinder($this->getModel()->getDbAdpater());
+        $localeFinder->setLocale_Active(true);
+        $localeFinder->find();
+        foreach ($localeFinder->getBeanGenerator() as $locale) {
+            $this->getView()->getToolbar()->addButton($this->getPathHelper()->setParams([$param => $locale->getData('Locale_Code')])->setViewIdMap($this->getControllerRequest()->getViewIdMap())->getPath(), $locale->getData('Locale_Name'))
+                ->setStyle(AbstractButton::STYLE_WARNING);
+        }
+    }
+
     protected function initEditTemplate(string $redirect = null)
     {
         if (null === $redirect) {
             $redirect = $this->getIndexRedirectLink();
         }
+        $this->addLocaleButtons(false);
         $this->getView()->setHeading($this->translate('edit.title'));
         $edit = new Edit();
         $this->addEditFields($edit);

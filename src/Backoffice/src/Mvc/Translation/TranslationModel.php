@@ -31,4 +31,11 @@ class TranslationModel extends BaseModel
         }
         return $options;
     }
+
+    public function submit(string $submitMode, array $viewIdMap, array $attributes)
+    {
+        parent::submit($submitMode, $viewIdMap, $attributes);
+        $this->getTranslator()->clearCache($attributes['Translation_Namespace'] ?? 'default', $attributes['Locale_Code'] ?? $this->getTranslator()->getLocale());
+    }
+
 }

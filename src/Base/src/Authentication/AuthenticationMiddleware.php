@@ -66,6 +66,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
         }
         $current = $this->normalizePath($request->getUri()->getPath());
 
+        $session =$request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
 
 
 
@@ -78,14 +79,15 @@ class AuthenticationMiddleware implements MiddlewareInterface
                     $flash->flash('login_error', 'Ungültiger Benutzername oder Passwort.');
                     return new RedirectResponse($redirect);
                 }
+                $session->unset('locale');
             }
         } else {
             $user = $this->auth->authenticate($request);
         }
 
         if ($user !== null) {
-            if ($user->hasData('Locale_Code')) {
-                $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE)->set('locale', $user->getData('Locale_Code'));
+            if ($user->hasData('Locale_Code') && !$session->get('locale', false)) {
+                $session->set('locale', $user->getData('Locale_Code'));
             }
             return $handler->handle($request->withAttribute(UserInterface::class, $user));
         }

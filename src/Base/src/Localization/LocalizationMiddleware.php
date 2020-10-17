@@ -41,6 +41,13 @@ class LocalizationMiddleware implements MiddlewareInterface
             $request->getServerParams()['HTTP_ACCEPT_LANGUAGE'] ?? 'en_US'
         ));
 
+        if (isset($request->getQueryParams()['locale'])) {
+            $session->set('locale', $request->getQueryParams()['locale']);
+        }
+        if (isset($request->getQueryParams()['locale_tmp'])) {
+            return $handler->handle($request->withAttribute(self::LOCALIZATION_ATTRIBUTE, $request->getQueryParams()['locale_tmp']));
+        }
+
         // Store the locale as a request attribute
         return $handler->handle($request->withAttribute(self::LOCALIZATION_ATTRIBUTE, $session->get('locale', $locale)));
     }

@@ -78,6 +78,7 @@ class TranslationController extends BaseController
         $overview->addText('Locale_Code', $this->translate('translation.locale'));
         $overview->addText('Translation_Code', $this->translate('translation.code'));
         $overview->addText('Translation_Text', $this->translate('translation.text'));
+        $overview->addText('Translation_Namespace', $this->translate('translation.namespace'));
     }
 
     protected function addDetailFields(Detail $detail): void
@@ -86,6 +87,7 @@ class TranslationController extends BaseController
         $detail->addText('Locale_Code', $this->translate('translation.locale'));
         $detail->addText('Translation_Code', $this->translate('translation.code'));
         $detail->addText('Translation_Text', $this->translate('translation.text'));
+        $detail->addText('Translation_Namespace', $this->translate('translation.namespace'));
     }
 
     protected function addEditFields(Edit $edit): void
@@ -95,6 +97,8 @@ class TranslationController extends BaseController
         ->setSelectOptions($this->getModel()->getLocale_Options())
         ->setValue($this->getTranslator()->getLocale());
         $edit->addText('Translation_Code', $this->translate('translation.code'));
+        $edit->addText('Translation_Namespace', $this->translate('translation.namespace'))
+            ->setValue('default');
         $edit->addTextarea('Translation_Text', $this->translate('translation.text'))
         ->setRows(5);
     }
