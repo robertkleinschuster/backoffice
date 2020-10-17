@@ -19,4 +19,10 @@ class LocaleBeanFinder extends \NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder
         parent::__construct($loader, new LocaleBeanFactory());
     }
 
+    public function setLocale_Active(bool $active): self
+    {
+        $this->getLoader()->filterValue('Locale_Active', $active);
+        return $this;
+    }
+
 }

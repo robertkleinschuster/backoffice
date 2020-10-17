@@ -17,4 +17,10 @@ class ArticleTypeBeanFinder extends AbstractBeanFinder
         $loader->addColumn('ArticleType_Active', 'ArticleType_Active', 'ArticleType', 'ArticleType_Code');
         parent::__construct($loader, new ArticleTypeBeanFactory());
     }
+
+    public function setArticleType_Active(bool $active): self
+    {
+        $this->getLoader()->filterValue('ArticleType_Active', $active);
+        return $this;
+    }
 }

@@ -68,7 +68,8 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
     protected function saveBean(BeanInterface $bean): bool
     {
         $result = [];
-        foreach ($this->getTable_List() as $table) {
+        $tableList = $this->getTable_List();
+        foreach ($tableList as $table) {
             if ($this->beanExistsUnique($bean, $table)) {
                 $result[] = $this->update($bean, $table);
             } else {
@@ -127,7 +128,7 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
             $insert->values(array_values($insertdata));
 
             $result = $this->adapter->query($sql->buildSqlString($insert), $this->adapter::QUERY_MODE_EXECUTE);
-            $keyField_List = $this->getKeyField_List();
+            $keyField_List = $this->getKeyField_List($table);
             if (count($keyField_List) == 1) {
                 foreach ($keyField_List as $field) {
                     $bean->setData($field, $result->getGeneratedValue());
@@ -158,9 +159,10 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
             }
             $sql = new Sql($this->adapter);
             $update = $sql->update($table);
-            foreach ($this->getKeyField_List() as $field) {
+            $keyFieldList = $this->getKeyField_List($table);
+            foreach ($keyFieldList as $field) {
                 if ($bean->hasData($field)) {
-                    $update->where([$this->getJoinField($field) => $bean->getData($field)]);
+                    $update->where([$this->getColumn($field) => $bean->getData($field)]);
                 }
             }
             $update->set($data);
@@ -180,8 +182,9 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
      */
     protected function beanExistsUnique(BeanInterface $bean, string $table): bool
     {
-        if (count($this->getKeyDataFromBean($bean, $table))) {
-            return $this->count($table, $this->getKeyDataFromBean($bean, $table)) === 1;
+        $keyData = $this->getKeyDataFromBean($bean, $table);
+        if (count($keyData)) {
+            return $this->count($table, $keyData) === 1;
         } else {
             return false;
         }
@@ -198,15 +201,17 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
     {
         $formatter = new DatabaseBeanFormatter();
         $data = [];
-        foreach ($this->getField_List($table) as $field) {
+        $fieldList = $this->getField_List($table);
+        foreach ($fieldList as $field) {
             if ($bean->hasData($field)) {
                 $data[$this->getColumn($field)] = $formatter->format($bean)->getValue($field);
             }
         }
         if ($includeKeys) {
-            foreach ($this->getKeyField_List() as $field) {
+            $keyFieldList = $this->getKeyField_List($table);
+            foreach ($keyFieldList as $field) {
                 if ($bean->hasData($field)) {
-                    $data[$this->getJoinField($field)] = $formatter->format($bean)->getValue($field);
+                    $data[$this->getColumn($field)] = $formatter->format($bean)->getValue($field);
                 }
             }
         }
@@ -222,8 +227,9 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
     {
         $formatter = new DatabaseBeanFormatter();
         $data = [];
-        foreach ($this->getField_List($table) as $field) {
-            if ($bean->hasData($field) && in_array($field, $this->getKeyField_List())) {
+        $fieldList = $this->getKeyField_List($table);
+        foreach ($fieldList as $field) {
+            if ($bean->hasData($field)) {
                 $data[$this->getColumn($field)] = $formatter->format($bean)->getValue($field);
             }
         }

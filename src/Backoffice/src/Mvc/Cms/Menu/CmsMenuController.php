@@ -49,6 +49,12 @@ class CmsMenuController extends BaseController
     }
 
 
+    public function deleteAction()
+    {
+        $delete = $this->initDeleteTemplate();
+        $delete->setBean($this->getModel()->getFinder()->getBean());
+    }
+
     protected function getDetailPath(): PathHelper
     {
         return $this->getPathHelper()->setViewIdMap(['CmsMenu_ID' => '{CmsMenu_ID}']);
@@ -58,21 +64,25 @@ class CmsMenuController extends BaseController
     protected function addOverviewFields(Overview $overview): void
     {
         parent::addOverviewFields($overview);
-        $overview->addText('Translation_Code_Title', $this->translate('cmsmenu.title'));
+        $overview->addText('Article_Code', $this->translate('article.code'))->setWidth(100);
+        $overview->addText('ArticleTranslation_Name', $this->translate('articletranslation.name'));
+        $overview->addText('ArticleTranslation_Code', $this->translate('articletranslation.code'));
 
     }
 
     protected function addDetailFields(Detail $detail): void
     {
         parent::addDetailFields($detail);
-        $detail->addText('Translation_Code_Title', $this->translate('cmsmenu.title'));
-
+        $detail->addText('Article_Code', $this->translate('article.code'));
+        $detail->addText('ArticleTranslation_Name', $this->translate('articletranslation.name'));
+        $detail->addText('ArticleTranslation_Code', $this->translate('articletranslation.code'));
     }
 
     protected function addEditFields(Edit $edit): void
     {
         parent::addEditFields($edit);
-        $edit->addText('Translation_Code_Title', $this->translate('cmsmenu.title'));
+        $edit->addSelect('CmsSite_ID', $this->translate('articletranslation.name'))
+        ->setSelectOptions($this->getModel()->getCmsSite_Options());
     }
 
 }

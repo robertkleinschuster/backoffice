@@ -20,4 +20,10 @@ class ArticleStateBeanFinder extends AbstractBeanFinder
         parent::__construct($loader, new ArticleStateBeanFactory());
     }
 
+    public function setArticleState_Active(bool $active): self
+    {
+        $this->getLoader()->filterValue('ArticleState_Active', $active);
+        return $this;
+    }
+
 }

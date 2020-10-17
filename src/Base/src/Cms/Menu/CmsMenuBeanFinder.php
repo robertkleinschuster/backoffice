@@ -5,7 +5,6 @@ namespace Base\Cms\Menu;
 
 
 use Base\Database\DatabaseBeanLoader;
-use Base\Translation\TranslationLoader\TranslationBeanFinder;
 use Laminas\Db\Adapter\Adapter;
 use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
 
@@ -16,36 +15,13 @@ class CmsMenuBeanFinder extends AbstractBeanFinder
         $loader = new DatabaseBeanLoader($adapter);
         $loader->addColumn('CmsMenu_ID', 'CmsMenu_ID', 'CmsMenu', 'CmsMenu_ID', true);
         $loader->addColumn('CmsMenu_ID_Parent', 'CmsMenu_ID_Parent', 'CmsMenu', 'CmsMenu_ID');
-        $loader->addColumn('CmsSite_ID', 'CmsSite_ID', 'CmsMenu', 'CmsMenu_ID');
-        $loader->addColumn('Translation_Code_Title', 'Translation_Code_Title', 'CmsMenu', 'CmsMenu_ID');
-        $loader->addColumn(
-            'Translation_Translation_Code_Title',
-            'Translation_Code',
-            'Translation',
-            'Translation_Translation_Code_Title',
-            false,
-            'Translation_Code_Title'
-        );
-        $loader->addColumn(
-            'Translation_Text_Title',
-            'Translation_Text',
-            'Translation',
-            'Translation_Translation_Code_Title',
-            false,
-            'Translation_Code_Title'
-        );
-        $loader->addColumn(
-            'Locale_Code_Title',
-            'Locale_Code',
-            'Translation',
-            'Translation_Translation_Code_Title',
-            false,
-            'Translation_Code_Title'
-        );
-
-
+        $loader->addColumn('CmsSite_ID', 'CmsSite_ID', 'CmsMenu', 'CmsMenu_ID', false, null, ['CmsSite']);
+        $loader->addColumn('Article_ID', 'Article_ID', 'CmsSite', 'CmsSite_ID', false, null, ['Article']);
+        $loader->addColumn('Article_Code', 'Article_Code', 'Article', 'Article_ID', false, null, [], 'CmsSite');
+        $loader->addColumn('ArticleTranslation_Name', 'ArticleTranslation_Name', 'ArticleTranslation', 'Article_ID', false, null, [], 'Article');
+        $loader->addColumn('ArticleTranslation_Code', 'ArticleTranslation_Code', 'ArticleTranslation', 'Article_ID', false, null, [], 'Article');
+        $loader->addColumn('Locale_Code', 'Locale_Code', 'ArticleTranslation', 'Article_ID', false, null, [], 'Article');
         parent::__construct($loader, new CmsMenuBeanFactory());
-        #$this->linkBeanFinder(new TranslationBeanFinder($adapter), 'Translation_Title_BeanList', 'Translation_Code_Title', 'Translation_Code');
     }
 
     /**
@@ -54,7 +30,7 @@ class CmsMenuBeanFinder extends AbstractBeanFinder
      */
     public function setLocale_Code(string $locale_Code): self
     {
-        $this->getLoader()->filterValue('Locale_Code_Title', $locale_Code);
+        $this->getLoader()->filterValue('Locale_Code', $locale_Code);
         return $this;
     }
 

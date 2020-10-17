@@ -24,6 +24,7 @@ class TranslationModel extends BaseModel
     public function getLocale_Options(): array {
         $options = [];
         $finder = new LocaleBeanFinder($this->getDbAdpater());
+        $finder->setLocale_Active(true);
         $finder->find();
         foreach ($finder->getBeanGenerator() as $bean) {
             $options[$bean->getData('Locale_Code')] = $bean->getData('Locale_Name');

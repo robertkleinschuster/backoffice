@@ -191,7 +191,7 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface,
      * @param BeanInterface $bean
      * @throws \NiceshopsDev\Bean\BeanException
      */
-    private function saveBeanWithProcessor(BeanInterface $bean) {
+    protected function saveBeanWithProcessor(BeanInterface $bean) {
         $beanList = $this->getFinder()->getFactory()->createBeanList();
         $beanList->addBean($bean);
         if ($this->hasUser() && $this->getUser()->hasData('Person_ID')) {

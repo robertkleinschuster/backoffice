@@ -169,7 +169,7 @@ class SchemaUpdater extends AbstractUpdater
         $this->addColumnToTable($table, new Integer('Article_ID'))
             ->setOption('AUTO_INCREMENT', true);
         $this->addColumnToTable($table, new Varchar('Article_Code', 255, true));
-        $this->addColumnToTable($table, new Boolean('ArticleState_Code', 255));
+        $this->addColumnToTable($table, new Varchar('ArticleState_Code', 255));
         $this->addColumnToTable($table, new Varchar('ArticleType_Code', 255));
         $this->addConstraintToTable($table, new PrimaryKey('Article_ID'));
         $this->addConstraintToTable($table, new UniqueKey('Article_Code'));
@@ -241,11 +241,9 @@ class SchemaUpdater extends AbstractUpdater
             ->setOption('AUTO_INCREMENT', true);
         $this->addColumnToTable($table, new Integer('CmsMenu_ID_Parent', true));
         $this->addColumnToTable($table, new Integer('CmsSite_ID', true));
-        $this->addColumnToTable($table, new Varchar('Translation_Code_Title', 255));
         $this->addConstraintToTable($table, new PrimaryKey('CmsMenu_ID'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'CmsSite_ID', 'CmsSite', 'CmsSite_ID'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'CmsMenu_ID_Parent', 'CmsMenu', 'CmsMenu_ID'));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'Translation_Code_Title', 'Translation', 'Translation_Code'));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);
     }

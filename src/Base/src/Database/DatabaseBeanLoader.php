@@ -10,6 +10,7 @@ use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\Db\Adapter\Driver\StatementInterface;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Expression;
+use Laminas\Db\Sql\Join;
 use Laminas\Db\Sql\Predicate\Like;
 use Laminas\Db\Sql\Predicate\Predicate;
 use Laminas\Db\Sql\Select;
@@ -209,7 +210,12 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
                 if (!in_array($table, array_column($joins->getJoins(), 'name'))) {
                     $column = $this->getColumn($this->getJoinField($field));
                     $columnSelf = $this->getColumn($this->getJoinFieldSelf($field));
-                    $select->join($table, "$self.$columnSelf = $table.$column", []);
+                    $tableSelf = $this->getJoinTableSelf($field, $self);
+                    if ($this->hasJoinInfo($table)) {
+                        $select->join($table, $this->getJoinOn($table), [], $this->getJoinType($table));
+                    } else {
+                        $select->join($table, "$tableSelf.$columnSelf = $table.$column", []);
+                    }
                 }
             }
         }
