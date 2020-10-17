@@ -299,7 +299,7 @@ class AbstractUpdater implements ValidationHelperAwareInterface, AdapterAwareInt
 
     protected function abbreviate(string $value)
     {
-        return preg_replace('~[^A-Z_]~', '', $value);
+        return preg_replace('~[^A-Z_][^A-Z_][^A-Z_]~', '', $value);
     }
 
 }
