@@ -37,11 +37,15 @@ return [
         ],
         'cache' => [
             'adapter' => [
-                'name'    => Laminas\Cache\Storage\Adapter\Memcached::class,
+                'name'    => Laminas\Cache\Storage\Adapter\Filesystem::class,
                 'options' => [
-                    'servers' => [
-                        ['localhost', 11211]
-                    ],
+                    'cache_dir' => getcwd() . '/data/cache',
+                ],
+            ],
+            'plugins' => [
+                'serializer',
+                'exception_handler' => [
+                    'throw_exceptions' => false,
                 ],
             ],
         ],

@@ -13,6 +13,7 @@ $cacheConfig = [
 ];
 
 $aggregator = new ConfigAggregator([
+    \Laminas\Serializer\ConfigProvider::class,
     \Frontend\ConfigProvider::class,
     \Laminas\Cache\ConfigProvider::class,
     \Laminas\I18n\ConfigProvider::class,

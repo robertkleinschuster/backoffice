@@ -14,6 +14,9 @@ return [
         'memcached_host' => 'localhost',
         'memcached_port' => 11211,
 
+        'redis_host' => 'localhost',
+        'redis_port' => 6379,
+
         // The name of the session cookie. This name must comply with
         // the syntax outlined in https://tools.ietf.org/html/rfc6265.html
         'cookie_name' => 'HEBRNCIPTC-ID',

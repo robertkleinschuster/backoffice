@@ -30,7 +30,7 @@ return [
         'invokables' => [
         ],
         'factories' => [
-            'SessionCache' => MemcachedCachePoolFactory::class,
+            'SessionCache' => \Base\Session\Cache\FilesystemCachePoolFactory::class,
             AuthenticationMiddleware::class => AuthenticationMiddlewareFactory::class,
             UserRepositoryInterface::class => UserRepositoryFactory::class,
             UserInterface::class => UserBeanFactory::class,
