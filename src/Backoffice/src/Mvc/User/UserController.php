@@ -175,10 +175,10 @@ class UserController extends BaseController
             ->setChapter($this->translate('user.edit.personaldata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_NICKNAME)
             ->setAppendToColumnPrevious(true);
-        $localeSelect = $edit->addSelect('User_Locale', $this->translate('user.locale'))
+        $localeSelect = $edit->addSelect('Locale_Code', $this->translate('user.locale'))
             ->setChapter($this->translate('user.edit.personaldata'))
             ->setAppendToColumnPrevious(true)
-            ->setSelectOptions(LocalizationMiddleware::getLocaleList());
+            ->setSelectOptions($this->getModel()->getLocale_Options());
 
         if (!$this->getControllerRequest()->hasViewIdMap()) {
             $localeSelect->setValue($this->getTranslator()->getLocale());

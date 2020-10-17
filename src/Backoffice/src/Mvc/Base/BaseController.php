@@ -17,6 +17,7 @@ use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Flash\FlashMessagesInterface;
 use Mvc\Controller\AbstractController;
 use Mvc\Controller\ControllerRequest;
+use Mvc\Controller\ControllerResponse;
 use Mvc\Helper\PathHelper;
 use Mvc\Helper\ValidationHelper;
 use Mvc\View\ComponentDataBean;
@@ -191,6 +192,37 @@ abstract class BaseController extends AbstractController implements AttributeAwa
 
         $navigation = new Navigation($this->translate('navigation.content'));
         $navigation->setPermissionList($this->getUser()->getPermission_List());
+
+        $element =  new Element(
+            $this->translate('navigation.content.cmsmenu'),
+            $this->getPathHelper()
+                ->setController('cmsmenu')
+                ->setAction('index')
+                ->getPath()
+        );
+        #   $element->setPermission('cmsmenu');
+        $navigation->addElement($element);
+
+        $element =  new Element(
+            $this->translate('navigation.content.cmssite'),
+            $this->getPathHelper()
+                ->setController('cmssite')
+                ->setAction('index')
+                ->getPath()
+        );
+     #   $element->setPermission('cmssite');
+        $navigation->addElement($element);
+
+        $element =  new Element(
+            $this->translate('navigation.content.cmsparagraph'),
+            $this->getPathHelper()
+                ->setController('cmsparagraph')
+                ->setAction('index')
+                ->getPath()
+        );
+     #   $element->setPermission('cmsparagraph');
+        $navigation->addElement($element);
+
         $element =  new Element(
             $this->translate('navigation.content.translation'),
             $this->getPathHelper()
@@ -235,6 +267,16 @@ abstract class BaseController extends AbstractController implements AttributeAwa
                 ->getPath()
         );
         $element->setPermission('role');
+        $navigation->addElement($element);
+
+        $element = new Element(
+            $this->translate('navigation.system.locale'),
+            $this->getPathHelper()
+                ->setController('locale')
+                ->setAction('index')
+                ->getPath()
+        );
+        $element->setPermission('locale');
         $navigation->addElement($element);
 
         $element =  new Element(
@@ -348,8 +390,12 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         $trace = explode(PHP_EOL, $exception->getTraceAsString());
         $trace = array_slice($trace, 0, 5);
         $alert->getBean()->setData('trace', implode('<br>', $trace));
-
-        $this->getView()->addComponent($alert, true);
+        if ($this->hasView()) {
+            $this->getView()->addComponent($alert, true);
+        } else {
+            $this->getControllerResponse()->setBody($exception->getMessage());
+            $this->getControllerResponse()->removeOption(ControllerResponse::OPTION_RENDER_RESPONSE);
+        }
     }
 
     public function unauthorized()
@@ -358,7 +404,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
     }
 
 
-    protected function initOverviewTemplate(BeanFormatterInterface $formatter)
+    protected function initOverviewTemplate(?BeanFormatterInterface $formatter = null)
     {
         $this->getView()->setHeading($this->translate('overview.title'));
         $toolbar = new Toolbar();

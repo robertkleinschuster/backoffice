@@ -16,17 +16,6 @@ use Laminas\Db\Sql\Predicate\In;
 class SchemaUpdater extends AbstractUpdater
 {
 
-    public function updateTableLocale()
-    {
-        $table = $this->getTableStatement('Locale');
-        $this->addColumnToTable($table, new Varchar('Locale_Code', 255));
-        $this->addColumnToTable($table, new Varchar('Locale_Name', 255));
-        $this->addColumnToTable($table, new Boolean('Locale_Active'));
-        $this->addConstraintToTable($table, new PrimaryKey('Locale_Code'));
-        $this->addDefaultColumnsToTable($table);
-        return $this->query($table);
-    }
-
     public function updateTablePerson()
     {
         $table = $this->getTableStatement('Person');
@@ -36,6 +25,17 @@ class SchemaUpdater extends AbstractUpdater
         $this->addColumnToTable($table, new Varchar('Person_Firstname', 255));
         $this->addColumnToTable($table, new Varchar('Person_Lastname', 255));
         $this->addConstraintToTable($table, new PrimaryKey('Person_ID'));
+        $this->addDefaultColumnsToTable($table);
+        return $this->query($table);
+    }
+
+    public function updateTableLocale()
+    {
+        $table = $this->getTableStatement('Locale');
+        $this->addColumnToTable($table, new Varchar('Locale_Code', 255));
+        $this->addColumnToTable($table, new Varchar('Locale_Name', 255));
+        $this->addColumnToTable($table, new Boolean('Locale_Active'));
+        $this->addConstraintToTable($table, new PrimaryKey('Locale_Code'));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);
     }
@@ -215,10 +215,8 @@ class SchemaUpdater extends AbstractUpdater
         $table = $this->getTableStatement('CmsParagraph');
         $this->addColumnToTable($table, new Integer('CmsParagraph_ID'))
             ->setOption('AUTO_INCREMENT', true);
-        $this->addColumnToTable($table, new Integer('CmsSite_ID'));
         $this->addColumnToTable($table, new Integer('Article_ID'));
         $this->addConstraintToTable($table, new PrimaryKey('CmsParagraph_ID'));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsSite_ID', 'CmsSite', 'CmsSite_ID'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'Article_ID', 'Article', 'Article_ID'));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);
@@ -241,11 +239,13 @@ class SchemaUpdater extends AbstractUpdater
         $table = $this->getTableStatement('CmsMenu');
         $this->addColumnToTable($table, new Integer('CmsMenu_ID'))
             ->setOption('AUTO_INCREMENT', true);
-        $this->addColumnToTable($table, new Integer('CmsMenu_ID_Parent'));
-        $this->addColumnToTable($table, new Integer('CmsSite_ID'));
+        $this->addColumnToTable($table, new Integer('CmsMenu_ID_Parent', true));
+        $this->addColumnToTable($table, new Integer('CmsSite_ID', true));
+        $this->addColumnToTable($table, new Varchar('Translation_Code_Title', 255));
         $this->addConstraintToTable($table, new PrimaryKey('CmsMenu_ID'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'CmsSite_ID', 'CmsSite', 'CmsSite_ID'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'CmsMenu_ID_Parent', 'CmsMenu', 'CmsMenu_ID'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'Translation_Code_Title', 'Translation', 'Translation_Code'));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);
     }

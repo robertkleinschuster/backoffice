@@ -57,23 +57,23 @@ class SetupController extends \Backoffice\Mvc\Base\BaseController
     {
         $edit->setCols(2);
         $edit->addText('Person_Firstname', $this->translate('person.firstname'))
-            ->setChapter($this->translate('user.chapter.personaldata'))
+            ->setChapter($this->translate('user.edit.personaldata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_GIVEN_NAME)
             ->setAppendToColumnPrevious(true);
         $edit->addText('Person_Lastname', $this->translate('person.lastname'))
-            ->setChapter($this->translate('user.chapter.personaldata'))
+            ->setChapter($this->translate('user.edit.personaldata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_FAMILY_NAME)
             ->setAppendToColumnPrevious(true);
-        $edit->addText('User_Displayname', $this->translate('person.displayname'))
-            ->setChapter($this->translate('user.chapter.personaldata'))
+        $edit->addText('User_Displayname', $this->translate('user.displayname'))
+            ->setChapter($this->translate('user.edit.personaldata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_NICKNAME)
             ->setAppendToColumnPrevious(true);
-        $edit->addText('User_Username', $this->translate('person.username'))
-            ->setChapter($this->translate('user.chapter.logindata'))
+        $edit->addText('User_Username', $this->translate('user.username'))
+            ->setChapter($this->translate('user.edit.signindata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_USERNAME);
-        $edit->addText('User_Password', $this->translate('person.password'))
+        $edit->addText('User_Password', $this->translate('user.password'))
             ->setType(Text::TYPE_PASSWORD)
-            ->setChapter($this->translate('user.chapter.logindata'))
+            ->setChapter($this->translate('user.edit.signindata'))
             ->setAutocomplete(Text::AUTOCOMPLETE_NEW_PASSWORD)
             ->setAppendToColumnPrevious(true);
         $edit->addSubmitAttribute('UserState_Code', UserBean::STATE_ACTIVE)

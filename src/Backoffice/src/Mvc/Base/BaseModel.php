@@ -227,7 +227,11 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface,
 
     protected function handlePermissionDenied()
     {
-        $this->getValidationHelper()->addError('Permission', $this->getTranslator()->translate('permission.edit.denied'));
+        $this->getValidationHelper()->addError('Permission', $this->translate('permission.edit.denied'));
+    }
+
+    public function translate(string $code) {
+        return $this->getTranslator()->translate($code, 'backoffice');
     }
 
     /**

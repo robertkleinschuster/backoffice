@@ -6,8 +6,16 @@ namespace Backoffice;
 
 use Backoffice\Mvc\Authentication\AuthenticationController;
 use Backoffice\Mvc\Authentication\AuthenticationModel;
+use Backoffice\Mvc\Cms\Menu\CmsMenuController;
+use Backoffice\Mvc\Cms\Menu\CmsMenuModel;
+use Backoffice\Mvc\Cms\Paragraph\CmsParagraphController;
+use Backoffice\Mvc\Cms\Paragraph\CmsParagraphModel;
+use Backoffice\Mvc\Cms\Site\CmsSiteController;
+use Backoffice\Mvc\Cms\Site\CmsSiteModel;
 use Backoffice\Mvc\Index\IndexController;
 use Backoffice\Mvc\Index\IndexModel;
+use Backoffice\Mvc\Locale\LocaleController;
+use Backoffice\Mvc\Locale\LocaleModel;
 use Backoffice\Mvc\Role\RoleController;
 use Backoffice\Mvc\Role\RoleModel;
 use Backoffice\Mvc\RolePermission\RolePermissionController;
@@ -81,6 +89,7 @@ class ConfigProvider
         return [
             'module' => [
                 'backoffice' => [
+                    'error_controller' => 'index',
                     'controllers' => [
                         'setup' => SetupController::class,
                         'index' => IndexController::class,
@@ -91,6 +100,10 @@ class ConfigProvider
                         'rolepermission' => RolePermissionController::class,
                         'userrole' => UserRoleController::class,
                         'translation' => TranslationController::class,
+                        'locale' => LocaleController::class,
+                        'cmsmenu' => CmsMenuController::class,
+                        'cmssite' => CmsSiteController::class,
+                        'cmsparagraph' => CmsParagraphController::class,
                     ],
                     'models' => [
                         'setup' => SetupModel::class,
@@ -102,6 +115,10 @@ class ConfigProvider
                         'rolepermission' => RolePermissionModel::class,
                         'userrole' => UserRoleModel::class,
                         'translation' => TranslationModel::class,
+                        'locale' => LocaleModel::class,
+                        'cmsmenu' => CmsMenuModel::class,
+                        'cmssite' => CmsSiteModel::class,
+                        'cmsparagraph' => CmsParagraphModel::class,
                     ],
                 ]
             ]

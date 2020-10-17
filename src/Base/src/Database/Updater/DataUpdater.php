@@ -77,6 +77,97 @@ class DataUpdater extends AbstractUpdater
     {
         $data_Map = [];
 
+
+
+        $data_Map[] = [
+            'UserPermission_Code' => 'article',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'article.delete',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'article.create',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'article.edit',
+            'UserPermission_Active' => true,
+        ];
+
+
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmsmenu',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmsmenu.delete',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmsmenu.create',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmsmenu.edit',
+            'UserPermission_Active' => true,
+        ];
+
+
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmssite',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmssite.delete',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmssite.create',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmssite.edit',
+            'UserPermission_Active' => true,
+        ];
+
+
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmsparagraph',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmsparagraph.delete',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmsparagraph.create',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmsparagraph.edit',
+            'UserPermission_Active' => true,
+        ];
+
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmssiteparagraph',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmssiteparagraph.delete',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmssiteparagraph.create',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmssiteparagraph.edit',
+            'UserPermission_Active' => true,
+        ];
+
+
         $data_Map[] = [
             'UserPermission_Code' => 'user',
             'UserPermission_Active' => true,
@@ -163,6 +254,23 @@ class DataUpdater extends AbstractUpdater
         ];
         $data_Map[] = [
             'UserPermission_Code' => 'translation.edit',
+            'UserPermission_Active' => true,
+        ];
+
+        $data_Map[] = [
+            'UserPermission_Code' => 'locale',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'locale.delete',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'locale.create',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'locale.edit',
             'UserPermission_Active' => true,
         ];
 

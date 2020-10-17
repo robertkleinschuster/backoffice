@@ -12,6 +12,11 @@ use Mvc\View\Components\Detail\Detail;
 use Mvc\View\Components\Edit\Edit;
 use Mvc\View\Components\Overview\Overview;
 
+/**
+ * Class TranslationController
+ * @package Backoffice\Mvc\Translation
+ * @method TranslationModel getModel()
+ */
 class TranslationController extends BaseController
 {
     protected function initModel()
@@ -87,7 +92,7 @@ class TranslationController extends BaseController
     {
         parent::addEditFields($edit);
         $edit->addSelect('Locale_Code', $this->translate('translation.locale'))
-        ->setSelectOptions(LocalizationMiddleware::getLocaleList())
+        ->setSelectOptions($this->getModel()->getLocale_Options())
         ->setValue($this->getTranslator()->getLocale());
         $edit->addText('Translation_Code', $this->translate('translation.code'));
         $edit->addTextarea('Translation_Text', $this->translate('translation.text'))

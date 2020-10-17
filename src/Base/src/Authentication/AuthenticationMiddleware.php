@@ -84,8 +84,8 @@ class AuthenticationMiddleware implements MiddlewareInterface
         }
 
         if ($user !== null) {
-            if ($user->hasData('User_Locale')) {
-                $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE)->set('locale', $user->getData('User_Locale'));
+            if ($user->hasData('Locale_Code')) {
+                $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE)->set('locale', $user->getData('Locale_Code'));
             }
             return $handler->handle($request->withAttribute(UserInterface::class, $user));
         }

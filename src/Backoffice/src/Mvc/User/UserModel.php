@@ -7,6 +7,7 @@ use Base\Authentication\User\UserBeanFinder;
 use Base\Authentication\User\UserBeanProcessor;
 use Backoffice\Mvc\Base\BaseModel;
 use Base\Authentication\UserState\UserStateBeanFinder;
+use Base\Localization\Locale\LocaleBeanFinder;
 
 /**
  * Class UserModel
@@ -33,6 +34,20 @@ class UserModel extends BaseModel
         $finder->find();
         foreach ($finder->getBeanGenerator() as $bean) {
             $options[$bean->getData('UserState_Code')] = $bean->getData('UserState_Code');
+        }
+        return $options;
+    }
+
+    /**
+     * @return array
+     * @throws \NiceshopsDev\Bean\BeanException
+     */
+    public function getLocale_Options(): array {
+        $options = [];
+        $finder = new LocaleBeanFinder($this->getDbAdpater());
+        $finder->find();
+        foreach ($finder->getBeanGenerator() as $bean) {
+            $options[$bean->getData('Locale_Code')] = $bean->getData('Locale_Name');
         }
         return $options;
     }

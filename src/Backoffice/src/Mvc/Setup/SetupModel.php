@@ -1,4 +1,5 @@
 <?php
+
 namespace Backoffice\Mvc\Setup;
 
 
@@ -6,7 +7,6 @@ use Base\Authorization\Role\RoleBeanFinder;
 use Base\Authorization\Role\RoleBeanProcessor;
 use Base\Authorization\UserRole\UserRoleBeanFinder;
 use Base\Authorization\UserRole\UserRoleBeanProcessor;
-use Mvc\Helper\ValidationHelperAwareInterface;
 
 class SetupModel extends \Backoffice\Mvc\Base\BaseModel
 {
@@ -18,11 +18,20 @@ class SetupModel extends \Backoffice\Mvc\Base\BaseModel
 
     protected function create(array $viewIdMap, array $attributes)
     {
-
         $schemaUpdater = new \Base\Database\Updater\SchemaUpdater($this->getDbAdpater());
-        $schemaUpdater->execute($schemaUpdater->getUpdateMethodList());
+        $methods = [];
+        foreach ($schemaUpdater->getUpdateMethodList() as $method) {
+            $methods[$method] = true;
+        }
+        $result = $schemaUpdater->execute($methods);
+
         $dataUpdater = new \Base\Database\Updater\DataUpdater($this->getDbAdpater());
-        $dataUpdater->execute($dataUpdater->getUpdateMethodList());
+        $methods = [];
+        foreach ($dataUpdater->getUpdateMethodList() as $method) {
+            $methods[$method] = true;
+        }
+        $result = $dataUpdater->execute($methods);
+
 
         parent::create($viewIdMap, $attributes);
 

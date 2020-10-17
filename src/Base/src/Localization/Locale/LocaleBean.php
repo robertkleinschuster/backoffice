@@ -12,8 +12,8 @@ class LocaleBean extends AbstractJsonSerializableBean
      */
     public function __construct()
     {
-        $this->setDataType('Locale_Code', self::DATA_TYPE_STRING);
-        $this->setDataType('Locale_Name', self::DATA_TYPE_STRING);
-        $this->setDataType('Locale_Active', self::DATA_TYPE_BOOL);
+        $this->setDataType('Locale_Code', self::DATA_TYPE_STRING, true);
+        $this->setDataType('Locale_Name', self::DATA_TYPE_STRING, true);
+        $this->setDataType('Locale_Active', self::DATA_TYPE_BOOL, true);
     }
 }
