@@ -2,6 +2,7 @@
 namespace Base\Database\Updater;
 
 
+use Base\Article\ArticleBean;
 use Base\Authentication\User\UserBean;
 
 class DataUpdater extends AbstractUpdater
@@ -23,6 +24,52 @@ class DataUpdater extends AbstractUpdater
             'UserState_Active' => true,
         ];
         return $this->saveDataMap('UserState', 'UserState_Code', $data_Map);
+    }
+
+    public function updateDataLocale()
+    {
+        $data_Map = [];
+        $data_Map[] = [
+            'Locale_Code' => 'de_AT',
+            'Locale_Name' => 'Deutsch (Österreich)',
+            'Locale_Active' => true,
+        ];
+        $data_Map[] = [
+            'Locale_Code' => 'de_DE',
+            'Locale_Name' => 'Deutsch (Deutschland)',
+            'Locale_Active' => true,
+        ];
+        $data_Map[] = [
+            'Locale_Code' => 'en_US',
+            'Locale_Name' => 'English (United States)',
+            'Locale_Active' => true,
+        ];
+        return $this->saveDataMap('Locale', 'Locale_Code', $data_Map);
+    }
+
+    public function updateDataArticleState()
+    {
+        $data_Map = [];
+        $data_Map[] = [
+            'ArticleState_Code' => ArticleBean::STATE_ACTIVE,
+            'ArticleState_Active' => true,
+        ];
+        $data_Map[] = [
+            'ArticleState_Code' => ArticleBean::STATE_INACTIVE,
+            'ArticleState_Active' => true,
+        ];
+        return $this->saveDataMap('ArticleState', 'ArticleState_Code', $data_Map);
+    }
+
+
+    public function updateDataArticleType()
+    {
+        $data_Map = [];
+        $data_Map[] = [
+            'ArticleType_Code' => ArticleBean::TYPE_DEFAULT,
+            'ArticleType_Active' => true,
+        ];
+        return $this->saveDataMap('ArticleType', 'ArticleType_Code', $data_Map);
     }
 
 

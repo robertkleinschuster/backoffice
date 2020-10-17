@@ -17,7 +17,7 @@ class TranslationBeanProcessor extends AbstractBeanProcessor
         $saver->addColumn('Translation_ID', 'Translation_ID', 'Translation', 'Translation_ID', true);
         $saver->addColumn('Translation_Code', 'Translation_Code', 'Translation', 'Translation_ID');
         $saver->addColumn('Translation_Namespace', 'Translation_Namespace', 'Translation', 'Translation_ID');
-        $saver->addColumn('Translation_Locale', 'Translation_Locale', 'Translation', 'Translation_ID');
+        $saver->addColumn('Locale_Code', 'Locale_Code', 'Translation', 'Translation_ID');
         $saver->addColumn('Translation_Text', 'Translation_Text', 'Translation', 'Translation_ID');
         parent::__construct($saver);
     }

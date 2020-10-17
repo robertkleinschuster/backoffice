@@ -24,7 +24,7 @@ class SchemaUpdater extends AbstractUpdater
         $this->addColumnToTable($table, new Boolean('Locale_Active'));
         $this->addConstraintToTable($table, new PrimaryKey('Locale_Code'));
         $this->addDefaultColumnsToTable($table);
-        $this->query($table);
+        return $this->query($table);
     }
 
     public function updateTablePerson()

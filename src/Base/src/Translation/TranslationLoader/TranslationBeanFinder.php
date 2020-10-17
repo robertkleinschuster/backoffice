@@ -18,7 +18,7 @@ class TranslationBeanFinder extends AbstractBeanFinder implements RemoteLoaderIn
         $loader->addColumn('Translation_ID', 'Translation_ID', 'Translation', 'Translation_ID', true);
         $loader->addColumn('Translation_Code', 'Translation_Code', 'Translation', 'Translation_ID');
         $loader->addColumn('Translation_Namespace', 'Translation_Namespace', 'Translation', 'Translation_ID');
-        $loader->addColumn('Translation_Locale', 'Translation_Locale', 'Translation', 'Translation_ID');
+        $loader->addColumn('Locale_Code', 'Locale_Code', 'Translation', 'Translation_ID');
         $loader->addColumn('Translation_Text', 'Translation_Text', 'Translation', 'Translation_ID');
         parent::__construct($loader, new TranslationBeanFactory());
     }
@@ -27,7 +27,7 @@ class TranslationBeanFinder extends AbstractBeanFinder implements RemoteLoaderIn
     public function load($locale, $textDomain)
     {
         $data = [];
-        $this->setTranslation_Locale($locale);
+        $this->setLocale_Code($locale);
         $this->setTranslation_Namespace($textDomain);
         $this->find();
         foreach ($this->getBeanGenerator() as $bean) {
@@ -46,9 +46,9 @@ class TranslationBeanFinder extends AbstractBeanFinder implements RemoteLoaderIn
         return $this;
     }
 
-    public function setTranslation_Locale(string $locale): self
+    public function setLocale_Code(string $locale): self
     {
-        $this->getLoader()->filterValue('Translation_Locale', $locale);
+        $this->getLoader()->filterValue('Locale_Code', $locale);
         return $this;
     }
 

@@ -8,6 +8,12 @@ use NiceshopsDev\Bean\JsonSerializable\AbstractJsonSerializableBean;
 
 class ArticleBean extends AbstractJsonSerializableBean
 {
+
+    public const STATE_ACTIVE = 'active';
+    public const STATE_INACTIVE = 'inactive';
+
+    public const TYPE_DEFAULT = 'default';
+
     public function __construct()
     {
         $this->setDataType('Article_ID', self::DATA_TYPE_INT);
