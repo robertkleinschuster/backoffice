@@ -8,8 +8,10 @@ use Base\Article\ArticleBeanProcessor;
 use Base\Article\State\ArticleStateBeanFinder;
 use Base\Article\Translation\ArticleTranslationBeanProcessor;
 use Base\Article\Type\ArticleTypeBeanFinder;
+use Base\Cms\Paragraph\CmsParagraphBeanFinder;
 use Base\Cms\Site\CmsSiteBeanFinder;
 use Base\Cms\Site\CmsSiteBeanProcessor;
+use Base\Cms\SiteParagraph\CmsSiteParagraphBeanFinder;
 use Mvc\Helper\ValidationHelperAwareInterface;
 use NiceshopsDev\Bean\BeanInterface;
 
@@ -49,6 +51,14 @@ class CmsSiteModel extends \Backoffice\Mvc\Base\BaseModel
             $options[$bean->getData('ArticleState_Code')] = $bean->getData('ArticleState_Code');
         }
         return $options;
+    }
+
+    public function getParagraph_List(array $viewIdMap)
+    {
+        $finder = new CmsSiteParagraphBeanFinder($this->getDbAdpater());
+        $finder->getLoader()->initByIdMap($viewIdMap);
+        $finder->find();
+        return $finder->getBeanGenerator();
     }
 
 }

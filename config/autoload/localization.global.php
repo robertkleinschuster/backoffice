@@ -4,7 +4,7 @@ use Base\Translation\TranslationLoader\TranslationBeanFinder;
 
 return [
     'translator' => [
-        'locale' => ['de_DE', 'en_US'],
+        'locale' => ['de_DE', 'de_DE'],
         'translation_file_patterns' => [
             [
                 'type'     => Laminas\I18n\Translator\Loader\PhpArray::class,
@@ -29,19 +29,13 @@ return [
             ],
         ],
         'translation_files' => [
-            /*[
-                'type' => Laminas\I18n\Translator\Loader\PhpArray::class,
-                'filename' => __DIR__ . '/../../data/translation/de_AT.php',
-                'text_domain' => 'default',
-                'locale' => 'de_AT'
-            ]*/
         ],
         'remote_translation' => [
             [
                 'type' => TranslationBeanFinder::class,
             ]
         ],
-       /* 'cache' => [
+        'cache' => [
             'adapter' => [
                 'name'    => Laminas\Cache\Storage\Adapter\Memcached::class,
                 'options' => [
@@ -50,7 +44,7 @@ return [
                     ],
                 ],
             ],
-        ],*/
+        ],
         'event_manager_enabled' => true
     ]
 ];

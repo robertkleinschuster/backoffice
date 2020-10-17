@@ -240,7 +240,7 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface,
     public function handleSearch(string $search)
     {
         if ($this->hasFinder()) {
-          #  $this->getFinder()->getLoader()->addLike("%$search%", ...array_values($this->getFinder()->getLoader()->getField_List()));
+            $this->getFinder()->getLoader()->addLike("%$search%", ...array_values($this->getFinder()->getLoader()->getField_List()));
         }
     }
 

@@ -12,6 +12,8 @@ use Backoffice\Mvc\Cms\Paragraph\CmsParagraphController;
 use Backoffice\Mvc\Cms\Paragraph\CmsParagraphModel;
 use Backoffice\Mvc\Cms\Site\CmsSiteController;
 use Backoffice\Mvc\Cms\Site\CmsSiteModel;
+use Backoffice\Mvc\Cms\SiteParagraph\CmsSiteParagraphController;
+use Backoffice\Mvc\Cms\SiteParagraph\CmsSiteParagraphModel;
 use Backoffice\Mvc\Index\IndexController;
 use Backoffice\Mvc\Index\IndexModel;
 use Backoffice\Mvc\Locale\LocaleController;
@@ -104,6 +106,7 @@ class ConfigProvider
                         'cmsmenu' => CmsMenuController::class,
                         'cmssite' => CmsSiteController::class,
                         'cmsparagraph' => CmsParagraphController::class,
+                        'cmssiteparagraph' => CmsSiteParagraphController::class,
                     ],
                     'models' => [
                         'setup' => SetupModel::class,
@@ -119,6 +122,7 @@ class ConfigProvider
                         'cmsmenu' => CmsMenuModel::class,
                         'cmssite' => CmsSiteModel::class,
                         'cmsparagraph' => CmsParagraphModel::class,
+                        'cmssiteparagraph' => CmsSiteParagraphModel::class,
                     ],
                 ]
             ]

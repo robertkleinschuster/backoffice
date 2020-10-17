@@ -261,8 +261,8 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
     protected function handleLike(Select $select)
     {
         foreach ($this->like_Map as $str => $like) {
-            foreach ($like as $column) {
-                $select->where(new Like($column, $str), Predicate::OP_OR);
+            foreach ($like as $field) {
+                $select->where(new Like("{$this->getTable($field)}.{$this->getColumn($field)}", $str), Predicate::OP_OR);
             }
         }
         return $this;

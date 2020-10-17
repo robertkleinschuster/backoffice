@@ -83,7 +83,8 @@
         "psr-4": {
             "Backoffice\\": "src/Backoffice/src/",
             "Cms\\": "src/Cms/src/",
-            "Base\\": "src/Base/src/"
+            "Base\\": "src/Base/src/",
+            "Frontend\\": "src/Frontend/src/"
         }
     },
     "autoload-dev": {

@@ -42,7 +42,7 @@ class DataUpdater extends AbstractUpdater
         $data_Map[] = [
             'Locale_Code' => 'en_US',
             'Locale_Name' => 'English (United States)',
-            'Locale_Active' => true,
+            'Locale_Active' => false,
         ];
         return $this->saveDataMap('Locale', 'Locale_Code', $data_Map);
     }

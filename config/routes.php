@@ -48,4 +48,9 @@ return static function (Application $app, MiddlewareFactory $factory, ContainerI
         MvcHandler::class
     ], 'backoffice');
 
+    $app->any('[/[{code}]]', [
+        DatabaseMiddleware::class,
+        \Frontend\Handler\Cms\CmsHandler::class
+    ]);
+
 };

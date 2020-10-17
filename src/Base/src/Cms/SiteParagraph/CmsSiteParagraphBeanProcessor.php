@@ -14,7 +14,7 @@ class CmsSiteParagraphBeanProcessor extends AbstractBeanProcessor
     {
         $saver = new DatabaseBeanSaver($adapter);
         $saver->addColumn('CmsSite_ID', 'CmsSite_ID', 'CmsSite_CmsParagraph', 'CmsSite_ID', true);
-        $saver->addColumn('CmsParagraphn_ID', 'CmsParagraphn_ID', 'CmsSite_CmsParagraph', 'CmsParagraphn_ID', true);
+        $saver->addColumn('CmsParagraph_ID', 'CmsParagraph_ID', 'CmsSite_CmsParagraph', 'CmsParagraph_ID', true);
         parent::__construct($saver);
     }
 }

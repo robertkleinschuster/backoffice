@@ -74,7 +74,7 @@ trait DatabaseInfoTrait
      * @param string|null $table
      * @return array
      */
-    private function getField_List(string $table = null): array
+    public function getField_List(string $table = null): array
     {
         if (null === $table) {
             return array_keys($this->dbInfo_Map);

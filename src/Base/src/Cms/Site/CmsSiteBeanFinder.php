@@ -4,6 +4,7 @@
 namespace Base\Cms\Site;
 
 
+use Base\Cms\SiteParagraph\CmsSiteParagraphBeanFinder;
 use Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Expression;
@@ -33,7 +34,9 @@ class CmsSiteBeanFinder extends AbstractBeanFinder
         $loader->addColumn('ArticleTranslation_SubHeading', 'ArticleTranslation_SubHeading', 'ArticleTranslation', 'Article_ID');
         $loader->addColumn('ArticleTranslation_Teaser', 'ArticleTranslation_Teaser', 'ArticleTranslation', 'Article_ID');
         $loader->addColumn('ArticleTranslation_Text', 'ArticleTranslation_Text', 'ArticleTranslation', 'Article_ID');
+        $loader->addColumn('ArticleTranslation_Footer', 'ArticleTranslation_Footer', 'ArticleTranslation', 'Article_ID');
         parent::__construct($loader, new CmsSiteBeanFactory());
+        $this->linkBeanFinder(new CmsSiteParagraphBeanFinder($adapter), 'CmsParagraph_BeanList', 'CmsSite_ID', 'CmsSite_ID');
     }
 
     /**
@@ -44,6 +47,17 @@ class CmsSiteBeanFinder extends AbstractBeanFinder
     {
         $expression = new Expression("Article.Article_ID = ArticleTranslation.Article_ID AND ArticleTranslation.Locale_Code = ?", $locale);
         $this->getLoader()->addJoinInfo('ArticleTranslation', Join::JOIN_LEFT, $expression);
+        return $this;
+    }
+
+    /**
+     * @param string $code
+     * @return $this
+     * @throws \Exception
+     */
+    public function setArticleTranslation_Code(string $code): self
+    {
+        $this->getLoader()->filterValue('ArticleTranslation_Code', $code);
         return $this;
     }
 

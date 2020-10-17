@@ -1,23 +1,26 @@
 <?php
 
 
-namespace Base\Article\Translation;
+namespace Base\Cms\SiteParagraph;
 
 
 use NiceshopsDev\Bean\JsonSerializable\AbstractJsonSerializableBean;
 
-class ArticleTranslationBean extends AbstractJsonSerializableBean
+class CmsSiteParagraphBean extends AbstractJsonSerializableBean
 {
 
     /**
-     * ArticleTranslationBean constructor.
+     * CmsSiteParagraphBean constructor.
      */
     public function __construct()
     {
+        $this->setDataType('CmsSite_ID', self::DATA_TYPE_INT, true);
+        $this->setDataType('CmsParagraph_ID', self::DATA_TYPE_INT, true);
         $this->setDataType('Article_ID', self::DATA_TYPE_INT, true);
+        $this->setDataType('Article_Code', self::DATA_TYPE_STRING, true);
         $this->setDataType('Locale_Code', self::DATA_TYPE_STRING, true);
-        $this->setDataType('ArticleTranslation_Code', self::DATA_TYPE_STRING, true);
         $this->setDataType('ArticleTranslation_Name', self::DATA_TYPE_STRING, true);
+        $this->setDataType('ArticleTranslation_Code', self::DATA_TYPE_STRING, true);
         $this->setDataType('ArticleTranslation_Title', self::DATA_TYPE_STRING, true);
         $this->setDataType('ArticleTranslation_Heading', self::DATA_TYPE_STRING, true);
         $this->setDataType('ArticleTranslation_SubHeading', self::DATA_TYPE_STRING, true);

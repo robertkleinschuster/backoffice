@@ -64,7 +64,7 @@ class CmsMenuController extends BaseController
     protected function addOverviewFields(Overview $overview): void
     {
         parent::addOverviewFields($overview);
-        $overview->addText('Article_Code', $this->translate('article.code'))->setWidth(100);
+        $overview->addText('Article_Code', $this->translate('article.code'))->setWidth(150);
         $overview->addText('ArticleTranslation_Name', $this->translate('articletranslation.name'));
         $overview->addText('ArticleTranslation_Code', $this->translate('articletranslation.code'));
 
