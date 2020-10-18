@@ -84,4 +84,5 @@ return [
     'cmssiteparagraph.overview.title' => 'Absätze',
     'cmssiteparagraph.create' => 'Hinzufügen',
     'cmsparagraph.name' => 'Name',
+    'site.toolbar.frontend' => 'Öffnen',
 ];
