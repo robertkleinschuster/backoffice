@@ -27,11 +27,15 @@ class TranslationBeanFinder extends AbstractBeanFinder implements RemoteLoaderIn
     public function load($locale, $textDomain)
     {
         $data = [];
-        $this->setLocale_Code($locale);
-        $this->setTranslation_Namespace($textDomain);
-        $this->find();
-        foreach ($this->getBeanGenerator() as $bean) {
-            $data[$bean->getData('Translation_Code')] = $bean->getData('Translation_Text');
+        try {
+            $this->setLocale_Code($locale);
+            $this->setTranslation_Namespace($textDomain);
+            $this->find();
+            foreach ($this->getBeanGenerator() as $bean) {
+                $data[$bean->getData('Translation_Code')] = $bean->getData('Translation_Text');
+            }
+        } catch (\Exception $ex) {
+
         }
         return new TextDomain($data);
     }
