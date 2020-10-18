@@ -4,6 +4,7 @@ return [
     'login.username'   => 'Benutzername',
     'login.password'   => 'Passwort',
     'login.submit'   => 'Anmelden',
+    'login.error'   => 'Fehler',
     'index.title'   => 'Startseite',
     'overview.title'   => 'Übersicht',
     'overview.create'   => 'Hinzufügen',
