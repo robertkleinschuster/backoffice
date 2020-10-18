@@ -447,7 +447,11 @@ abstract class BaseController extends AbstractController implements AttributeAwa
 
     protected function getIndexRedirectLink()
     {
-        return $this->getPathHelper()->setAction('index')->setParams(['locale' => $this->getUser()->getData('Locale_Code')])->getPath();
+        $path =  $this->getPathHelper()->setAction('index');
+        if ($this->getUser()->hasData('Locale_Code')) {
+            $path->setParams(['locale' => $this->getUser()->getData('Locale_Code')]);
+        }
+        return $path->getPath();
     }
 
     protected function initCreateTemplate(string $redirect = null)
