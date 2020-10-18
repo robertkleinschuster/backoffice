@@ -4,6 +4,7 @@
 namespace Base\Cms\Site;
 
 
+use Base\Article\Translation\ArticleTranslationBeanFinder;
 use Base\Cms\SiteParagraph\CmsSiteParagraphBeanFinder;
 use Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
@@ -16,26 +17,16 @@ use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
  * @package Base\Cms\Site
  * @method DatabaseBeanLoader getLoader() : BeanLoaderInterface
  */
-class CmsSiteBeanFinder extends AbstractBeanFinder
+class CmsSiteBeanFinder extends ArticleTranslationBeanFinder
 {
     public function __construct(Adapter $adapter)
     {
-        $loader = new DatabaseBeanLoader($adapter);
-        $loader->addColumn('CmsSite_ID', 'CmsSite_ID', 'CmsSite', 'CmsSite_ID', true);
-        $loader->addColumn('Article_ID', 'Article_ID', 'CmsSite', 'CmsSite_ID', false, null, ['Article', 'ArticleTranslation']);
-        $loader->addColumn('Article_Code', 'Article_Code', 'Article', 'Article_ID');
-        $loader->addColumn('ArticleState_Code', 'ArticleState_Code', 'Article', 'Article_ID');
-        $loader->addColumn('ArticleType_Code', 'ArticleType_Code', 'Article', 'Article_ID');
-        $loader->addColumn('Locale_Code', 'Locale_Code', 'ArticleTranslation', 'Article_ID');
-        $loader->addColumn('ArticleTranslation_Code', 'ArticleTranslation_Code', 'ArticleTranslation', 'Article_ID');
-        $loader->addColumn('ArticleTranslation_Name', 'ArticleTranslation_Name', 'ArticleTranslation', 'Article_ID');
-        $loader->addColumn('ArticleTranslation_Title', 'ArticleTranslation_Title', 'ArticleTranslation', 'Article_ID');
-        $loader->addColumn('ArticleTranslation_Heading', 'ArticleTranslation_Heading', 'ArticleTranslation', 'Article_ID');
-        $loader->addColumn('ArticleTranslation_SubHeading', 'ArticleTranslation_SubHeading', 'ArticleTranslation', 'Article_ID');
-        $loader->addColumn('ArticleTranslation_Teaser', 'ArticleTranslation_Teaser', 'ArticleTranslation', 'Article_ID');
-        $loader->addColumn('ArticleTranslation_Text', 'ArticleTranslation_Text', 'ArticleTranslation', 'Article_ID');
-        $loader->addColumn('ArticleTranslation_Footer', 'ArticleTranslation_Footer', 'ArticleTranslation', 'Article_ID');
-        parent::__construct($loader, new CmsSiteBeanFactory());
+        parent::__construct($adapter, new CmsSiteBeanFactory());
+        $loader = $this->getLoader();
+        if ($loader instanceof  DatabaseBeanLoader) {
+            $loader->addColumn('CmsSite_ID', 'CmsSite_ID', 'CmsSite', 'CmsSite_ID', true);
+            $loader->addColumn('Article_ID', 'Article_ID', 'CmsSite', 'CmsSite_ID', false, null, ['Article', 'ArticleTranslation']);
+        }
         $this->linkBeanFinder(new CmsSiteParagraphBeanFinder($adapter), 'CmsParagraph_BeanList', 'CmsSite_ID', 'CmsSite_ID');
     }
 

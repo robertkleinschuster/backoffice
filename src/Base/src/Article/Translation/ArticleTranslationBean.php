@@ -4,9 +4,9 @@
 namespace Base\Article\Translation;
 
 
-use NiceshopsDev\Bean\JsonSerializable\AbstractJsonSerializableBean;
+use Base\Article\ArticleBean;
 
-class ArticleTranslationBean extends AbstractJsonSerializableBean
+class ArticleTranslationBean extends ArticleBean
 {
 
     /**
@@ -14,7 +14,7 @@ class ArticleTranslationBean extends AbstractJsonSerializableBean
      */
     public function __construct()
     {
-        $this->setDataType('Article_ID', self::DATA_TYPE_INT, true);
+        parent::__construct();
         $this->setDataType('Locale_Code', self::DATA_TYPE_STRING, true);
         $this->setDataType('ArticleTranslation_Code', self::DATA_TYPE_STRING, true);
         $this->setDataType('ArticleTranslation_Name', self::DATA_TYPE_STRING, true);
