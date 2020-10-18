@@ -7,6 +7,7 @@ use Base\Database\DatabaseMiddleware;
 use Base\Localization\LocalizationMiddleware;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Mezzio\Template\TemplateRendererInterface;
+use Minifier\TinyMinify;
 
 class CmsHandler implements \Psr\Http\Server\RequestHandlerInterface
 {
@@ -44,8 +45,8 @@ class CmsHandler implements \Psr\Http\Server\RequestHandlerInterface
         }
         if ($siteFinder->find() === 1) {
             $this->renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'bean', $siteFinder->getBean());
-            return new HtmlResponse($this->renderer->render('frontend::index'));
+            return new HtmlResponse(TinyMinify::html($this->renderer->render('frontend::index')));
         }
-        return new HtmlResponse($this->renderer->render('frontend::404'), 404);
+        return new HtmlResponse(TinyMinify::html($this->renderer->render('frontend::404')), 404);
     }
 }
