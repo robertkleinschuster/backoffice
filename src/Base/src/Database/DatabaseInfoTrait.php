@@ -33,6 +33,13 @@ trait DatabaseInfoTrait
         return $this;
     }
 
+    public function resetDbInfo()
+    {
+        $this->dbInfo_Map = [];
+        $this->dbJoinInfo_Map = [];
+        return $this;
+    }
+
     /**
      * @param string $table
      * @param string $type

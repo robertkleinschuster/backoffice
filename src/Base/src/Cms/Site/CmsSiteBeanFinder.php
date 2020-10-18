@@ -10,6 +10,7 @@ use Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Join;
+use Laminas\Db\Sql\Predicate\Like;
 use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
 
 /**
@@ -30,16 +31,7 @@ class CmsSiteBeanFinder extends ArticleTranslationBeanFinder
         $this->linkBeanFinder(new CmsSiteParagraphBeanFinder($adapter), 'CmsParagraph_BeanList', 'CmsSite_ID', 'CmsSite_ID');
     }
 
-    /**
-     * @param string $locale
-     * @return $this
-     */
-    public function setLocale_Code(string $locale): self
-    {
-        $expression = new Expression("Article.Article_ID = ArticleTranslation.Article_ID AND ArticleTranslation.Locale_Code = ?", $locale);
-        $this->getLoader()->addJoinInfo('ArticleTranslation', Join::JOIN_LEFT, $expression);
-        return $this;
-    }
+
 
     /**
      * @param string $code

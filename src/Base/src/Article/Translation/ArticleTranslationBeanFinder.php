@@ -5,12 +5,27 @@ namespace Base\Article\Translation;
 
 
 use Base\Article\ArticleBeanFinder;
+use Base\Cms\Paragraph\CmsParagraphBeanFinder;
+use Base\Cms\Site\CmsSiteBeanFinder;
 use Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Join;
+use Laminas\Db\Sql\Predicate\Expression;
 use NiceshopsDev\Bean\BeanFactory\BeanFactoryInterface;
+use NiceshopsDev\Bean\BeanFinder\BeanLoaderInterface;
 
+/**
+ * Class ArticleTranslationBeanFinder
+ * @package Base\Article\Translation
+ * @method DatabaseBeanLoader getLoader() : BeanLoaderInterface
+ */
 class ArticleTranslationBeanFinder extends ArticleBeanFinder
 {
+    /**
+     * ArticleTranslationBeanFinder constructor.
+     * @param Adapter $adapter
+     * @param BeanFactoryInterface|null $beanFactory
+     */
     public function __construct(Adapter $adapter, BeanFactoryInterface $beanFactory = null)
     {
         parent::__construct($adapter, $beanFactory ?? new ArticleTranslationBeanFactory());
@@ -30,14 +45,36 @@ class ArticleTranslationBeanFinder extends ArticleBeanFinder
     }
 
     /**
-     * @param string $locale_Code
+     * @param string $locale
+     * @param bool $leftJoin
      * @return $this
      */
-    public function setLocale_Code(string $locale_Code)
+    public function setLocale_Code(string $locale, bool $leftJoin = true): self
     {
-        $this->getLoader()->filterValue('Locale_Code', $locale_Code);
+        if ($leftJoin) {
+            $expression = new Expression("Article.Article_ID = ArticleTranslation.Article_ID AND ArticleTranslation.Locale_Code = ?", $locale);
+            $this->getLoader()->addJoinInfo('ArticleTranslation', Join::JOIN_LEFT, $expression);
+        } else {
+            $this->getLoader()->filterValue('Locale_Code', $locale);
+        }
         return $this;
     }
+
+
+    /**
+     * @param string $language
+     * @param bool $limit
+     * @return $this
+     */
+    public function setLanguage(string $language, bool $limit = true): self
+    {
+        $this->getLoader()->addLike("$language%", 'Locale_Code');
+        if ($limit) {
+            $this->getLoader()->limit(1, 0);
+        }
+        return $this;
+    }
+
 
     /**
      * @param string $articleTranslation_Code

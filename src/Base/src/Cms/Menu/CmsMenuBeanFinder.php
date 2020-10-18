@@ -10,6 +10,7 @@ use Laminas\Db\Sql\Join;
 use Laminas\Db\Sql\Predicate\Expression;
 use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
 
+
 class CmsMenuBeanFinder extends AbstractBeanFinder
 {
     public function __construct(Adapter $adapter)

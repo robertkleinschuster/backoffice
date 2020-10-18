@@ -552,4 +552,13 @@ abstract class BaseController extends AbstractController implements AttributeAwa
 
     }
 
+    public function clearcacheAction()
+    {
+        $result = 'Clear Cache';
+        $result .= "<br>Backoffice {$this->getTranslator()->getLocale()} Translation: " . $this->getTranslator()->clearCache('backoffice', $this->getTranslator()->getLocale());
+        $this->getControllerResponse()->removeOption(ControllerResponse::OPTION_RENDER_RESPONSE);
+        $result .= '<br>Done';
+        $this->getControllerResponse()->setBody($result);
+    }
+
 }

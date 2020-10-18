@@ -25,16 +25,7 @@ class CmsParagraphBeanFinder extends ArticleTranslationBeanFinder
         }
     }
 
-    /**
-     * @param string $locale
-     * @return $this
-     */
-    public function setLocale_Code(string $locale): self
-    {
-        $expression = new Expression("Article.Article_ID = ArticleTranslation.Article_ID AND ArticleTranslation.Locale_Code = ?", $locale);
-        $this->getLoader()->addJoinInfo('ArticleTranslation', Join::JOIN_LEFT, $expression);
-        return $this;
-    }
+
 
     /**
      * @param string $code

@@ -30,18 +30,26 @@ class CmsHandler implements \Psr\Http\Server\RequestHandlerInterface
         $adapter = $request->getAttribute(DatabaseMiddleware::ADAPTER_ATTRIBUTE);
         $locale = $request->getAttribute(LocalizationMiddleware::LOCALIZATION_ATTRIBUTE);
         $code = $request->getAttribute('code', '/');
+        $lang = \Locale::getPrimaryLanguage($locale);
 
-        $menuFilder = new CmsMenuBeanFinder($adapter);
-        $menuFilder->setLocale_Code($locale);
-        $menuFilder->find();
+        $menuFinder = new CmsMenuBeanFinder($adapter);
+        $menuFinder->setLocale_Code($locale);
+        $menuFinder->find();
 
-        $this->renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'menu', $menuFilder->getBeanGenerator());
+        $this->renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'menu', $menuFinder->getBeanGenerator());
         $this->renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'code', $code);
         $siteFinder = new CmsSiteBeanFinder($adapter);
-        $siteFinder->setLocale_Code($locale);
+        $siteFinder->setLocale_Code($locale, false);
         $siteFinder->setArticleTranslation_Code($code);
         if ($siteFinder->count() == 0) {
-            $siteFinder->setLocale_Code('de_AT');
+            $siteFinder = new CmsSiteBeanFinder($adapter);
+            $siteFinder->setLanguage($lang);
+            $siteFinder->setArticleTranslation_Code($code);
+            if ($siteFinder->count() == 0) {
+                $siteFinder = new CmsSiteBeanFinder($adapter);
+                $siteFinder->setLocale_Code('de_AT');
+                $siteFinder->setArticleTranslation_Code($code);
+            }
         }
         if ($siteFinder->find() === 1) {
             $this->renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'bean', $siteFinder->getBean());
