@@ -32,8 +32,6 @@
         "php": "^7.3",
         "ext-intl": "*",
         "ext-json": "*",
-        "ext-memcached": "*",
-        "ext-redis": "*",
         "cache/filesystem-adapter": "^1.0",
         "cache/memcached-adapter": "^1.0",
         "cache/redis-adapter": "^1.0",
