@@ -144,7 +144,7 @@
 </head>
 <body class="text-center">
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-    <header class="masthead mb-4">
+    <header class="masthead mb-auto">
         <div class="inner">
             <h3 class="masthead-brand"><?= $bean->getData('ArticleTranslation_Title') ?></h3>
             <nav class="nav nav-masthead justify-content-center">
@@ -156,7 +156,7 @@
         </div>
     </header>
 
-    <main role="main" class="inner cover">
+    <main role="main" class="inner cover my-4">
         <h1 class="cover-heading"><?= $bean->getData('ArticleTranslation_Heading') ?></h1>
         <h2><?= $bean->getData('ArticleTranslation_SubHeading') ?></h2>
         <p class="lead"><?= $bean->getData('ArticleTranslation_Teaser') ?></p>
