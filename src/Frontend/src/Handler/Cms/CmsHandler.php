@@ -39,6 +39,9 @@ class CmsHandler implements \Psr\Http\Server\RequestHandlerInterface
         $siteFinder = new CmsSiteBeanFinder($adapter);
         $siteFinder->setLocale_Code($locale);
         $siteFinder->setArticleTranslation_Code($code);
+        if ($siteFinder->count() == 0) {
+            $siteFinder->setLocale_Code('de_AT');
+        }
         if ($siteFinder->find() === 1) {
             $this->renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'bean', $siteFinder->getBean());
             return new HtmlResponse($this->renderer->render('frontend::index'));
