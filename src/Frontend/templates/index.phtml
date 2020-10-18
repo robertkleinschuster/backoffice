@@ -154,23 +154,23 @@
         <?php if ($bean->hasData('CmsParagraph_BeanList')): ?>
             <?php foreach ($bean->getData('CmsParagraph_BeanList') as $paragraph): ?>
                 <div class="card mb-4 text-body">
-                    <?php if ($paragraph->hasData('ArticleTranslation_Title')): ?>
+                    <?php if ($paragraph->hasData('ArticleTranslation_Title') && !empty($paragraph->getData('ArticleTranslation_Title'))): ?>
                         <h4 class="card-header">
                             <?= $paragraph->hasData('ArticleTranslation_Title') ? $paragraph->getData('ArticleTranslation_Title') : '' ?>
                         </h4>
                     <?php endif; ?>
                     <div class="card-body">
-                        <?php if ($paragraph->hasData('ArticleTranslation_Heading')): ?>
+                        <?php if ($paragraph->hasData('ArticleTranslation_Heading') && !empty($paragraph->getData('ArticleTranslation_Heading'))): ?>
                             <h5 class="card-title">
                                 <?= $paragraph->hasData('ArticleTranslation_Heading') ? $paragraph->getData('ArticleTranslation_Heading') : '' ?>
                             </h5>
                         <?php endif; ?>
-                        <?php if ($paragraph->hasData('ArticleTranslation_SubHeading')): ?>
+                        <?php if ($paragraph->hasData('ArticleTranslation_SubHeading') && !empty($paragraph->getData('ArticleTranslation_SubHeading'))): ?>
                             <p class="card-text">
                                 <?= $paragraph->hasData('ArticleTranslation_SubHeading') ? $paragraph->getData('ArticleTranslation_SubHeading') : '' ?>
                             </p>
                         <?php endif; ?>
-                        <?php if ($paragraph->hasData('ArticleTranslation_Teaser')): ?>
+                        <?php if ($paragraph->hasData('ArticleTranslation_Teaser') && !empty($paragraph->getData('ArticleTranslation_Teaser'))): ?>
                             <p class="card-text">
                                 <?= $paragraph->hasData('ArticleTranslation_Teaser') ? $paragraph->getData('ArticleTranslation_Teaser') : '' ?>
                             </p>
