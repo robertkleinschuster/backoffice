@@ -43,6 +43,6 @@ class CmsHandler implements \Psr\Http\Server\RequestHandlerInterface
             $this->renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'bean', $siteFinder->getBean());
             return new HtmlResponse($this->renderer->render('frontend::index'));
         }
-        return new HtmlResponse($this->renderer->render('frontend::404'));
+        return new HtmlResponse($this->renderer->render('frontend::404'), 404);
     }
 }
