@@ -46,6 +46,11 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
     private $like_Map;
 
     /**
+     * @var array[]
+     */
+    private $order_Map;
+
+    /**
      * @var ResultSet
      */
     private $result = null;
@@ -72,6 +77,7 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
         $this->where_Map = [];
         $this->exclude_Map = [];
         $this->like_Map = [];
+        $this->order_Map = [];
     }
 
 
@@ -193,7 +199,14 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
         return $this;
     }
 
-
+    /**
+     * @param string $field
+     * @param bool $desc
+     */
+    public function addOrder(string $field, bool $desc = false)
+    {
+        $this->order_Map[$field] = $desc ? 'DESC' : 'ASC';
+    }
 
     /**
      * @param Select $select
@@ -364,6 +377,7 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
         $this->handleJoins($select);
         $this->handleWhere($select);
         $this->handleLike($select);
+        $this->handleOrder($select);
         if ($limit) {
             $this->handleLimit($select);
         }
@@ -372,6 +386,18 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
         }
 
         return $select;
+    }
+
+    /**
+     * @param Select $select
+     * @throws \Exception
+     */
+    protected function handleOrder(Select $select)
+    {
+        foreach ($this->order_Map as $field => $order) {
+            $select->order("{$this->getTable($field)}.{$this->getColumn($field)} $order");
+        }
+        $select->order($this->order_Map);
     }
 
     /**

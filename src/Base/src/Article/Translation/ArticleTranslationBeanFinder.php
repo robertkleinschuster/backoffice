@@ -5,14 +5,12 @@ namespace Base\Article\Translation;
 
 
 use Base\Article\ArticleBeanFinder;
-use Base\Cms\Paragraph\CmsParagraphBeanFinder;
-use Base\Cms\Site\CmsSiteBeanFinder;
 use Base\Database\DatabaseBeanLoader;
+use Base\Localization\Locale\LocaleBeanFinder;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Join;
 use Laminas\Db\Sql\Predicate\Expression;
 use NiceshopsDev\Bean\BeanFactory\BeanFactoryInterface;
-use NiceshopsDev\Bean\BeanFinder\BeanLoaderInterface;
 
 /**
  * Class ArticleTranslationBeanFinder
@@ -21,6 +19,9 @@ use NiceshopsDev\Bean\BeanFinder\BeanLoaderInterface;
  */
 class ArticleTranslationBeanFinder extends ArticleBeanFinder
 {
+
+    private $adapter;
+
     /**
      * ArticleTranslationBeanFinder constructor.
      * @param Adapter $adapter
@@ -28,6 +29,7 @@ class ArticleTranslationBeanFinder extends ArticleBeanFinder
      */
     public function __construct(Adapter $adapter, BeanFactoryInterface $beanFactory = null)
     {
+        $this->adapter = $adapter;
         parent::__construct($adapter, $beanFactory ?? new ArticleTranslationBeanFactory());
         $loader = $this->getLoader();
         if ($loader instanceof DatabaseBeanLoader) {
@@ -60,22 +62,6 @@ class ArticleTranslationBeanFinder extends ArticleBeanFinder
         return $this;
     }
 
-
-    /**
-     * @param string $language
-     * @param bool $limit
-     * @return $this
-     */
-    public function setLanguage(string $language, bool $limit = true): self
-    {
-        $this->getLoader()->addLike("$language%", 'Locale_Code');
-        if ($limit) {
-            $this->getLoader()->limit(1, 0);
-        }
-        return $this;
-    }
-
-
     /**
      * @param string $articleTranslation_Code
      * @return $this
@@ -86,4 +72,31 @@ class ArticleTranslationBeanFinder extends ArticleBeanFinder
         return $this;
     }
 
+    /**
+     * @param string $localeCode
+     * @param string $fallback
+     */
+    public function findByLocaleWithFallback(string $localeCode, string $fallback)
+    {
+        $this->setLocale_Code($localeCode, false);
+        if ($this->count() == 0) {
+            // Find similar locales
+            $language = \Locale::getPrimaryLanguage($localeCode);
+            $localeFinder = new LocaleBeanFinder($this->adapter);
+            $localeFinder->setLocale_Active(true);
+            $localeFinder->setLanguage($language);
+            $localeFinder->find();
+            $generator = $localeFinder->getBeanGenerator();
+            foreach ($generator as $localeBean) {
+                $this->setLocale_Code($localeBean->getData('Locale_Code'), false);
+                if ($this->count() > 0) {
+                    return $this->find();
+                }
+            }
+            $this->setLocale_Code($fallback, false);
+            return $this->find();
+        } else {
+            return $this->find();
+        }
+    }
 }

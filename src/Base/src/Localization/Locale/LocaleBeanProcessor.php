@@ -17,7 +17,7 @@ class LocaleBeanProcessor extends \NiceshopsDev\Bean\BeanProcessor\AbstractBeanP
         $saver->addColumn('Locale_Code', 'Locale_Code', 'Locale', 'Locale_Code', true);
         $saver->addColumn('Locale_Name', 'Locale_Name', 'Locale', 'Locale_Code');
         $saver->addColumn('Locale_Active', 'Locale_Active', 'Locale', 'Locale_Code');
-
+        $saver->addColumn('Locale_Order', 'Locale_Order', 'Locale', 'Locale_Code');
         parent::__construct($saver);
     }
 

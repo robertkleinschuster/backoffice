@@ -16,7 +16,7 @@ class BackofficeBeanFormatter extends \NiceshopsDev\Bean\BeanFormatter\AbstractB
     protected function convertValueByDataType(?string $dataType, $value)
     {
         if ($value === null) {
-            return "NULL";
+            return null;
         }
         switch ($dataType) {
             case AbstractBaseBean::DATA_TYPE_FLOAT:

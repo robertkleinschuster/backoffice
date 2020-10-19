@@ -27,9 +27,11 @@ class SetupController extends \Backoffice\Mvc\Base\BaseController
     {
         $this->getModel()->setDbAdapter($this->getControllerRequest()->getServerRequest()->getAttribute(DatabaseMiddleware::ADAPTER_ATTRIBUTE));
         $this->getModel()->init();
-        try {
-           $count =  $this->getModel()->getFinder()->count();
-        } catch (\Throwable $ex) {
+        $metadata = \Laminas\Db\Metadata\Source\Factory::createSourceFromAdapter($this->getModel()->getDbAdpater());
+        $tableNames = $metadata->getTableNames($this->getModel()->getDbAdpater()->getCurrentSchema());
+        if (in_array('Person', $tableNames) && in_array('User', $tableNames)) {
+            $count = $this->getModel()->getFinder()->count();
+        } else {
             $count = 0;
         }
         if ($count > 0) {

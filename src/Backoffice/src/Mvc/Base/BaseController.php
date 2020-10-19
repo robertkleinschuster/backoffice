@@ -189,6 +189,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
     {
         $this->setView(new View('layout/dashboard'));
         $this->getView()->setTitle('Backoffice');
+        $this->getView()->setData('favicon', '/backoffice.ico');
         $this->getView()->setBeanFormatter(new BackofficeBeanFormatter());
         $this->getView()->setPermissionList($this->getUser()->getPermission_List());
 
