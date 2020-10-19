@@ -54,7 +54,7 @@ class ArticleTranslationBeanProcessor extends ArticleBeanProcessor
             $articleTranslationFinder->setLocale_Code($bean->getData('Locale_Code'));
             $articleTranslationFinder->setArticleTranslation_Code($bean->getData('ArticleTranslation_Code'));
             if ($articleTranslationFinder->count() > 0) {
-                $this->getValidationHelper()->addError('ArticleTranslation_Code', 'articletranslation.code.unique');
+                $this->getValidationHelper()->addError('ArticleTranslation_Code', $this->translate('articletranslation.code.unique'));
             }
         }
         if (!$bean->hasData('ArticleTranslation_Name') || !strlen(trim($bean->getData('ArticleTranslation_Name')))) {
