@@ -149,33 +149,33 @@
     <main role="main" class="inner cover my-4">
         <h1 class="cover-heading mb-4"><?= $bean->getData('ArticleTranslation_Heading') ?></h1>
         <h2><?= $bean->getData('ArticleTranslation_SubHeading') ?></h2>
-        <p class="lead"><?= $bean->getData('ArticleTranslation_Teaser') ?></p>
-        <p class="lead"><?= $bean->getData('ArticleTranslation_Text') ?></p>
+        <p class="lead"><?= $placeholder->replace($bean->getData('ArticleTranslation_Teaser')) ?></p>
+        <p class="lead"><?= $placeholder->replace($bean->getData('ArticleTranslation_Text')) ?></p>
         <?php if ($bean->hasData('CmsParagraph_BeanList')): ?>
             <?php foreach ($bean->getData('CmsParagraph_BeanList') as $paragraph): ?>
                 <div class="card mb-4 text-body">
                     <?php if ($paragraph->hasData('ArticleTranslation_Title') && !empty($paragraph->getData('ArticleTranslation_Title'))): ?>
                         <h4 class="card-header">
-                            <?= $paragraph->hasData('ArticleTranslation_Title') ? $paragraph->getData('ArticleTranslation_Title') : '' ?>
+                            <?= $paragraph->hasData('ArticleTranslation_Title') ? $placeholder->replace($paragraph->getData('ArticleTranslation_Title')) : '' ?>
                         </h4>
                     <?php endif; ?>
                     <div class="card-body">
                         <?php if ($paragraph->hasData('ArticleTranslation_Heading') && !empty($paragraph->getData('ArticleTranslation_Heading'))): ?>
                             <h5 class="card-title">
-                                <?= $paragraph->hasData('ArticleTranslation_Heading') ? $paragraph->getData('ArticleTranslation_Heading') : '' ?>
+                                <?= $paragraph->hasData('ArticleTranslation_Heading') ? $placeholder->replace($paragraph->getData('ArticleTranslation_Heading')) : '' ?>
                             </h5>
                         <?php endif; ?>
                         <?php if ($paragraph->hasData('ArticleTranslation_SubHeading') && !empty($paragraph->getData('ArticleTranslation_SubHeading'))): ?>
                             <p class="card-text">
-                                <?= $paragraph->hasData('ArticleTranslation_SubHeading') ? $paragraph->getData('ArticleTranslation_SubHeading') : '' ?>
+                                <?= $paragraph->hasData('ArticleTranslation_SubHeading') ? $placeholder->replace($paragraph->getData('ArticleTranslation_SubHeading')) : '' ?>
                             </p>
                         <?php endif; ?>
                         <?php if ($paragraph->hasData('ArticleTranslation_Teaser') && !empty($paragraph->getData('ArticleTranslation_Teaser'))): ?>
                             <p class="card-text">
-                                <?= $paragraph->hasData('ArticleTranslation_Teaser') ? $paragraph->getData('ArticleTranslation_Teaser') : '' ?>
+                                <?= $paragraph->hasData('ArticleTranslation_Teaser') ? $placeholder->replace($paragraph->getData('ArticleTranslation_Teaser')) : '' ?>
                             </p>
                         <?php endif; ?>
-                        <?= $paragraph->hasData('ArticleTranslation_Text') ? $paragraph->getData('ArticleTranslation_Text') : '' ?>
+                        <?= $paragraph->hasData('ArticleTranslation_Text') && !empty($paragraph->getData('ArticleTranslation_Text')) ? $placeholder->replace($paragraph->getData('ArticleTranslation_Text')) : '' ?>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -184,7 +184,7 @@
 
     <footer class="mastfoot mt-auto">
         <div class="inner">
-            <?= $bean->getData('ArticleTranslation_Footer') ?>
+            <?= $placeholder->replace($bean->getData('ArticleTranslation_Footer')) ?>
         </div>
     </footer>
 </div>

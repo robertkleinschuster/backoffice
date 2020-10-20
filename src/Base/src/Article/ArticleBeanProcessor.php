@@ -42,6 +42,7 @@ class ArticleBeanProcessor extends AbstractBeanProcessor implements ValidationHe
             $this->getValidationHelper()->addError('Article_Code', $this->translate('article.code.empty'));
         } else {
             $articleFinder = new ArticleBeanFinder($this->adapter);
+            $articleFinder->setArticle_ID($bean->getData('Article_ID'), true);
             $articleFinder->setArticle_Code($bean->getData('Article_Code'));
             if ($articleFinder->count() > 0) {
                 $this->getValidationHelper()->addError('Article_Code', $this->translate('article.code.unique'));

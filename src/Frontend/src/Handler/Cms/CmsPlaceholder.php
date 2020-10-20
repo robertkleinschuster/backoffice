@@ -1,0 +1,35 @@
+<?php
+
+
+namespace Frontend\Handler\Cms;
+
+
+use Laminas\I18n\Translator\TranslatorAwareInterface;
+use Laminas\I18n\Translator\TranslatorAwareTrait;
+
+class CmsPlaceholder implements TranslatorAwareInterface
+{
+    use TranslatorAwareTrait;
+
+    private $locale;
+
+    /**
+     * CmsPlaceholder constructor.
+     * @param $locale
+     */
+    public function __construct($locale)
+    {
+        $this->locale = $locale;
+    }
+
+    public function replace(?string $content): ?string
+    {
+        $messages = $this->getTranslator()->getAllMessages('frontend', $this->locale);
+        if ($messages instanceof \ArrayObject) {
+            $messages = (array) $messages;
+            $keys = array_map(function($x){return "{{$x}}";}, array_keys($messages));
+            $content = str_replace($keys, array_values($messages), $content);
+        }
+        return $content;
+    }
+}

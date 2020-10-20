@@ -5,6 +5,7 @@ use Base\Cms\Menu\CmsMenuBeanFinder;
 use Base\Cms\Site\CmsSiteBeanFinder;
 use Base\Database\DatabaseMiddleware;
 use Base\Localization\LocalizationMiddleware;
+use Base\Translation\TranslatorMiddleware;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Mezzio\Template\TemplateRendererInterface;
 use Minifier\TinyMinify;
@@ -28,13 +29,17 @@ class CmsHandler implements \Psr\Http\Server\RequestHandlerInterface
     {
         $adapter = $request->getAttribute(DatabaseMiddleware::ADAPTER_ATTRIBUTE);
         $locale = $request->getAttribute(LocalizationMiddleware::LOCALIZATION_ATTRIBUTE);
+        $translator = $request->getAttribute(TranslatorMiddleware::TRANSLATOR_ATTRIBUTE);
         $code = $request->getAttribute('code', '/');
+        $placeholder = new CmsPlaceholder($locale);
+        $placeholder->setTranslator($translator);
 
         $menuFinder = new CmsMenuBeanFinder($adapter);
         $menuFinder->findByLocaleWithFallback($locale, 'de_AT');
 
         $this->renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'menu', $menuFinder->getBeanGenerator());
         $this->renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'code', $code);
+        $this->renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'placeholder', $placeholder);
         $siteFinder = new CmsSiteBeanFinder($adapter);
         $siteFinder->setArticleTranslation_Code($code);
         if ($siteFinder->findByLocaleWithFallback($locale, 'de_AT') === 1) {

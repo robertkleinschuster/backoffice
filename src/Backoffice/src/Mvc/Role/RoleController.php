@@ -62,6 +62,7 @@ class RoleController extends BaseController
     {
         $edit = $this->initEditTemplate();
         $edit->setBean($this->getModel()->getFinder()->getBean());
+        $edit->getBean()->setFromArray($this->getPreviousAttributes());
     }
 
     protected function addEditFields(Edit $edit): void

@@ -102,6 +102,7 @@ class UserController extends BaseController
         $bean = $this->getModel()->getFinder()->getBean();
         $edit->setBean($bean);
         $bean->setData('User_Password', '');
+        $edit->getBean()->setFromArray($this->getPreviousAttributes());
     }
 
     public function edit_meAction()

@@ -38,6 +38,10 @@ return [
             [
                 'type' => TranslationBeanFinder::class,
                 'text_domain' => 'backoffice'
+            ],
+            [
+                'type' => TranslationBeanFinder::class,
+                'text_domain' => 'frontend'
             ]
         ],
         'cache' => [

@@ -64,6 +64,7 @@ class TranslationController extends BaseController
     {
         $edit = $this->initEditTemplate();
         $edit->setBean($this->getModel()->getFinder()->getBean());
+        $edit->getBean()->setFromArray($this->getPreviousAttributes());
     }
 
     public function deleteAction()
@@ -97,8 +98,12 @@ class TranslationController extends BaseController
         ->setSelectOptions($this->getModel()->getLocale_Options())
         ->setValue($this->getTranslator()->getLocale());
         $edit->addText('Translation_Code', $this->translate('translation.code'));
-        $edit->addText('Translation_Namespace', $this->translate('translation.namespace'))
-            ->setValue('default');
+        $edit->addSelect('Translation_Namespace', $this->translate('translation.namespace'))
+        ->setSelectOptions([
+            'frontend' => 'frontend',
+            'backoffice' => 'backoffice',
+            'default' => 'default',
+        ]);
         $edit->addTextarea('Translation_Text', $this->translate('translation.text'))
         ->setRows(5);
     }

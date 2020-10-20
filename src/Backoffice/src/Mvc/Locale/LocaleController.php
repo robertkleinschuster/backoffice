@@ -50,6 +50,7 @@ class LocaleController extends BaseController
     {
         $edit = $this->initEditTemplate();
         $edit->setBean($this->getModel()->getFinder()->getBean());
+        $edit->getBean()->setFromArray($this->getPreviousAttributes());
     }
 
     protected function getDetailPath(): PathHelper

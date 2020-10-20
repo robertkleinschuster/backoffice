@@ -30,5 +30,20 @@ class ArticleBeanFinder extends AbstractBeanFinder
         $this->getLoader()->filterValue('Article_Code', $articleCode);
         return $this;
     }
+    /**
+     * @param int $article_id
+     * @param bool $exclude
+     * @return $this
+     * @throws \Exception
+     */
+    public function setArticle_ID(int $article_id, bool $exclude = false): self
+    {
+        if ($exclude) {
+            $this->getLoader()->excludeValue('Article_ID', $article_id);
+        } else {
+            $this->getLoader()->filterValue('Article_ID', $article_id);
+        }
+        return $this;
+    }
 
 }

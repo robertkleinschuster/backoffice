@@ -111,6 +111,7 @@ class CmsSiteController extends \Backoffice\Mvc\Base\BaseController
     {
         $edit = $this->initEditTemplate();
         $edit->setBean($this->getModel()->getFinder()->getBean());
+        $edit->getBean()->setFromArray($this->getPreviousAttributes());
     }
 
     public function deleteAction()

@@ -48,6 +48,7 @@ class CmsParagraphController extends \Backoffice\Mvc\Base\BaseController
     {
         $edit = $this->initEditTemplate();
         $edit->setBean($this->getModel()->getFinder()->getBean());
+        $edit->getBean()->setFromArray($this->getPreviousAttributes());
     }
 
 
