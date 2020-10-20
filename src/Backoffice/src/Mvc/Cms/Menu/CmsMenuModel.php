@@ -34,4 +34,37 @@ class CmsMenuModel extends BaseModel
         }
         return $options;
     }
+
+    public function orderUp()
+    {
+        $bean = $this->getFinder()->getBean();
+        if ($bean->hasData('CmsMenu_Order') && $bean->getData('CmsMenu_Order') > 1) {
+            $finder = new CmsMenuBeanFinder($this->getDbAdpater());
+            $finder->setCmsMenu_Order($bean->getData('CmsMenu_Order') - 1);
+            $finder->limit(1,0);
+            $finder->find();
+            $previuousBean = $finder->getBean();
+            $bean->setData('CmsMenu_Order', $previuousBean->getData('CmsMenu_Order'));
+            $previuousBean->setData('CmsMenu_Order', $previuousBean->getData('CmsMenu_Order') + 1 );
+            $this->saveBeanWithProcessor($bean);
+            $this->saveBeanWithProcessor($previuousBean);
+        }
+    }
+
+    public function orderDown()
+    {
+        $bean = $this->getFinder()->getBean();
+        $finder = new CmsMenuBeanFinder($this->getDbAdpater());
+        if ($bean->hasData('CmsMenu_Order') && $bean->getData('CmsMenu_Order') < $finder->count()) {
+            $finder = new CmsMenuBeanFinder($this->getDbAdpater());
+            $finder->setCmsMenu_Order($bean->getData('CmsMenu_Order') + 1);
+            $finder->limit(1,0);
+            $finder->find();
+            $nextBean = $finder->getBean();
+            $bean->setData('CmsMenu_Order', $nextBean->getData('CmsMenu_Order'));
+            $nextBean->setData('CmsMenu_Order', $nextBean->getData('CmsMenu_Order') - 1 );
+            $this->saveBeanWithProcessor($bean);
+            $this->saveBeanWithProcessor($nextBean);
+        }
+    }
 }

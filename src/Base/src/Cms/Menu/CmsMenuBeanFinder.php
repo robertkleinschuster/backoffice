@@ -25,5 +25,12 @@ class CmsMenuBeanFinder extends ArticleTranslationBeanFinder
         $loader->addColumn('ArticleTranslation_Name', 'ArticleTranslation_Name', 'ArticleTranslation', 'Article_ID', false, null, [], 'Article');
         $loader->addColumn('ArticleTranslation_Code', 'ArticleTranslation_Code', 'ArticleTranslation', 'Article_ID', false, null, [], 'Article');
         $loader->addColumn('Locale_Code', 'Locale_Code', 'ArticleTranslation', 'Article_ID', false, null, [], 'Article');
+        $loader->addOrder('CmsMenu_Order');
+    }
+
+    public function setCmsMenu_Order(int $order): self
+    {
+        $this->getLoader()->filterValue('CmsMenu_Order', $order);
+        return $this;
     }
 }

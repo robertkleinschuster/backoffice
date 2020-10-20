@@ -21,6 +21,12 @@ class LocaleBeanFinder extends \NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder
 
     }
 
+    public function setLocale_Order(int $order)
+    {
+        $this->getLoader()->filterValue('Locale_Order', $order);
+        return $this;
+    }
+
     public function setLocale_Active(bool $active): self
     {
         $this->getLoader()->filterValue('Locale_Active', $active);

@@ -231,6 +231,7 @@ class SchemaUpdater extends AbstractUpdater
         $table = $this->getTableStatement('CmsSite_CmsParagraph');
         $this->addColumnToTable($table, new Integer('CmsSite_ID'));
         $this->addColumnToTable($table, new Integer('CmsParagraph_ID'));
+        $this->addColumnToTable($table, new Integer('CmsSite_CmsParagraph_Order'));
         $this->addConstraintToTable($table, new PrimaryKey(['CmsSite_ID', 'CmsParagraph_ID']));
         $this->addConstraintToTable($table, new ForeignKey(null, 'CmsSite_ID', 'CmsSite', 'CmsSite_ID'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'CmsParagraph_ID', 'CmsParagraph', 'CmsParagraph_ID'));
