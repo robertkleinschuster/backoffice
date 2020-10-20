@@ -26,7 +26,9 @@ class CmsPlaceholder implements TranslatorAwareInterface
     {
         $messages = $this->getTranslator()->getAllMessages('frontend', $this->locale);
         if ($messages instanceof \ArrayObject) {
-            $messages = (array) $messages;
+            $messages = (array)$messages;
+        }
+        if (is_array($messages)) {
             $keys = array_map(function($x){return "{{$x}}";}, array_keys($messages));
             $content = str_replace($keys, array_values($messages), $content);
         }
