@@ -15,6 +15,7 @@ class CmsSiteParagraphBeanFinder extends AbstractBeanFinder
         $loader = new DatabaseBeanLoader($adapter);
         $loader->addColumn('CmsSite_ID', 'CmsSite_ID', 'CmsSite_CmsParagraph', 'CmsSite_ID', true);
         $loader->addColumn('CmsParagraph_ID', 'CmsParagraph_ID', 'CmsSite_CmsParagraph', 'CmsParagraph_ID', true);
+        $loader->addColumn('CmsSite_CmsParagraph_Order', 'CmsSite_CmsParagraph_Order', 'CmsSite_CmsParagraph', 'CmsParagraph_ID', true);
         $loader->addColumn('Article_ID', 'Article_ID', 'CmsParagraph', 'CmsParagraph_ID', false, null, ['Article']);
         $loader->addColumn('Article_Code', 'Article_Code', 'Article', 'Article_ID', false, null, [], 'CmsParagraph');
         $loader->addColumn('ArticleTranslation_Name', 'ArticleTranslation_Name', 'ArticleTranslation', 'Article_ID', false, null, [], 'Article');
@@ -26,6 +27,7 @@ class CmsSiteParagraphBeanFinder extends AbstractBeanFinder
         $loader->addColumn('ArticleTranslation_Text', 'ArticleTranslation_Text', 'ArticleTranslation', 'Article_ID', false, null, [], 'Article');
         $loader->addColumn('ArticleTranslation_Footer', 'ArticleTranslation_Footer', 'ArticleTranslation', 'Article_ID', false, null, [], 'Article');
         $loader->addColumn('Locale_Code', 'Locale_Code', 'ArticleTranslation', 'Article_ID', false, null, [], 'Article');
+        $loader->addOrder('CmsSite_CmsParagraph_Order');
         parent::__construct($loader, new CmsSiteParagraphBeanFactory());
     }
 
@@ -40,4 +42,19 @@ class CmsSiteParagraphBeanFinder extends AbstractBeanFinder
         return $this;
     }
 
+    /**
+     * @param int $order
+     */
+    public function setCmsSite_CmsParagraph_Order(int $order): self
+    {
+        $this->getLoader()->filterValue('CmsSite_CmsParagraph_Order', $order);
+        return $this;
+    }
+
+
+    public function setCmsSite_ID(int $cmsSite_Id): self
+    {
+        $this->getLoader()->filterValue('CmsSite_ID', $cmsSite_Id);
+        return $this;
+    }
 }

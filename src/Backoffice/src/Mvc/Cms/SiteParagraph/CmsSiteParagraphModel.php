@@ -15,6 +15,7 @@ class CmsSiteParagraphModel extends BaseModel
     {
         $this->setFinder(new CmsSiteParagraphBeanFinder($this->getDbAdpater()));
         $this->setProcessor(new CmsSiteParagraphBeanProcessor($this->getDbAdpater()));
+        $this->getFinder()->setLocale_Code($this->getTranslator()->getLocale());
     }
 
     /**
@@ -34,5 +35,45 @@ class CmsSiteParagraphModel extends BaseModel
             }
         }
         return $options;
+    }
+
+    public function orderUp()
+    {
+        $bean = $this->getFinder()->getBean();
+        if ($bean->hasData('CmsSite_CmsParagraph_Order') && $bean->getData('CmsSite_CmsParagraph_Order') > 1) {
+            $finder = new CmsSiteParagraphBeanFinder($this->getDbAdpater());
+            $finder->setCmsSite_ID($bean->getData('CmsSite_ID'));
+            $finder->setCmsSite_CmsParagraph_Order($bean->getData('CmsSite_CmsParagraph_Order') - 1);
+            $finder->limit(1,0);
+            $finder->find();
+            $previuousBean = $finder->getBean();
+            $bean->setData('CmsSite_CmsParagraph_Order', $previuousBean->getData('CmsSite_CmsParagraph_Order'));
+            $previuousBean->setData('CmsSite_CmsParagraph_Order', $previuousBean->getData('CmsSite_CmsParagraph_Order') + 1 );
+
+            $this->saveBeanWithProcessor($bean);
+
+            $this->saveBeanWithProcessor($previuousBean);
+        }
+    }
+
+    public function orderDown()
+    {
+        $bean = $this->getFinder()->getBean();
+        $finder = new CmsSiteParagraphBeanFinder($this->getDbAdpater());
+        $finder->setCmsSite_ID($bean->getData('CmsSite_ID'));
+        $finder->setLocale_Code($this->getTranslator()->getLocale());
+        if ($bean->hasData('CmsSite_CmsParagraph_Order') && $bean->getData('CmsSite_CmsParagraph_Order') < $finder->find()) {
+            $finder = new CmsSiteParagraphBeanFinder($this->getDbAdpater());
+            $finder->setCmsSite_ID($bean->getData('CmsSite_ID'));
+            $finder->setLocale_Code($this->getTranslator()->getLocale());
+            $finder->setCmsSite_CmsParagraph_Order($bean->getData('CmsSite_CmsParagraph_Order') + 1);
+            $finder->limit(1,0);
+            $finder->find();
+            $nextBean = $finder->getBean();
+            $bean->setData('CmsSite_CmsParagraph_Order', $nextBean->getData('CmsSite_CmsParagraph_Order'));
+            $nextBean->setData('CmsSite_CmsParagraph_Order', $nextBean->getData('CmsSite_CmsParagraph_Order') - 1 );
+            $this->saveBeanWithProcessor($bean);
+            $this->saveBeanWithProcessor($nextBean);
+        }
     }
 }

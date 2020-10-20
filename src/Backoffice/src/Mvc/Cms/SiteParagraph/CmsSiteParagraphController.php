@@ -35,6 +35,19 @@ class CmsSiteParagraphController extends BaseController
         $delete->setBean($this->getModel()->getFinder()->getBean());
     }
 
+    public function orderAction()
+    {
+        if ($this->getControllerRequest()->getAttribute('order') == 'up') {
+            $this->getModel()->orderUp();
+        }
+        if ($this->getControllerRequest()->getAttribute('order') == 'down') {
+            $this->getModel()->orderDown();
+        }
+        $viewId = $this->getControllerRequest()->getViewIdMap();
+        unset($viewId['CmsParagraph_ID']);
+        $this->getControllerResponse()->setRedirect($this->getSiteRedirectPath()->setViewIdMap($viewId)->getPath());
+    }
+
     protected function addEditFields(Edit $edit): void
     {
         parent::addEditFields($edit);

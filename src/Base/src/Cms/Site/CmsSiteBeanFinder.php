@@ -32,6 +32,16 @@ class CmsSiteBeanFinder extends ArticleTranslationBeanFinder
     }
 
 
+    public function setLocale_Code(string $locale, bool $leftJoin = true): ArticleTranslationBeanFinder
+    {
+        foreach ($this->getBeanFinderLinkList() as $finderLink) {
+            if (method_exists($finderLink->getBeanFinder(), 'setLocale_Code')) {
+                $finderLink->getBeanFinder()->setLocale_Code($locale, $leftJoin);
+            }
+        }
+        return parent::setLocale_Code($locale, $leftJoin);
+    }
+
 
     /**
      * @param string $code

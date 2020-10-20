@@ -10,9 +10,9 @@ use Mvc\View\ComponentDataBean;
 use Mvc\View\Components\Detail\Detail;
 use Mvc\View\Components\Detail\Fields\Link;
 use Mvc\View\Components\Edit\Edit;
-use Mvc\View\Components\Edit\Fields\Button;
 use Mvc\View\Components\Overview\Overview;
 use Mvc\View\Components\Toolbar\Toolbar;
+use NiceshopsDev\Bean\BeanInterface;
 
 /**
  * Class CmsSiteController
@@ -43,8 +43,8 @@ class CmsSiteController extends \Backoffice\Mvc\Base\BaseController
         $bean = $this->getModel()->getFinder()->getBean();
 
         $toolbar = new Toolbar();
-        $toolbar->addButton('/{ArticleTranslation_Code}', $this->translate('site.toolbar.frontend'))
-        ->setTarget(Link::TARGET_BLANK)->setStyle(Link::STYLE_INFO);
+        $toolbar->addButton('{ArticleTranslation_Code}', $this->translate('site.toolbar.frontend'))
+            ->setTarget(Link::TARGET_BLANK)->setStyle(Link::STYLE_INFO);
         $toolbar->addBean($bean);
         $this->getView()->addComponent($toolbar);
 
@@ -59,10 +59,40 @@ class CmsSiteController extends \Backoffice\Mvc\Base\BaseController
         $overview->addDetailIcon($this->getPathHelper()->setController('cmsparagraph')->setAction('detail')->setViewIdMap(['CmsParagraph_ID' => '{CmsParagraph_ID}'])->getPath())->setWidth(122);
         $overview->addEditIcon($this->getPathHelper()->setController('cmsparagraph')->setAction('edit')->setViewIdMap(['CmsParagraph_ID' => '{CmsParagraph_ID}'])->getPath());
         $overview->addDeleteIcon($this->getPathHelper()->setController('cmssiteparagraph')->setAction('delete')->setViewIdMap(['CmsParagraph_ID' => '{CmsParagraph_ID}', 'CmsSite_ID' => '{CmsSite_ID}'])->getPath());
+
+        $overview->addLink('', '')
+            ->setLink($this->getDetailPath()->setController('cmssiteparagraph')->setAction('order')->setParams(['order' => 'up'])->setViewIdMap(['CmsParagraph_ID' => '{CmsParagraph_ID}', 'CmsSite_ID' => '{CmsSite_ID}'])->getPath())
+            ->setValue('')
+            ->setIcon(Link::ICON_ARROW_UP)
+            ->setStyle(Link::STYLE_INFO)
+            ->setOutline(true)
+            ->addOption(Link::OPTION_TEXT_DECORATION_NONE)
+            ->addOption(Link::OPTION_BUTTON_STYLE)
+            ->setSize(Link::SIZE_SMALL)
+            ->setChapter('order')
+            ->setWidth(85)
+            ->setShow(function (BeanInterface $b) {
+                return $b->hasData('CmsSite_CmsParagraph_Order') && $b->getData('CmsSite_CmsParagraph_Order') > 1;
+
+            });
+        $beanList = $bean->getData('CmsParagraph_BeanList')->toBeanList();
+        $overview->addLink('', '')
+            ->setLink($this->getDetailPath()->setController('cmssiteparagraph')->setAction('order')->setParams(['order' => 'down'])->setViewIdMap(['CmsParagraph_ID' => '{CmsParagraph_ID}', 'CmsSite_ID' => '{CmsSite_ID}'])->getPath())
+            ->setValue('')
+            ->setIcon(Link::ICON_ARROW_DOWN)
+            ->setStyle(Link::STYLE_INFO)
+            ->setOutline(true)
+            ->addOption(Link::OPTION_TEXT_DECORATION_NONE)
+            ->addOption(Link::OPTION_BUTTON_STYLE)
+            ->setSize(Link::SIZE_SMALL)
+            ->setChapter('order')->setShow(function (BeanInterface $b) use($bean, $beanList){
+                return $b->hasData('CmsSite_CmsParagraph_Order') && $b->getData('CmsSite_CmsParagraph_Order') < $beanList->count();
+            });
+
         $overview->addText('Article_Code', $this->translate('article.code'))->setWidth(150);
         $overview->addText('ArticleTranslation_Name', $this->translate('articletranslation.name'));
 
-        $overview->setBeanList($bean->getData('CmsParagraph_BeanList'));
+        $overview->setBeanList($beanList);
         $this->getView()->addComponent($overview);
 
     }
