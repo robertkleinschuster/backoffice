@@ -4,11 +4,9 @@
 namespace Base\Localization\Locale;
 
 
-use Base\Cms\Menu\CmsMenuBeanFinder;
 use Base\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
 use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanProcessor\BeanSaverInterface;
 
 class LocaleBeanProcessor extends \NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor
 {

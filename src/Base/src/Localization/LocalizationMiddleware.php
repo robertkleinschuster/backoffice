@@ -38,7 +38,7 @@ class LocalizationMiddleware implements MiddlewareInterface
         $session = $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
         // Get locale from route, fallback to the user's browser preference
         $locale = $request->getAttribute('locale', Locale::acceptFromHttp(
-            $request->getServerParams()['HTTP_ACCEPT_LANGUAGE'] ?? 'en_US'
+            $request->getServerParams()['HTTP_ACCEPT_LANGUAGE'] ?? 'de_AT'
         ));
 
         if (isset($request->getQueryParams()['locale'])) {
