@@ -42,12 +42,15 @@ class CmsMenuModel extends BaseModel
             $finder = new CmsMenuBeanFinder($this->getDbAdpater());
             $finder->setCmsMenu_Order($bean->getData('CmsMenu_Order') - 1);
             $finder->limit(1,0);
-            $finder->find();
-            $previuousBean = $finder->getBean();
-            $bean->setData('CmsMenu_Order', $previuousBean->getData('CmsMenu_Order'));
-            $previuousBean->setData('CmsMenu_Order', $previuousBean->getData('CmsMenu_Order') + 1 );
+            if ($finder->find() == 1) {
+                $previuousBean = $finder->getBean();
+                $bean->setData('CmsMenu_Order', $previuousBean->getData('CmsMenu_Order'));
+                $previuousBean->setData('CmsMenu_Order', $previuousBean->getData('CmsMenu_Order') + 1 );
+                $this->saveBeanWithProcessor($previuousBean);
+            } else {
+                $bean->setData('CmsMenu_Order', 1);
+            }
             $this->saveBeanWithProcessor($bean);
-            $this->saveBeanWithProcessor($previuousBean);
         }
     }
 
@@ -59,12 +62,15 @@ class CmsMenuModel extends BaseModel
             $finder = new CmsMenuBeanFinder($this->getDbAdpater());
             $finder->setCmsMenu_Order($bean->getData('CmsMenu_Order') + 1);
             $finder->limit(1,0);
-            $finder->find();
-            $nextBean = $finder->getBean();
-            $bean->setData('CmsMenu_Order', $nextBean->getData('CmsMenu_Order'));
-            $nextBean->setData('CmsMenu_Order', $nextBean->getData('CmsMenu_Order') - 1 );
+            if ($finder->find() == 1 ) {
+                $nextBean = $finder->getBean();
+                $bean->setData('CmsMenu_Order', $nextBean->getData('CmsMenu_Order'));
+                $nextBean->setData('CmsMenu_Order', $nextBean->getData('CmsMenu_Order') - 1 );
+                $this->saveBeanWithProcessor($nextBean);
+            } else {
+                $bean->setData('CmsMenu_Order', 1);
+            }
             $this->saveBeanWithProcessor($bean);
-            $this->saveBeanWithProcessor($nextBean);
         }
     }
 }
