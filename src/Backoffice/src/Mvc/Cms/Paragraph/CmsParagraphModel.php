@@ -5,8 +5,8 @@ namespace Backoffice\Mvc\Cms\Paragraph;
 
 
 use Backoffice\Mvc\Base\BaseModel;
-use Base\Article\State\ArticleStateBeanFinder;
-use Base\Article\Type\ArticleTypeBeanFinder;
+use Base\Cms\Paragraph\State\CmsParagraphStateBeanFinder;
+use Base\Cms\Paragraph\Type\CmsParagraphTypeBeanFinder;
 use Base\Cms\Paragraph\CmsParagraphBeanFinder;
 use Base\Cms\Paragraph\CmsParagraphBeanProcessor;
 
@@ -20,26 +20,26 @@ class CmsParagraphModel extends BaseModel
     }
 
 
-    public function getArticleType_Options(): array
+    public function getCmsParagraphType_Options(): array
     {
         $options = [];
-        $finder = new ArticleTypeBeanFinder($this->getDbAdpater());
-        $finder->setArticleType_Active(true);
+        $finder = new CmsParagraphTypeBeanFinder($this->getDbAdpater());
+        $finder->setCmsParagraphType_Active(true);
         $finder->find();
         foreach ($finder->getBeanGenerator() as $bean) {
-            $options[$bean->getData('ArticleType_Code')] = $bean->getData('ArticleType_Code');
+            $options[$bean->getData('CmsParagraphType_Code')] = $bean->getData('CmsParagraphType_Code');
         }
         return $options;
     }
 
-    public function getArticleState_Options(): array
+    public function getCmsParagraphState_Options(): array
     {
         $options = [];
-        $finder = new ArticleStateBeanFinder($this->getDbAdpater());
-        $finder->setArticleState_Active(true);
+        $finder = new CmsParagraphStateBeanFinder($this->getDbAdpater());
+        $finder->setCmsParagraphState_Active(true);
         $finder->find();
         foreach ($finder->getBeanGenerator() as $bean) {
-            $options[$bean->getData('ArticleState_Code')] = $bean->getData('ArticleState_Code');
+            $options[$bean->getData('CmsParagraphState_Code')] = $bean->getData('CmsParagraphState_Code');
         }
         return $options;
     }

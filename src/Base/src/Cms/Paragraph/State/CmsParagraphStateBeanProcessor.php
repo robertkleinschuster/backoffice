@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Base\Article\State;
+namespace Base\Cms\Paragraph\State;
 
 
 use Base\Database\DatabaseBeanSaver;
@@ -9,18 +9,18 @@ use Laminas\Db\Adapter\Adapter;
 use NiceshopsDev\Bean\BeanInterface;
 use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
 
-class ArticleStateBeanProcessor extends AbstractBeanProcessor
+class CmsParagraphStateBeanProcessor extends AbstractBeanProcessor
 {
 
 
     /**
-     * ArticleStateBeanProcessor constructor.
+     * CmsParagraphStateBeanProcessor constructor.
      */
     public function __construct(Adapter $adapter)
     {
         $saver = new DatabaseBeanSaver($adapter);
-        $saver->addColumn('ArticleState_Code', 'ArticleState_Code', 'ArticleState', 'ArticleState_Code', true);
-        $saver->addColumn('ArticleState_Active', 'ArticleState_Active', 'ArticleState', 'ArticleState_Code');
+        $saver->addColumn('CmsParagraphState_Code', 'CmsParagraphState_Code', 'CmsParagraphState', 'CmsParagraphState_Code', true);
+        $saver->addColumn('CmsParagraphState_Active', 'CmsParagraphState_Active', 'CmsParagraphState', 'CmsParagraphState_Code');
         parent::__construct($saver);
     }
 

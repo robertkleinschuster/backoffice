@@ -10,6 +10,8 @@ use Mvc\View\ComponentDataBean;
 use Mvc\View\Components\Detail\Detail;
 use Mvc\View\Components\Detail\Fields\Link;
 use Mvc\View\Components\Edit\Edit;
+use Mvc\View\Components\Edit\Fields\File;
+use Mvc\View\Components\Edit\Fields\Wysiwyg;
 use Mvc\View\Components\Overview\Overview;
 use Mvc\View\Components\Toolbar\Toolbar;
 use NiceshopsDev\Bean\BeanInterface;
@@ -168,10 +170,10 @@ class CmsSiteController extends \Backoffice\Mvc\Base\BaseController
         $detail->addText('ArticleTranslation_Code', $this->translate('articletranslation.code'))
             ->setChapter($this->translate('article.detail.general'))
             ->setAppendToColumnPrevious(true);
-        $detail->addText('ArticleType_Code', $this->translate('articletype.code'))
+        $detail->addText('CmsSiteType_Code', $this->translate('cmssitetype.code'))
             ->setChapter($this->translate('article.detail.general'))
             ->setAppendToColumnPrevious(true);
-        $detail->addText('ArticleState_Code', $this->translate('articlestate.code'))
+        $detail->addText('CmsSiteState_Code', $this->translate('cmssitestate.code'))
             ->setChapter($this->translate('article.detail.general'))
             ->setAppendToColumnPrevious(true);
     }
@@ -188,15 +190,15 @@ class CmsSiteController extends \Backoffice\Mvc\Base\BaseController
         $edit->addText('ArticleTranslation_SubHeading', $this->translate('articletranslation.subheading'))
             ->setChapter($this->translate('article.edit.content'))
             ->setAppendToColumnPrevious(true);
-        $edit->addTextarea('ArticleTranslation_Teaser', $this->translate('articletranslation.teaser'))
+        $edit->addWysiwyg('ArticleTranslation_Teaser', $this->translate('articletranslation.teaser'))
+            ->setChapter($this->translate('article.edit.content'))
+            ->setRows(5)->setType(Wysiwyg::TYPE_TOOLTIP)
+            ->setAppendToColumnPrevious(true);
+        $edit->addWysiwyg('ArticleTranslation_Text', $this->translate('articletranslation.text'))
             ->setChapter($this->translate('article.edit.content'))
             ->setRows(5)
             ->setAppendToColumnPrevious(true);
-        $edit->addTextarea('ArticleTranslation_Text', $this->translate('articletranslation.text'))
-            ->setChapter($this->translate('article.edit.content'))
-            ->setRows(5)
-            ->setAppendToColumnPrevious(true);
-        $edit->addTextarea('ArticleTranslation_Footer', $this->translate('articletranslation.footer'))
+        $edit->addWysiwyg('ArticleTranslation_Footer', $this->translate('articletranslation.footer'))
             ->setChapter($this->translate('article.edit.content'))
             ->setRows(5)
             ->setAppendToColumnPrevious(true);
@@ -211,13 +213,13 @@ class CmsSiteController extends \Backoffice\Mvc\Base\BaseController
         $edit->addText('ArticleTranslation_Code', $this->translate('articletranslation.code'))
             ->setChapter($this->translate('article.edit.general'))
             ->setAppendToColumnPrevious(true);
-        $edit->addSelect('ArticleType_Code', $this->translate('articletype.code'))
+        $edit->addSelect('CmsSiteType_Code', $this->translate('cmssitetype.code'))
             ->setChapter($this->translate('article.edit.general'))
-            ->setSelectOptions($this->getModel()->getArticleType_Options())
+            ->setSelectOptions($this->getModel()->getCmsSiteType_Options())
             ->setAppendToColumnPrevious(true);
-        $edit->addSelect('ArticleState_Code', $this->translate('articlestate.code'))
+        $edit->addSelect('CmsSiteState_Code', $this->translate('cmssitestate.code'))
             ->setChapter($this->translate('article.edit.general'))
-            ->setSelectOptions($this->getModel()->getArticleState_Options())
+            ->setSelectOptions($this->getModel()->getCmsSiteState_Options())
             ->setAppendToColumnPrevious(true);
     }
 

@@ -4,5 +4,6 @@
 !translation/*
 !cache/.gitkeep
 !session/.gitkeep
+!upload/.gitkeep
 !.gitignore
 sqlite.db

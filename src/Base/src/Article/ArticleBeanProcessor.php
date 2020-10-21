@@ -26,8 +26,6 @@ class ArticleBeanProcessor extends AbstractBeanProcessor implements ValidationHe
         $saver = new DatabaseBeanSaver($adapter);
         $saver->addColumn('Article_ID', 'Article_ID', 'Article', 'Article_ID', true);
         $saver->addColumn('Article_Code', 'Article_Code', 'Article', 'Article_ID');
-        $saver->addColumn('ArticleState_Code', 'ArticleState_Code', 'Article', 'Article_ID');
-        $saver->addColumn('ArticleType_Code', 'ArticleType_Code', 'Article', 'Article_ID');
         parent::__construct($saver);
     }
 
@@ -42,18 +40,15 @@ class ArticleBeanProcessor extends AbstractBeanProcessor implements ValidationHe
             $this->getValidationHelper()->addError('Article_Code', $this->translate('article.code.empty'));
         } else {
             $articleFinder = new ArticleBeanFinder($this->adapter);
-            $articleFinder->setArticle_ID($bean->getData('Article_ID'), true);
+            if ($bean->hasData('Article_ID')) {
+                $articleFinder->setArticle_ID($bean->getData('Article_ID'), true);
+            }
             $articleFinder->setArticle_Code($bean->getData('Article_Code'));
             if ($articleFinder->count() > 0) {
                 $this->getValidationHelper()->addError('Article_Code', $this->translate('article.code.unique'));
             }
         }
-        if (!$bean->hasData('ArticleState_Code') || !strlen(trim(($bean->getData('ArticleState_Code'))))) {
-            $this->getValidationHelper()->addError('ArticleState_Code', $this->translate('articlestate.code.empty'));
-        }
-        if (!$bean->hasData('ArticleType_Code') || !strlen(trim(($bean->getData('ArticleType_Code'))))) {
-            $this->getValidationHelper()->addError('ArticleType_Code', $this->translate('articletype.code.empty'));
-        }
+
         return !$this->getValidationHelper()->hasError();
     }
 

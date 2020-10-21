@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Base\Article\Type;
+namespace Base\Cms\Site\Type;
 
 
 use Base\Database\DatabaseBeanSaver;
@@ -9,17 +9,17 @@ use Laminas\Db\Adapter\Adapter;
 use NiceshopsDev\Bean\BeanInterface;
 use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
 
-class ArticleTypeBeanProcessor extends AbstractBeanProcessor
+class CmsSiteTypeBeanProcessor extends AbstractBeanProcessor
 {
 
     /**
-     * ArticleStateBeanProcessor constructor.
+     * CmsSiteStateBeanProcessor constructor.
      */
     public function __construct(Adapter $adapter)
     {
         $saver = new DatabaseBeanSaver($adapter);
-        $saver->addColumn('ArticleType_Code', 'ArticleType_Code', 'ArticleType', 'ArticleType_Code', true);
-        $saver->addColumn('ArticleType_Active', 'ArticleType_Active', 'ArticleType', 'ArticleType_Code');
+        $saver->addColumn('CmsSiteType_Code', 'CmsSiteType_Code', 'CmsSiteType', 'CmsSiteType_Code', true);
+        $saver->addColumn('CmsSiteType_Active', 'CmsSiteType_Active', 'CmsSiteType', 'CmsSiteType_Code');
         parent::__construct($saver);
     }
 

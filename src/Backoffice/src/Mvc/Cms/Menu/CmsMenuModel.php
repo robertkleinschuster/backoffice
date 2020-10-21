@@ -7,6 +7,8 @@ namespace Backoffice\Mvc\Cms\Menu;
 use Backoffice\Mvc\Base\BaseModel;
 use Base\Cms\Menu\CmsMenuBeanFinder;
 use Base\Cms\Menu\CmsMenuBeanProcessor;
+use Base\Cms\Menu\State\CmsMenuStateBeanFinder;
+use Base\Cms\Menu\Type\CmsMenuTypeBeanFinder;
 use Base\Cms\Site\CmsSiteBeanFinder;
 
 /**
@@ -31,6 +33,28 @@ class CmsMenuModel extends BaseModel
         $finder->find();
         foreach ($finder->getBeanGenerator() as $bean) {
             $options[$bean->getData('CmsSite_ID')] = $bean->getData('ArticleTranslation_Name');
+        }
+        return $options;
+    }
+
+    public function getCmsMenuState_Options(): array
+    {
+        $options = [];
+        $finder = new CmsMenuStateBeanFinder($this->getDbAdpater());
+        $finder->find();
+        foreach ($finder->getBeanGenerator() as $bean) {
+            $options[$bean->getData('CmsMenuState_Code')] = $bean->getData('CmsMenuState_Code');
+        }
+        return $options;
+    }
+
+    public function getCmsMenuType_Options(): array
+    {
+        $options = [];
+        $finder = new CmsMenuTypeBeanFinder($this->getDbAdpater());
+        $finder->find();
+        foreach ($finder->getBeanGenerator() as $bean) {
+            $options[$bean->getData('CmsMenuType_Code')] = $bean->getData('CmsMenuType_Code');
         }
         return $options;
     }

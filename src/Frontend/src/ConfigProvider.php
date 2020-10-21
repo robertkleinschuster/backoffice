@@ -49,7 +49,11 @@ class ConfigProvider
     {
         return [
             'paths' => [
-                'frontend'    => [__DIR__ . '/../templates/'],
+                'cmserror'    => [__DIR__ . '/../templates/error'],
+                'cmssite'    => [__DIR__ . '/../templates/site'],
+                'cmsmenu'    => [__DIR__ . '/../templates/menu'],
+                'cmsparagraph'    => [__DIR__ . '/../templates/paragraph'],
+                'cmspost'    => [__DIR__ . '/../templates/post'],
             ],
         ];
     }

@@ -72,6 +72,8 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
     // - route-based authentication
     // - route-based validation
     // - etc.
+    $app->pipe(\Base\Database\DatabaseMiddleware::class);
+
     $app->pipe(LocalizationMiddleware::class);
     $app->pipe(TranslatorMiddleware::class);
 

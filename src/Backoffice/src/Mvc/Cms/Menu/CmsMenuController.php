@@ -130,6 +130,9 @@ class CmsMenuController extends BaseController
         parent::addEditFields($edit);
         $edit->addSelect('CmsSite_ID', $this->translate('articletranslation.name'))
             ->setSelectOptions($this->getModel()->getCmsSite_Options());
+        $edit->addSelect('CmsMenuState_Code', $this->translate('cmsmenustate.code'))
+            ->setSelectOptions($this->getModel()->getCmsMenuState_Options());
+        $edit->addSubmitAttribute('CmsMenuType_Code', 'header');
     }
 
 }

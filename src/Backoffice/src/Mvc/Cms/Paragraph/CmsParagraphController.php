@@ -102,10 +102,10 @@ class CmsParagraphController extends \Backoffice\Mvc\Base\BaseController
         $detail->addText('ArticleTranslation_Code', $this->translate('articletranslation.code'))
             ->setChapter($this->translate('article.detail.general'))
             ->setAppendToColumnPrevious(true);
-        $detail->addText('ArticleType_Code', $this->translate('articletype.code'))
+        $detail->addText('CmsParagraphType_Code', $this->translate('cmsparagraphtype.code'))
             ->setChapter($this->translate('article.detail.general'))
             ->setAppendToColumnPrevious(true);
-        $detail->addText('ArticleState_Code', $this->translate('articlestate.code'))
+        $detail->addText('CmsParagraphState_Code', $this->translate('cmsparagraphstate.code'))
             ->setChapter($this->translate('article.detail.general'))
             ->setAppendToColumnPrevious(true);
     }
@@ -145,13 +145,13 @@ class CmsParagraphController extends \Backoffice\Mvc\Base\BaseController
         $edit->addText('ArticleTranslation_Code', $this->translate('articletranslation.code'))
             ->setChapter($this->translate('article.edit.general'))
             ->setAppendToColumnPrevious(true);
-        $edit->addSelect('ArticleType_Code', $this->translate('articletype.code'))
+        $edit->addSelect('CmsParagraphType_Code', $this->translate('cmsparagraphtype.code'))
             ->setChapter($this->translate('article.edit.general'))
-            ->setSelectOptions($this->getModel()->getArticleType_Options())
+            ->setSelectOptions($this->getModel()->getCmsParagraphType_Options())
             ->setAppendToColumnPrevious(true);
-        $edit->addSelect('ArticleState_Code', $this->translate('articlestate.code'))
+        $edit->addSelect('CmsParagraphState_Code', $this->translate('cmsparagraphstate.code'))
             ->setChapter($this->translate('article.edit.general'))
-            ->setSelectOptions($this->getModel()->getArticleState_Options())
+            ->setSelectOptions($this->getModel()->getCmsParagraphState_Options())
             ->setAppendToColumnPrevious(true);
     }
 }

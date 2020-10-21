@@ -11,7 +11,6 @@ use Laminas\Db\Sql\Ddl\Constraint\ForeignKey;
 use Laminas\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Laminas\Db\Sql\Ddl\Constraint\UniqueKey;
 use Laminas\Db\Sql\Ddl\Index\Index;
-use Laminas\Db\Sql\Predicate\In;
 
 class SchemaUpdater extends AbstractUpdater
 {
@@ -29,14 +28,53 @@ class SchemaUpdater extends AbstractUpdater
         return $this->query($table);
     }
 
+    public function updateTableFileType()
+    {
+        $table = $this->getTableStatement('FileType');
+        $this->addColumnToTable($table, new Varchar('FileType_Code', 255));
+        $this->addColumnToTable($table, new Varchar('FileType_Mime', 255));
+        $this->addColumnToTable($table, new Varchar('FileType_Name', 255));
+        $this->addColumnToTable($table, new Boolean('FileType_Active'));
+        $this->addConstraintToTable($table, new PrimaryKey('FileType_Code'));
+        $this->addDefaultColumnsToTable($table);
+        return $this->query($table);
+    }
+
+    public function updateTableFileDirectory()
+    {
+        $table = $this->getTableStatement('FileDirectory');
+        $this->addColumnToTable($table, new Varchar('FileDirectory_Code', 255));
+        $this->addColumnToTable($table, new Varchar('FileDirectory_Name', 255));
+        $this->addColumnToTable($table, new Boolean('FileDirectory_Active'));
+        $this->addConstraintToTable($table, new PrimaryKey('FileDirectory_Code'));
+        $this->addDefaultColumnsToTable($table);
+        return $this->query($table);
+    }
+
+    public function updateTableFile()
+    {
+        $table = $this->getTableStatement('File');
+        $this->addColumnToTable($table, new Integer('File_ID'))->setOption('AUTO_INCREMENT', true);
+        $this->addColumnToTable($table, new Varchar('FileType_Code', 255));
+        $this->addColumnToTable($table, new Varchar('FileDirectory_Code', 255));
+        $this->addColumnToTable($table, new Varchar('File_Name', 255));
+        $this->addConstraintToTable($table, new PrimaryKey('File_ID'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'FileType_Code', 'FileType', 'FileType_Code'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'FileDirectory_Code', 'FileDirectory', 'FileDirectory_Code', 'CASCADE'));
+        $this->addDefaultColumnsToTable($table);
+        return $this->query($table);
+    }
+
     public function updateTableLocale()
     {
         $table = $this->getTableStatement('Locale');
         $this->addColumnToTable($table, new Varchar('Locale_Code', 255));
+        $this->addColumnToTable($table, new Varchar('Locale_UrlCode', 255));
         $this->addColumnToTable($table, new Varchar('Locale_Name', 255));
         $this->addColumnToTable($table, new Boolean('Locale_Active'));
         $this->addColumnToTable($table, new Integer('Locale_Order', false, 0));
         $this->addConstraintToTable($table, new PrimaryKey('Locale_Code'));
+        $this->addConstraintToTable($table, new UniqueKey('Locale_UrlCode'));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);
     }
@@ -139,29 +177,7 @@ class SchemaUpdater extends AbstractUpdater
         $this->addConstraintToTable($table, new UniqueKey(['Translation_Code', 'Locale_Code', 'Translation_Namespace']));
         $this->addConstraintToTable($table, new ForeignKey(null, 'Locale_Code', 'Locale', 'Locale_Code'));
         $this->addDefaultColumnsToTable($table);
-
         return $this->query($table);
-    }
-
-    public function updateTableArticleState()
-    {
-        $table = $this->getTableStatement('ArticleState');
-        $this->addColumnToTable($table, new Varchar('ArticleState_Code', 255));
-        $this->addColumnToTable($table, new Boolean('ArticleState_Active'));
-        $this->addConstraintToTable($table, new PrimaryKey('ArticleState_Code'));
-        $this->addDefaultColumnsToTable($table);
-        return $this->query($table);
-    }
-
-    public function updateTableArticleType()
-    {
-        $table = $this->getTableStatement('ArticleType');
-        $this->addColumnToTable($table, new Varchar('ArticleType_Code', 255));
-        $this->addColumnToTable($table, new Boolean('ArticleType_Active'));
-        $this->addConstraintToTable($table, new PrimaryKey('ArticleType_Code'));
-        $this->addDefaultColumnsToTable($table);
-        return $this->query($table);
-
     }
 
     public function updateTableArticle()
@@ -170,12 +186,8 @@ class SchemaUpdater extends AbstractUpdater
         $this->addColumnToTable($table, new Integer('Article_ID'))
             ->setOption('AUTO_INCREMENT', true);
         $this->addColumnToTable($table, new Varchar('Article_Code', 255, true));
-        $this->addColumnToTable($table, new Varchar('ArticleState_Code', 255));
-        $this->addColumnToTable($table, new Varchar('ArticleType_Code', 255));
         $this->addConstraintToTable($table, new PrimaryKey('Article_ID'));
         $this->addConstraintToTable($table, new UniqueKey('Article_Code'));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'ArticleState_Code', 'ArticleState', 'ArticleState_Code'));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'ArticleType_Code', 'ArticleType', 'ArticleType_Code'));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);
     }
@@ -194,9 +206,92 @@ class SchemaUpdater extends AbstractUpdater
         $this->addColumnToTable($table, new Text('ArticleTranslation_Text', 65535, true));
         $this->addColumnToTable($table, new Text('ArticleTranslation_Footer', 65535, true));
         $this->addConstraintToTable($table, new PrimaryKey(['Article_ID', 'Locale_Code']));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'Article_ID', 'Article', 'Article_ID'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'Article_ID', 'Article', 'Article_ID', 'CASCADE'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'Locale_Code', 'Locale', 'Locale_Code'));
         $this->addConstraintToTable($table, new UniqueKey(['Locale_Code', 'ArticleTranslation_Code']));
+        $this->addDefaultColumnsToTable($table);
+        return $this->query($table);
+    }
+
+    public function updateTableCmsMenuState()
+    {
+        $table = $this->getTableStatement('CmsMenuState');
+        $this->addColumnToTable($table, new Varchar('CmsMenuState_Code', 255));
+        $this->addColumnToTable($table, new Boolean('CmsMenuState_Active'));
+        $this->addConstraintToTable($table, new PrimaryKey('CmsMenuState_Code'));
+        $this->addDefaultColumnsToTable($table);
+        return $this->query($table);
+    }
+
+    public function updateTableCmsMenuType()
+    {
+        $table = $this->getTableStatement('CmsMenuType');
+        $this->addColumnToTable($table, new Varchar('CmsMenuType_Code', 255));
+        $this->addColumnToTable($table, new Varchar('CmsMenuType_Template', 255));
+        $this->addColumnToTable($table, new Boolean('CmsMenuType_Active'));
+        $this->addConstraintToTable($table, new PrimaryKey('CmsMenuType_Code'));
+        $this->addDefaultColumnsToTable($table);
+        return $this->query($table);
+    }
+
+    public function updateTableCmsSiteState()
+    {
+        $table = $this->getTableStatement('CmsSiteState');
+        $this->addColumnToTable($table, new Varchar('CmsSiteState_Code', 255));
+        $this->addColumnToTable($table, new Boolean('CmsSiteState_Active'));
+        $this->addConstraintToTable($table, new PrimaryKey('CmsSiteState_Code'));
+        $this->addDefaultColumnsToTable($table);
+        return $this->query($table);
+    }
+
+    public function updateTableCmsSiteType()
+    {
+        $table = $this->getTableStatement('CmsSiteType');
+        $this->addColumnToTable($table, new Varchar('CmsSiteType_Code', 255));
+        $this->addColumnToTable($table, new Varchar('CmsSiteType_Template', 255));
+        $this->addColumnToTable($table, new Boolean('CmsSiteType_Active'));
+        $this->addConstraintToTable($table, new PrimaryKey('CmsSiteType_Code'));
+        $this->addDefaultColumnsToTable($table);
+        return $this->query($table);
+    }
+    public function updateTableCmsParagraphState()
+    {
+        $table = $this->getTableStatement('CmsParagraphState');
+        $this->addColumnToTable($table, new Varchar('CmsParagraphState_Code', 255));
+        $this->addColumnToTable($table, new Boolean('CmsParagraphState_Active'));
+        $this->addConstraintToTable($table, new PrimaryKey('CmsParagraphState_Code'));
+        $this->addDefaultColumnsToTable($table);
+        return $this->query($table);
+    }
+
+    public function updateTableCmsParagraphType()
+    {
+        $table = $this->getTableStatement('CmsParagraphType');
+        $this->addColumnToTable($table, new Varchar('CmsParagraphType_Code', 255));
+        $this->addColumnToTable($table, new Varchar('CmsParagraphType_Template', 255));
+        $this->addColumnToTable($table, new Boolean('CmsParagraphType_Active'));
+        $this->addConstraintToTable($table, new PrimaryKey('CmsParagraphType_Code'));
+        $this->addDefaultColumnsToTable($table);
+        return $this->query($table);
+    }
+
+    public function updateTableCmsPostState()
+    {
+        $table = $this->getTableStatement('CmsPostState');
+        $this->addColumnToTable($table, new Varchar('CmsPostState_Code', 255));
+        $this->addColumnToTable($table, new Boolean('CmsPostState_Active'));
+        $this->addConstraintToTable($table, new PrimaryKey('CmsPostState_Code'));
+        $this->addDefaultColumnsToTable($table);
+        return $this->query($table);
+    }
+
+    public function updateTableCmsPostType()
+    {
+        $table = $this->getTableStatement('CmsPostType');
+        $this->addColumnToTable($table, new Varchar('CmsPostType_Code', 255));
+        $this->addColumnToTable($table, new Varchar('CmsPostType_Template', 255));
+        $this->addColumnToTable($table, new Boolean('CmsPostType_Active'));
+        $this->addConstraintToTable($table, new PrimaryKey('CmsPostType_Code'));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);
     }
@@ -207,6 +302,10 @@ class SchemaUpdater extends AbstractUpdater
         $this->addColumnToTable($table, new Integer('CmsSite_ID'))
             ->setOption('AUTO_INCREMENT', true);
         $this->addColumnToTable($table, new Integer('Article_ID'));
+        $this->addColumnToTable($table, new Varchar('CmsSiteState_Code', 255));
+        $this->addColumnToTable($table, new Varchar('CmsSiteType_Code', 255));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsSiteState_Code', 'CmsSiteState', 'CmsSiteState_Code'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsSiteType_Code', 'CmsSiteType', 'CmsSiteType_Code'));
         $this->addConstraintToTable($table, new PrimaryKey('CmsSite_ID'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'Article_ID', 'Article', 'Article_ID'));
         $this->addDefaultColumnsToTable($table);
@@ -220,6 +319,10 @@ class SchemaUpdater extends AbstractUpdater
         $this->addColumnToTable($table, new Integer('CmsParagraph_ID'))
             ->setOption('AUTO_INCREMENT', true);
         $this->addColumnToTable($table, new Integer('Article_ID'));
+        $this->addColumnToTable($table, new Varchar('CmsParagraphState_Code', 255));
+        $this->addColumnToTable($table, new Varchar('CmsParagraphType_Code', 255));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsParagraphState_Code', 'CmsParagraphState', 'CmsParagraphState_Code'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsParagraphType_Code', 'CmsParagraphType', 'CmsParagraphType_Code'));
         $this->addConstraintToTable($table, new PrimaryKey('CmsParagraph_ID'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'Article_ID', 'Article', 'Article_ID'));
         $this->addDefaultColumnsToTable($table);
@@ -233,11 +336,30 @@ class SchemaUpdater extends AbstractUpdater
         $this->addColumnToTable($table, new Integer('CmsParagraph_ID'));
         $this->addColumnToTable($table, new Integer('CmsSite_CmsParagraph_Order'));
         $this->addConstraintToTable($table, new PrimaryKey(['CmsSite_ID', 'CmsParagraph_ID']));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsSite_ID', 'CmsSite', 'CmsSite_ID'));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsParagraph_ID', 'CmsParagraph', 'CmsParagraph_ID'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsSite_ID', 'CmsSite', 'CmsSite_ID', 'CASCADE'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsParagraph_ID', 'CmsParagraph', 'CmsParagraph_ID', 'CASCADE'));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);
     }
+
+    public function updateTableCmsPost()
+    {
+        $table = $this->getTableStatement('CmsPost');
+        $this->addColumnToTable($table, new Integer('CmsPost_ID'))
+            ->setOption('AUTO_INCREMENT', true);
+        $this->addColumnToTable($table, new Integer('CmsSite_ID'));
+        $this->addColumnToTable($table, new Integer('Article_ID'));
+        $this->addColumnToTable($table, new Varchar('CmsPostState_Code', 255));
+        $this->addColumnToTable($table, new Varchar('CmsPostType_Code', 255));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsPostState_Code', 'CmsPostState', 'CmsPostState_Code'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsPostType_Code', 'CmsPostType', 'CmsPostType_Code'));
+        $this->addConstraintToTable($table, new PrimaryKey('CmsPost_ID'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'Article_ID', 'Article', 'Article_ID', 'CASCADE'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsSite_ID', 'CmsSite', 'CmsSite_ID', 'CASCADE'));
+        $this->addDefaultColumnsToTable($table);
+        return $this->query($table);
+    }
+
 
     public function updateTableCmsMenu()
     {
@@ -245,11 +367,17 @@ class SchemaUpdater extends AbstractUpdater
         $this->addColumnToTable($table, new Integer('CmsMenu_ID'))
             ->setOption('AUTO_INCREMENT', true);
         $this->addColumnToTable($table, new Integer('CmsMenu_ID_Parent', true));
-        $this->addColumnToTable($table, new Integer('CmsSite_ID', true));
+        $this->addColumnToTable($table, new Integer('CmsSite_ID'));
+        $this->addColumnToTable($table, new Integer('CmsSite_ID_Parent', true));
         $this->addColumnToTable($table, new Integer('CmsMenu_Order', false, 0));
+        $this->addColumnToTable($table, new Varchar('CmsMenuState_Code', 255));
+        $this->addColumnToTable($table, new Varchar('CmsMenuType_Code', 255));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsMenuState_Code', 'CmsMenuState', 'CmsMenuState_Code'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsMenuType_Code', 'CmsMenuType', 'CmsMenuType_Code'));
         $this->addConstraintToTable($table, new PrimaryKey('CmsMenu_ID'));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsSite_ID', 'CmsSite', 'CmsSite_ID'));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsMenu_ID_Parent', 'CmsMenu', 'CmsMenu_ID'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsSite_ID', 'CmsSite', 'CmsSite_ID', 'CASCADE'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsSite_ID_Parent', 'CmsSite', 'CmsSite_ID', 'CASCADE'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsMenu_ID_Parent', 'CmsMenu', 'CmsMenu_ID', 'CASCADE'));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);
     }

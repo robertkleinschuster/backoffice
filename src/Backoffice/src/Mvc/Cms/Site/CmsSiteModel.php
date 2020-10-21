@@ -4,16 +4,11 @@
 namespace Backoffice\Mvc\Cms\Site;
 
 
-use Base\Article\ArticleBeanProcessor;
-use Base\Article\State\ArticleStateBeanFinder;
-use Base\Article\Translation\ArticleTranslationBeanProcessor;
-use Base\Article\Type\ArticleTypeBeanFinder;
-use Base\Cms\Paragraph\CmsParagraphBeanFinder;
+use Base\Cms\Site\State\CmsSiteStateBeanFinder;
+use Base\Cms\Site\Type\CmsSiteTypeBeanFinder;
 use Base\Cms\Site\CmsSiteBeanFinder;
 use Base\Cms\Site\CmsSiteBeanProcessor;
 use Base\Cms\SiteParagraph\CmsSiteParagraphBeanFinder;
-use Mvc\Helper\ValidationHelperAwareInterface;
-use NiceshopsDev\Bean\BeanInterface;
 
 class CmsSiteModel extends \Backoffice\Mvc\Base\BaseModel
 {
@@ -29,26 +24,26 @@ class CmsSiteModel extends \Backoffice\Mvc\Base\BaseModel
 
     }
 
-    public function getArticleType_Options(): array
+    public function getCmsSiteType_Options(): array
     {
         $options = [];
-        $finder = new ArticleTypeBeanFinder($this->getDbAdpater());
-        $finder->setArticleType_Active(true);
+        $finder = new CmsSiteTypeBeanFinder($this->getDbAdpater());
+        $finder->setCmsSiteType_Active(true);
         $finder->find();
         foreach ($finder->getBeanGenerator() as $bean) {
-            $options[$bean->getData('ArticleType_Code')] = $bean->getData('ArticleType_Code');
+            $options[$bean->getData('CmsSiteType_Code')] = $bean->getData('CmsSiteType_Code');
         }
         return $options;
     }
 
-    public function getArticleState_Options(): array
+    public function getCmsSiteState_Options(): array
     {
         $options = [];
-        $finder = new ArticleStateBeanFinder($this->getDbAdpater());
-        $finder->setArticleState_Active(true);
+        $finder = new CmsSiteStateBeanFinder($this->getDbAdpater());
+        $finder->setCmsSiteState_Active(true);
         $finder->find();
         foreach ($finder->getBeanGenerator() as $bean) {
-            $options[$bean->getData('ArticleState_Code')] = $bean->getData('ArticleState_Code');
+            $options[$bean->getData('CmsSiteState_Code')] = $bean->getData('CmsSiteState_Code');
         }
         return $options;
     }

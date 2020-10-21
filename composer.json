@@ -61,7 +61,7 @@
         "mezzio/mezzio-session": "^1.3",
         "mezzio/mezzio-session-cache": "^1.4",
         "pfaciana/tiny-html-minifier": "^3.0",
-        "robertkleinschuster/mvc": "^1.1.2",
+        "robertkleinschuster/mvc": "^1",
         "robertkleinschuster/nice-beans": "^1.0"
     },
     "require-dev": {

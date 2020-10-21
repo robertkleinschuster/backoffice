@@ -1,23 +1,23 @@
 <?php
 
 
-namespace Base\Article\State;
+namespace Base\Cms\Paragraph\Type;
 
 
 use NiceshopsDev\Bean\BeanFactory\AbstractBeanFactory;
 use NiceshopsDev\Bean\BeanInterface;
 use NiceshopsDev\Bean\BeanList\BeanListInterface;
 
-class ArticleStateBeanFactory extends AbstractBeanFactory
+class CmsParagraphTypeBeanFactory extends AbstractBeanFactory
 {
     public function createBean(): BeanInterface
     {
-        return new ArticleStateBean();
+       return new CmsParagraphTypeBean();
     }
 
     public function createBeanList(): BeanListInterface
     {
-        return new ArticleStateBeanList();
+        return new CmsParagraphTypeBeanList();
     }
 
 }

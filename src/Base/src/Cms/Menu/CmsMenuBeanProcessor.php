@@ -6,11 +6,18 @@ namespace Base\Cms\Menu;
 
 use Base\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
+use Laminas\I18n\Translator\TranslatorAwareInterface;
+use Laminas\I18n\Translator\TranslatorAwareTrait;
+use Mvc\Helper\ValidationHelperAwareInterface;
+use Mvc\Helper\ValidationHelperAwareTrait;
 use NiceshopsDev\Bean\BeanInterface;
 use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
 
-class CmsMenuBeanProcessor extends AbstractBeanProcessor
+class CmsMenuBeanProcessor extends AbstractBeanProcessor implements ValidationHelperAwareInterface, TranslatorAwareInterface
 {
+    use ValidationHelperAwareTrait;
+    use TranslatorAwareTrait;
+
     private $adapter;
     public function __construct(Adapter $adapter)
     {
@@ -19,7 +26,10 @@ class CmsMenuBeanProcessor extends AbstractBeanProcessor
         $saver->addColumn('CmsMenu_ID', 'CmsMenu_ID', 'CmsMenu', 'CmsMenu_ID', true);
         $saver->addColumn('CmsMenu_ID_Parent', 'CmsMenu_ID_Parent', 'CmsMenu', 'CmsMenu_ID');
         $saver->addColumn('CmsSite_ID', 'CmsSite_ID', 'CmsMenu', 'CmsMenu_ID');
+        $saver->addColumn('CmsSite_ID_Parent', 'CmsSite_ID_Parent', 'CmsMenu', 'CmsMenu_ID');
         $saver->addColumn('CmsMenu_Order', 'CmsMenu_Order', 'CmsMenu', 'CmsMenu_ID');
+        $saver->addColumn('CmsMenuType_Code', 'CmsMenuType_Code', 'CmsMenu', 'CmsMenu_ID');
+        $saver->addColumn('CmsMenuState_Code', 'CmsMenuState_Code', 'CmsMenu', 'CmsMenu_ID');
         parent::__construct($saver);
     }
 
@@ -39,6 +49,23 @@ class CmsMenuBeanProcessor extends AbstractBeanProcessor
             $bean->setData('CmsMenu_Order', $order);
         }
         parent::beforeSave($bean);
+    }
+
+
+    protected function translate(string $name): string
+    {
+        return $this->getTranslator()->translate($name, 'validation');
+    }
+
+    protected function validateForSave(BeanInterface $bean): bool
+    {
+        if (!$bean->hasData('CmsMenuState_Code') || !strlen(trim(($bean->getData('CmsMenuState_Code'))))) {
+            $this->getValidationHelper()->addError('CmsMenuState_Code', $this->translate('articlestate.code.empty'));
+        }
+        if (!$bean->hasData('CmsMenuType_Code') || !strlen(trim(($bean->getData('CmsMenuType_Code'))))) {
+            $this->getValidationHelper()->addError('CmsMenuType_Code', $this->translate('articletype.code.empty'));
+        }
+        return parent::validateForSave($bean);
     }
 
 

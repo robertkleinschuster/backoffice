@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Base\Article\Type;
+namespace Base\Cms\Post\Type;
 
 
 use NiceshopsDev\Bean\BeanList\JsonSerializable\AbstractJsonSerializableBeanList;
 
-class ArticleTypeBeanList extends AbstractJsonSerializableBeanList
+class CmsPostTypeBeanList extends AbstractJsonSerializableBeanList
 {
 
 }

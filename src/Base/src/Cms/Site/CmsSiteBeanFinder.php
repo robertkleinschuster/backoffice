@@ -26,6 +26,9 @@ class CmsSiteBeanFinder extends ArticleTranslationBeanFinder
         $loader = $this->getLoader();
         if ($loader instanceof  DatabaseBeanLoader) {
             $loader->addColumn('CmsSite_ID', 'CmsSite_ID', 'CmsSite', 'CmsSite_ID', true);
+            $loader->addColumn('CmsSiteType_Code', 'CmsSiteType_Code', 'CmsSite', 'CmsSite_ID');
+            $loader->addColumn('CmsSiteType_Template', 'CmsSiteType_Template', 'CmsSiteType', 'CmsSiteType_Code');
+            $loader->addColumn('CmsSiteState_Code', 'CmsSiteState_Code', 'CmsSite', 'CmsSite_ID');
             $loader->addColumn('Article_ID', 'Article_ID', 'CmsSite', 'CmsSite_ID', false, null, ['Article', 'ArticleTranslation']);
         }
         $this->linkBeanFinder(new CmsSiteParagraphBeanFinder($adapter), 'CmsParagraph_BeanList', 'CmsSite_ID', 'CmsSite_ID');

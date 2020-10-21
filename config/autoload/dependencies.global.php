@@ -37,8 +37,7 @@ return [
             DatabaseMiddleware::class => DatabaseMiddlewareFactory::class,
             TranslatorMiddleware::class => TranslatorMiddlewareFactory::class,
             \Base\Logging\LoggingMiddleware::class => \Base\Logging\LoggingMiddlewareFactory::class,
-            LocalizationMiddleware::class => \Base\Localization\LocalizationMiddlewareFactory::class
-
+            LocalizationMiddleware::class => \Base\Localization\LocalizationMiddlewareFactory::class,
         ],
         'delegators' => [
             ErrorHandler::class => [

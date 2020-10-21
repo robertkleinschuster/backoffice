@@ -33,138 +33,161 @@ class DataUpdater extends AbstractUpdater
         $data_Map = [];
         $data_Map[] = [
             'Locale_Code' => 'de_AT',
+            'Locale_UrlCode' => 'de-AT',
             'Locale_Name' => 'Deutsch (Österreich)',
             'Locale_Active' => 1,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'de_DE',
+            'Locale_UrlCode' => 'de-DE',
             'Locale_Name' => 'Deutsch (Deutschland)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'de_BE',
+            'Locale_UrlCode' => 'de-BE',
             'Locale_Name' => 'Deutsch (Belgien)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'de_LI',
+            'Locale_UrlCode' => 'de-LI',
             'Locale_Name' => 'Deutsch (Liechtenstein)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'de_LU',
+            'Locale_UrlCode' => 'de-LU',
             'Locale_Name' => 'Deutsch (Luxembourg)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'de_CH',
+            'Locale_UrlCode' => 'de-CH',
             'Locale_Name' => 'Deutsch (Schweiz)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'en_AU',
+            'Locale_UrlCode' => 'en-AU',
             'Locale_Name' => 'English (Australia)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'en_BE',
+            'Locale_UrlCode' => 'en-BE',
             'Locale_Name' => 'English (Belgium)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'en_US',
+            'Locale_UrlCode' => 'en-US',
             'Locale_Name' => 'English (United States)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'en_GB',
+            'Locale_UrlCode' => 'en-GB',
             'Locale_Name' => 'English (United Kingdom)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'nl_NL',
+            'Locale_UrlCode' => 'nl-NL',
             'Locale_Name' => 'Dutch (Netherlands)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'sl_SI',
+            'Locale_UrlCode' => 'sl-SI',
             'Locale_Name' => 'Slovenian (Slovenia)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'hu_HU',
+            'Locale_UrlCode' => 'hu-HU',
             'Locale_Name' => 'Hungarian (Hungary)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'it_IT',
+            'Locale_UrlCode' => 'it-IT',
             'Locale_Name' => 'Italian (Italy)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'it_SM',
+            'Locale_UrlCode' => 'it-SM',
             'Locale_Name' => 'Italian (San Marino)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'it_CH',
+            'Locale_UrlCode' => 'it-CH',
             'Locale_Name' => 'Italian (Switzerland)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'es_ES',
+            'Locale_UrlCode' => 'es-ES',
             'Locale_Name' => 'Spanish (Spain)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'es_US',
+            'Locale_UrlCode' => 'es-US',
             'Locale_Name' => 'Spanish (United States)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'fr_FR',
+            'Locale_UrlCode' => 'fr-FR',
             'Locale_Name' => 'French (France)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'fr_BE',
+            'Locale_UrlCode' => 'fr-BE',
             'Locale_Name' => 'French (Belgium)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'fr_LU',
+            'Locale_UrlCode' => 'fr-LU',
             'Locale_Name' => 'French (Luxembourg)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'fr_MC',
+            'Locale_UrlCode' => 'fr-MC',
             'Locale_Name' => 'French (Monaco)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
         ];
         $data_Map[] = [
             'Locale_Code' => 'fr_CH',
+            'Locale_UrlCode' => 'fr-CH',
             'Locale_Name' => 'French (Switzerland)',
             'Locale_Active' => 0,
             'Locale_Order' => $i++,
@@ -172,30 +195,152 @@ class DataUpdater extends AbstractUpdater
         return $this->saveDataMap('Locale', 'Locale_Code', $data_Map);
     }
 
-    public function updateDataArticleState()
+    public function updateDataCmsPostState()
     {
         $data_Map = [];
         $data_Map[] = [
-            'ArticleState_Code' => ArticleBean::STATE_ACTIVE,
-            'ArticleState_Active' => true,
+            'CmsPostState_Code' => 'active',
+            'CmsPostState_Active' => true,
         ];
         $data_Map[] = [
-            'ArticleState_Code' => ArticleBean::STATE_INACTIVE,
-            'ArticleState_Active' => true,
+            'CmsPostState_Code' => 'inactive',
+            'CmsPostState_Active' => true,
         ];
-        return $this->saveDataMap('ArticleState', 'ArticleState_Code', $data_Map);
+        return $this->saveDataMap('CmsPostState', 'CmsPostState_Code', $data_Map);
     }
 
 
-    public function updateDataArticleType()
+    public function updateDataCmsPostType()
     {
         $data_Map = [];
         $data_Map[] = [
-            'ArticleType_Code' => ArticleBean::TYPE_DEFAULT,
-            'ArticleType_Active' => true,
+            'CmsPostType_Code' => 'default',
+            'CmsPostType_Template' => 'cmspost::default',
+            'CmsPostType_Active' => true,
         ];
-        return $this->saveDataMap('ArticleType', 'ArticleType_Code', $data_Map);
+        return $this->saveDataMap('CmsPostType', 'CmsPostType_Code', $data_Map);
     }
+
+    public function updateDataCmsSiteState()
+    {
+        $data_Map = [];
+        $data_Map[] = [
+            'CmsSiteState_Code' => 'active',
+            'CmsSiteState_Active' => true,
+        ];
+        $data_Map[] = [
+            'CmsSiteState_Code' => 'inactive',
+            'CmsSiteState_Active' => true,
+        ];
+        return $this->saveDataMap('CmsSiteState', 'CmsSiteState_Code', $data_Map);
+    }
+
+
+    public function updateDataCmsSiteType()
+    {
+        $data_Map = [];
+        $data_Map[] = [
+            'CmsSiteType_Code' => 'home',
+            'CmsSiteType_Template' => 'cmssite::home',
+            'CmsSiteType_Active' => true,
+        ];
+        $data_Map[] = [
+            'CmsSiteType_Code' => 'about',
+            'CmsSiteType_Template' => 'cmssite::about',
+            'CmsSiteType_Active' => true,
+        ];
+        $data_Map[] = [
+            'CmsSiteType_Code' => 'contact',
+            'CmsSiteType_Template' => 'cmssite::contact',
+            'CmsSiteType_Active' => true,
+        ];
+        $data_Map[] = [
+            'CmsSiteType_Code' => 'blog',
+            'CmsSiteType_Template' => 'cmssite::blog',
+            'CmsSiteType_Active' => true,
+        ];
+        $data_Map[] = [
+            'CmsSiteType_Code' => 'post',
+            'CmsSiteType_Template' => 'cmssite::post',
+            'CmsSiteType_Active' => true,
+        ];
+        $data_Map[] = [
+            'CmsSiteType_Code' => 'faq',
+            'CmsSiteType_Template' => 'cmssite::faq',
+            'CmsSiteType_Active' => true,
+        ];
+        return $this->saveDataMap('CmsSiteType', 'CmsSiteType_Code', $data_Map);
+    }
+
+    public function updateDataCmsParagraphState()
+    {
+        $data_Map = [];
+        $data_Map[] = [
+            'CmsParagraphState_Code' => 'active',
+            'CmsParagraphState_Active' => true,
+        ];
+        $data_Map[] = [
+            'CmsParagraphState_Code' => 'inactive',
+            'CmsParagraphState_Active' => true,
+        ];
+        return $this->saveDataMap('CmsParagraphState', 'CmsParagraphState_Code', $data_Map);
+    }
+
+
+    public function updateDataCmsParagraphType()
+    {
+        $data_Map = [];
+        $data_Map[] = [
+            'CmsParagraphType_Code' => 'default',
+            'CmsParagraphType_Template' => 'cmsparagraph::default',
+            'CmsParagraphType_Active' => true,
+        ];
+        return $this->saveDataMap('CmsParagraphType', 'CmsParagraphType_Code', $data_Map);
+    }
+
+
+    public function updateDataCmsMenuState()
+    {
+        $data_Map = [];
+        $data_Map[] = [
+            'CmsMenuState_Code' => 'active',
+            'CmsMenuState_Active' => true,
+        ];
+        $data_Map[] = [
+            'CmsMenuState_Code' => 'inactive',
+            'CmsMenuState_Active' => true,
+        ];
+        return $this->saveDataMap('CmsMenuState', 'CmsMenuState_Code', $data_Map);
+    }
+
+
+    public function updateDataCmsMenuType()
+    {
+        $data_Map = [];
+        $data_Map[] = [
+            'CmsMenuType_Code' => 'header',
+            'CmsMenuType_Template' => 'cmsmenu::header',
+            'CmsMenuType_Active' => true,
+        ];
+        $data_Map[] = [
+            'CmsMenuType_Code' => 'footer',
+            'CmsMenuType_Template' => 'cmsmenu::footer',
+            'CmsMenuType_Active' => true,
+        ];
+        $data_Map[] = [
+            'CmsMenuType_Code' => 'aside_left',
+            'CmsMenuType_Template' => 'cmsmenu::aside_left',
+            'CmsMenuType_Active' => true,
+        ];
+        $data_Map[] = [
+            'CmsMenuType_Code' => 'aside_right',
+            'CmsMenuType_Template' => 'cmsmenu::aside_right',
+            'CmsMenuType_Active' => true,
+        ];
+        return $this->saveDataMap('CmsMenuType', 'CmsMenuType_Code', $data_Map);
+    }
+
+
 
 
     public function updateDataUserPermission()
@@ -253,6 +398,24 @@ class DataUpdater extends AbstractUpdater
         ];
         $data_Map[] = [
             'UserPermission_Code' => 'cmssite.edit',
+            'UserPermission_Active' => true,
+        ];
+
+
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmspost',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmspost.delete',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmspost.create',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'cmspost.edit',
             'UserPermission_Active' => true,
         ];
 
