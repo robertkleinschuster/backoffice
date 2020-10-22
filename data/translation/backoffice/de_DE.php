@@ -89,6 +89,7 @@ return [
     'cmsparagraphstate.code.active' => 'Aktiv',
     'cmsparagraphstate.code.inactive' => 'Inaktiv',
     'cmsparagraphtype.code' => 'Absatz Typ',
+    'cmsparagraphtype.code.default' => 'Startseite',
     'site.toolbar.frontend' => 'Öffnen',
     'cmssitetype.code' => 'Seiten Typ',
     'cmssitetype.code.home' => 'Startseite',

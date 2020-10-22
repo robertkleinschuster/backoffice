@@ -6,9 +6,7 @@ namespace Base\File\Directory;
 
 use Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanFactory\BeanFactoryInterface;
 use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
-use NiceshopsDev\Bean\BeanFinder\BeanLoaderInterface;
 
 class FileDirectoryBeanFinder extends AbstractBeanFinder
 {

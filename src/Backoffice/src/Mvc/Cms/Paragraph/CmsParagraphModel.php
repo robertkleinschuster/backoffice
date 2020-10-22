@@ -27,7 +27,7 @@ class CmsParagraphModel extends BaseModel
         $finder->setCmsParagraphType_Active(true);
         $finder->find();
         foreach ($finder->getBeanGenerator() as $bean) {
-            $options[$bean->getData('CmsParagraphType_Code')] = $bean->getData('CmsParagraphType_Code');
+            $options[$bean->getData('CmsParagraphType_Code')] = $this->translate('cmsparagraphtype.code.' . $bean->getData('CmsParagraphType_Code'));
         }
         return $options;
     }
@@ -39,7 +39,7 @@ class CmsParagraphModel extends BaseModel
         $finder->setCmsParagraphState_Active(true);
         $finder->find();
         foreach ($finder->getBeanGenerator() as $bean) {
-            $options[$bean->getData('CmsParagraphState_Code')] = $bean->getData('CmsParagraphState_Code');
+            $options[$bean->getData('CmsParagraphState_Code')] = $this->translate('cmsparagraphstate.code.' . $bean->getData('CmsParagraphState_Code'));
         }
         return $options;
     }

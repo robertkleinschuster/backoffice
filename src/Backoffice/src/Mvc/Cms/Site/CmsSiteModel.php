@@ -31,7 +31,7 @@ class CmsSiteModel extends \Backoffice\Mvc\Base\BaseModel
         $finder->setCmsSiteType_Active(true);
         $finder->find();
         foreach ($finder->getBeanGenerator() as $bean) {
-            $options[$bean->getData('CmsSiteType_Code')] = $bean->getData('CmsSiteType_Code');
+            $options[$bean->getData('CmsSiteType_Code')] = $this->translate("cmssitetype.code." . $bean->getData('CmsSiteType_Code'));
         }
         return $options;
     }
@@ -43,7 +43,7 @@ class CmsSiteModel extends \Backoffice\Mvc\Base\BaseModel
         $finder->setCmsSiteState_Active(true);
         $finder->find();
         foreach ($finder->getBeanGenerator() as $bean) {
-            $options[$bean->getData('CmsSiteState_Code')] = $bean->getData('CmsSiteState_Code');
+            $options[$bean->getData('CmsSiteState_Code')] = $this->translate("cmssitestate.code." . $bean->getData('CmsSiteState_Code'));
         }
         return $options;
     }
