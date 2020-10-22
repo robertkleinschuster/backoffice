@@ -230,6 +230,21 @@ abstract class BaseController extends AbstractController implements AttributeAwa
 
         $this->getView()->addNavigation($navigation);
 
+        $navigation = new Navigation($this->translate('navigation.file'));
+        $navigation->setPermissionList($this->getUser()->getPermission_List());
+
+        $element =  new Element(
+            $this->translate('navigation.file.directory'),
+            $this->getPathHelper()
+                ->setController('filedirectory')
+                ->setAction('index')
+                ->getPath()
+        );
+        $element->setPermission('filedirectory');
+        $navigation->addElement($element);
+
+        $this->getView()->addNavigation($navigation);
+
         $navigation = new Navigation($this->translate('navigation.system'));
         $navigation->setPermissionList($this->getUser()->getPermission_List());
 

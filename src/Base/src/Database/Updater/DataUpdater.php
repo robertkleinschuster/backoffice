@@ -286,6 +286,24 @@ class DataUpdater extends AbstractUpdater
         return $this->saveDataMap('CmsParagraphState', 'CmsParagraphState_Code', $data_Map);
     }
 
+    public function updateDataFileType()
+    {
+        $data_Map = [];
+        $data_Map[] = [
+            'FileType_Code' => 'jpg',
+            'FileType_Mime' => 'image/jpeg',
+            'FileType_Name' => 'JPEG',
+            'FileType_Active' => true,
+        ];
+        $data_Map[] = [
+            'FileType_Code' => 'png',
+            'FileType_Mime' => 'image/png',
+            'FileType_Name' => 'PNG',
+            'FileType_Active' => true,
+        ];
+        return $this->saveDataMap('CmsParagraphState', 'CmsParagraphState_Code', $data_Map);
+    }
+
 
     public function updateDataCmsParagraphType()
     {
@@ -575,11 +593,30 @@ class DataUpdater extends AbstractUpdater
         ];
 
         $data_Map[] = [
+            'UserPermission_Code' => 'filedirectory',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'filedirectory.delete',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'filedirectory.create',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'filedirectory.edit',
+            'UserPermission_Active' => true,
+        ];
+
+
+        $data_Map[] = [
             'UserPermission_Code' => 'debug',
             'UserPermission_Active' => true,
         ];
 
         return $this->saveDataMap('UserPermission', 'UserPermission_Code', $data_Map);
     }
+
 
 }

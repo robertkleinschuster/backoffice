@@ -25,6 +25,21 @@ class FileDirectoryBeanProcessor extends AbstractBeanProcessor
         parent::__construct($saver);
     }
 
+    protected function beforeSave(BeanInterface $bean)
+    {
+        parent::beforeSave($bean);
+        mkdir($_SERVER["DOCUMENT_ROOT"] . '/upload/' . $bean->getData('FileDirectory_Code'));
+    }
+
+    public function delete(): int
+    {
+        $beanList = $this->getBeanListForDelete();
+        foreach ($beanList as $bean) {
+            rmdir($_SERVER["DOCUMENT_ROOT"] . '/upload/' . $bean->getData('FileDirectory_Code'));
+        }
+        return parent::delete();
+    }
+
     protected function validateForSave(BeanInterface $bean): bool
     {
         return true;

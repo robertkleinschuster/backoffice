@@ -24,6 +24,8 @@ return [
     'delete.cancel'   => 'Abbrechen',
     'delete.message' => 'Sind sie sicher, dass sie den Eintrag löschen wollen?',
     'navigation.account.logout' => 'Abmelden',
+    'navigation.file' => 'Dateien',
+    'navigation.file.directory' => 'Order',
     'navigation.content' => 'Inhalte',
     'navigation.content.cmsmenu' => 'Menü',
     'navigation.content.cmssite' => 'Seiten',

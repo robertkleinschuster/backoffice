@@ -18,9 +18,12 @@ class UserRoleModel extends \Backoffice\Mvc\Base\BaseModel
     }
 
 
-    public function getRoleList(array $userPermissions): array
+    public function getRoleList(array $userPermissions, array $viewId): array
     {
-        $beanList = $this->getFinder()->getBeanGenerator();
+        $finder = new UserRoleBeanFinder($this->getDbAdpater());
+        $finder->getLoader()->initByIdMap($viewId);
+        $finder->find();
+        $beanList = $finder->getBeanList();
         $existing = $beanList->getData('UserRole_Code');
         $finder = new RoleBeanFinder($this->getDbAdpater());
         $finder->setUserRole_Active(true);

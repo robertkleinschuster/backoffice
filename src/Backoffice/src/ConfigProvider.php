@@ -14,6 +14,8 @@ use Backoffice\Mvc\Cms\Site\CmsSiteController;
 use Backoffice\Mvc\Cms\Site\CmsSiteModel;
 use Backoffice\Mvc\Cms\SiteParagraph\CmsSiteParagraphController;
 use Backoffice\Mvc\Cms\SiteParagraph\CmsSiteParagraphModel;
+use Backoffice\Mvc\File\Directory\FileDirectoryController;
+use Backoffice\Mvc\File\Directory\FileDirectoryModel;
 use Backoffice\Mvc\Index\IndexController;
 use Backoffice\Mvc\Index\IndexModel;
 use Backoffice\Mvc\Locale\LocaleController;
@@ -107,6 +109,7 @@ class ConfigProvider
                         'cmssite' => CmsSiteController::class,
                         'cmsparagraph' => CmsParagraphController::class,
                         'cmssiteparagraph' => CmsSiteParagraphController::class,
+                        'filedirectory' => FileDirectoryController::class,
                     ],
                     'models' => [
                         'setup' => SetupModel::class,
@@ -123,6 +126,7 @@ class ConfigProvider
                         'cmssite' => CmsSiteModel::class,
                         'cmsparagraph' => CmsParagraphModel::class,
                         'cmssiteparagraph' => CmsSiteParagraphModel::class,
+                        'filedirectory' => FileDirectoryModel::class,
                     ],
                 ]
             ]

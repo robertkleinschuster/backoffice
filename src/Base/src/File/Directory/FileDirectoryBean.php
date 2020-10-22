@@ -13,8 +13,8 @@ class FileDirectoryBean extends AbstractJsonSerializableBean
      */
     public function __construct()
     {
-        $this->setDataType('FileDirectory_Code', self::DATA_TYPE_STRING);
-        $this->setDataType('FileDirectory_Name', self::DATA_TYPE_STRING);
-        $this->setDataType('FileDirectory_Active', self::DATA_TYPE_BOOL);
+        $this->setDataType('FileDirectory_Code', self::DATA_TYPE_STRING, true);
+        $this->setDataType('FileDirectory_Name', self::DATA_TYPE_STRING, true);
+        $this->setDataType('FileDirectory_Active', self::DATA_TYPE_BOOL, true);
     }
 }

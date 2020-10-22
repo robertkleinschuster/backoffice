@@ -16,15 +16,19 @@ class RolePermissionModel extends BaseModel
     }
 
 
-    public function getPermissionList(array $userPermissions): array
+    public function getPermissionList(array $userPermissions, array $viewId): array
     {
-        $beanList = $this->getFinder()->getBeanGenerator();
+        $finder = new RolePermissionBeanFinder($this->getDbAdpater());
+        $finder->getLoader()->initByIdMap($viewId);
+        $finder->find();
+        $beanList = $finder->getBeanList();
         $existing = $beanList->getData('UserPermission_Code');
         $finder = new PermissionBeanFinder($this->getDbAdpater());
         $finder->setUserPermission_Active(true);
         $finder->find();
         $permissionList = [];
-        foreach ($finder->getBeanGenerator() as $item) {
+        $beanList = $finder->getBeanList();
+        foreach ($beanList as $item) {
             $code = $item->getData('UserPermission_Code');
             if (!in_array($code, $existing) && in_array($code, $userPermissions)) {
                 $permissionList[$code] = $code;

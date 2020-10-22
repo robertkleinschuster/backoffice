@@ -30,7 +30,7 @@ class UserRoleController extends BaseController
     {
         parent::addEditFields($edit);
         $edit->addSelect('UserRole_ID', 'Rolle')
-            ->setSelectOptions($this->getModel()->getRoleList($this->getUser()->getPermission_List()));
+            ->setSelectOptions($this->getModel()->getRoleList($this->getUser()->getPermission_List(), $this->getControllerRequest()->getViewIdMap()));
     }
 
     public function deleteAction()
