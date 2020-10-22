@@ -60,6 +60,6 @@ class CmsHandler implements \Psr\Http\Server\RequestHandlerInterface
             $this->renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'bean', $bean);
             return new HtmlResponse(TinyMinify::html($this->renderer->render($bean->getData('CmsSiteType_Template'))));
         }
-        return new HtmlResponse(TinyMinify::html($this->renderer->render('frontend::404')), 404);
+        return new HtmlResponse(TinyMinify::html($this->renderer->render('error::404')), 404);
     }
 }

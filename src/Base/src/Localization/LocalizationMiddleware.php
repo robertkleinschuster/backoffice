@@ -58,17 +58,27 @@ class LocalizationMiddleware implements MiddlewareInterface
                 }
                 if ($locale === false) {
                     $finder = new LocaleBeanFinder($adapter);
+                    $finder->setLanguage(Locale::getPrimaryLanguage(Locale::acceptFromHttp($request->getServerParams()['HTTP_ACCEPT_LANGUAGE'])));
                     $finder->setLocale_Active(true);
                     $finder->limit(1,0);
                     if ($finder->count() == 1) {
                         $finder->find();
                         $this->urlHelper->setBasePath($finder->getBean()->getData('Locale_UrlCode'));
+                    } else {
+                        $locale = false;
                     }
+                }
+                if ($locale === false) {
+                    $finder = new LocaleBeanFinder($adapter);
+                    $finder->setLocale_Active(true);
+                    $finder->limit(1,0);
+                    $finder->find();
+                    $this->urlHelper->setBasePath($finder->getBean()->getData('Locale_UrlCode'));
                 }
                 return new RedirectResponse($this->urlHelper->generate());
             }
         } catch (\Exception $exception) {
-            $this->urlHelper->setBasePath('de_AT');
+            $this->urlHelper->setBasePath('de-AT');
             return new RedirectResponse($this->urlHelper->generate());
         }
         return $handler->handle($request->withAttribute(self::LOCALIZATION_ATTRIBUTE, $locale));
