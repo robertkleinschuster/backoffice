@@ -21,6 +21,7 @@ use Mvc\Controller\ControllerRequest;
 use Mvc\Controller\ControllerResponse;
 use Mvc\Helper\PathHelper;
 use Mvc\Helper\ValidationHelper;
+use Mvc\Helper\ViewIdHelper;
 use Mvc\View\ComponentDataBean;
 use Mvc\View\Components\Alert\Alert;
 use Mvc\View\Components\Base\Fields\AbstractButton;
@@ -470,20 +471,17 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         return $edit;
     }
 
-    protected function addLocaleButtons(bool $temporary = true)
+    protected function addLocaleButtons()
     {
-        if ($temporary) {
-            $param = 'locale_tmp';
-
-        } else {
-            $param = 'locale';
-        }
         $localeFinder = new LocaleBeanFinder($this->getModel()->getDbAdpater());
         $localeFinder->setLocale_Active(true);
         $localeFinder->find();
         foreach ($localeFinder->getBeanGenerator() as $locale) {
-            $this->getView()->getToolbar()->addButton($this->getPathHelper()->setParams([$param => $locale->getData('Locale_Code')])->setViewIdMap($this->getControllerRequest()->getViewIdMap())->getPath(), $locale->getData('Locale_Name'))
-                ->setStyle(AbstractButton::STYLE_WARNING);
+            if ($locale->getData('Locale_Code') != $this->getTranslator()->getLocale()) {
+                $langPath = $this->getPathHelper()->getUrlHelper()->generate(null, ['locale' => $locale->getData('Locale_UrlCode')], [ViewIdHelper::VIEWID_ATTRIBUTE => $this->getPathHelper()->getViewIdHelper()->generateViewId($this->getControllerRequest()->getViewIdMap())]);
+                $this->getView()->getToolbar()->addButton($langPath, $locale->getData('Locale_Name'))
+                    ->setStyle(AbstractButton::STYLE_WARNING);
+            }
         }
     }
 
