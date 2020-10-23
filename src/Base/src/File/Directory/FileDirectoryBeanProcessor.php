@@ -28,14 +28,18 @@ class FileDirectoryBeanProcessor extends AbstractBeanProcessor
     protected function beforeSave(BeanInterface $bean)
     {
         parent::beforeSave($bean);
-        mkdir($_SERVER["DOCUMENT_ROOT"] . '/upload/' . $bean->getData('FileDirectory_Code'));
+        if (!file_exists($_SERVER["DOCUMENT_ROOT"] . '/upload/' . $bean->getData('FileDirectory_Code'))) {
+            mkdir($_SERVER["DOCUMENT_ROOT"] . '/upload/' . $bean->getData('FileDirectory_Code'));
+        }
     }
 
     public function delete(): int
     {
         $beanList = $this->getBeanListForDelete();
         foreach ($beanList as $bean) {
-            rmdir($_SERVER["DOCUMENT_ROOT"] . '/upload/' . $bean->getData('FileDirectory_Code'));
+            if (file_exists($_SERVER["DOCUMENT_ROOT"] . '/upload/' . $bean->getData('FileDirectory_Code'))) {
+                rmdir($_SERVER["DOCUMENT_ROOT"] . '/upload/' . $bean->getData('FileDirectory_Code'));
+            }
         }
         return parent::delete();
     }
