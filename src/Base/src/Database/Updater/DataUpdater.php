@@ -301,7 +301,7 @@ class DataUpdater extends AbstractUpdater
             'FileType_Name' => 'PNG',
             'FileType_Active' => true,
         ];
-        return $this->saveDataMap('CmsParagraphState', 'CmsParagraphState_Code', $data_Map);
+        return $this->saveDataMap('FileType', 'FileType_Code', $data_Map);
     }
 
 
@@ -589,6 +589,23 @@ class DataUpdater extends AbstractUpdater
         ];
         $data_Map[] = [
             'UserPermission_Code' => 'update.data',
+            'UserPermission_Active' => true,
+        ];
+
+        $data_Map[] = [
+            'UserPermission_Code' => 'file',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'file.delete',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'file.create',
+            'UserPermission_Active' => true,
+        ];
+        $data_Map[] = [
+            'UserPermission_Code' => 'file.edit',
             'UserPermission_Active' => true,
         ];
 

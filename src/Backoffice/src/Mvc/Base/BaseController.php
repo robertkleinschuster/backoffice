@@ -230,8 +230,18 @@ abstract class BaseController extends AbstractController implements AttributeAwa
 
         $this->getView()->addNavigation($navigation);
 
-        $navigation = new Navigation($this->translate('navigation.file'));
+        $navigation = new Navigation($this->translate('navigation.media'));
         $navigation->setPermissionList($this->getUser()->getPermission_List());
+
+        $element =  new Element(
+            $this->translate('navigation.file.file'),
+            $this->getPathHelper()
+                ->setController('file')
+                ->setAction('index')
+                ->getPath()
+        );
+        $element->setPermission('file');
+        $navigation->addElement($element);
 
         $element =  new Element(
             $this->translate('navigation.file.directory'),
@@ -247,8 +257,6 @@ abstract class BaseController extends AbstractController implements AttributeAwa
 
         $navigation = new Navigation($this->translate('navigation.system'));
         $navigation->setPermissionList($this->getUser()->getPermission_List());
-
-
 
         $element =  new Element(
             $this->translate('navigation.system.translation'),

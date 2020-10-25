@@ -14,6 +14,7 @@ trait DatabaseInfoTrait
     private array $dbJoinInfo_Map = [];
 
     /**
+     *
      * @param string $field
      * @param string $column
      * @param string $table

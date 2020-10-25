@@ -6,6 +6,7 @@ namespace Base\Article\Translation;
 
 use Base\Article\ArticleBeanFinder;
 use Base\Database\DatabaseBeanLoader;
+use Base\File\FileBeanFinder;
 use Base\Localization\Locale\LocaleBeanFinder;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Join;
@@ -43,6 +44,8 @@ class ArticleTranslationBeanFinder extends ArticleBeanFinder
             $loader->addColumn('ArticleTranslation_Teaser', 'ArticleTranslation_Teaser', 'ArticleTranslation', 'Article_ID');
             $loader->addColumn('ArticleTranslation_Text', 'ArticleTranslation_Text', 'ArticleTranslation', 'Article_ID');
             $loader->addColumn('ArticleTranslation_Footer', 'ArticleTranslation_Footer', 'ArticleTranslation', 'Article_ID');
+            $loader->addColumn('File_ID', 'File_ID', 'ArticleTranslation', 'Article_ID');
+            $this->linkBeanFinder(new FileBeanFinder($adapter), 'File_BeanList', 'File_ID', 'File_ID');
         }
     }
 

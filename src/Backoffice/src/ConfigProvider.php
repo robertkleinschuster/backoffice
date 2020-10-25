@@ -16,6 +16,8 @@ use Backoffice\Mvc\Cms\SiteParagraph\CmsSiteParagraphController;
 use Backoffice\Mvc\Cms\SiteParagraph\CmsSiteParagraphModel;
 use Backoffice\Mvc\File\Directory\FileDirectoryController;
 use Backoffice\Mvc\File\Directory\FileDirectoryModel;
+use Backoffice\Mvc\File\FileController;
+use Backoffice\Mvc\File\FileModel;
 use Backoffice\Mvc\Index\IndexController;
 use Backoffice\Mvc\Index\IndexModel;
 use Backoffice\Mvc\Locale\LocaleController;
@@ -110,6 +112,7 @@ class ConfigProvider
                         'cmsparagraph' => CmsParagraphController::class,
                         'cmssiteparagraph' => CmsSiteParagraphController::class,
                         'filedirectory' => FileDirectoryController::class,
+                        'file' => FileController::class,
                     ],
                     'models' => [
                         'setup' => SetupModel::class,
@@ -127,6 +130,7 @@ class ConfigProvider
                         'cmsparagraph' => CmsParagraphModel::class,
                         'cmssiteparagraph' => CmsSiteParagraphModel::class,
                         'filedirectory' => FileDirectoryModel::class,
+                        'file' => FileModel::class,
                     ],
                 ]
             ]

@@ -5,6 +5,7 @@ namespace Base\Article;
 
 
 use Base\Database\DatabaseBeanSaver;
+use Cocur\Slugify\Slugify;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\I18n\Translator\TranslatorAwareInterface;
 use Laminas\I18n\Translator\TranslatorAwareTrait;
@@ -33,6 +34,16 @@ class ArticleBeanProcessor extends AbstractBeanProcessor implements ValidationHe
     {
         return $this->getTranslator()->translate($name, 'validation');
     }
+
+    protected function beforeSave(BeanInterface $bean)
+    {
+        $slugify = new Slugify();
+        if ($bean->hasData('Article_Code')) {
+            $bean->setData('Article_Code', $slugify->slugify($bean->getData('Article_Code')));
+        }
+        parent::beforeSave($bean);
+    }
+
 
     protected function validateForSave(BeanInterface $bean): bool
     {

@@ -24,5 +24,6 @@ class ArticleTranslationBean extends ArticleBean
         $this->setDataType('ArticleTranslation_Teaser', self::DATA_TYPE_STRING, true);
         $this->setDataType('ArticleTranslation_Text', self::DATA_TYPE_STRING, true);
         $this->setDataType('ArticleTranslation_Footer', self::DATA_TYPE_STRING, true);
+        $this->setDataType('File_ID', self::DATA_TYPE_INT, true);
     }
 }

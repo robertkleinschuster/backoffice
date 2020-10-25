@@ -8,6 +8,7 @@ use Backoffice\Mvc\Base\BackofficeBeanFormatter;
 use Mvc\Helper\PathHelper;
 use Mvc\View\Components\Detail\Detail;
 use Mvc\View\Components\Edit\Edit;
+use Mvc\View\Components\Edit\Fields\Wysiwyg;
 use Mvc\View\Components\Overview\Overview;
 
 class CmsPostController extends \Backoffice\Mvc\Base\BaseController
@@ -122,15 +123,15 @@ class CmsPostController extends \Backoffice\Mvc\Base\BaseController
         $edit->addText('ArticleTranslation_SubHeading', $this->translate('articletranslation.subheading'))
             ->setChapter($this->translate('article.edit.content'))
             ->setAppendToColumnPrevious(true);
-        $edit->addTextarea('ArticleTranslation_Teaser', $this->translate('articletranslation.teaser'))
+        $edit->addWysiwyg('ArticleTranslation_Teaser', $this->translate('articletranslation.teaser'))
+            ->setChapter($this->translate('article.edit.content'))
+            ->setRows(5)->setType(Wysiwyg::TYPE_TOOLTIP)
+            ->setAppendToColumnPrevious(true);
+        $edit->addWysiwyg('ArticleTranslation_Text', $this->translate('articletranslation.text'))
             ->setChapter($this->translate('article.edit.content'))
             ->setRows(5)
             ->setAppendToColumnPrevious(true);
-        $edit->addTextarea('ArticleTranslation_Text', $this->translate('articletranslation.text'))
-            ->setChapter($this->translate('article.edit.content'))
-            ->setRows(5)
-            ->setAppendToColumnPrevious(true);
-        $edit->addTextarea('ArticleTranslation_Footer', $this->translate('articletranslation.footer'))
+        $edit->addWysiwyg('ArticleTranslation_Footer', $this->translate('articletranslation.footer'))
             ->setChapter($this->translate('article.edit.content'))
             ->setRows(5)
             ->setAppendToColumnPrevious(true);

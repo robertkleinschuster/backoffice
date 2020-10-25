@@ -432,11 +432,13 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
         $select = $this->buildSelect(true, false);
         $select->reset(Select::COLUMNS);
         $column = $this->getColumn($field);
-        $select->columns([$column]);
+        $table = $this->getTable($field);
+        $tableColumn = "$table.$column";
+        $select->columns([$tableColumn => $tableColumn],false);
         $result = $this->getPreparedStatement($select)->execute();
         $ret = [];
         foreach ($result as $row) {
-            $ret[] = $row[$column];
+            $ret[] = $row[$tableColumn];
         }
         return $ret;
     }

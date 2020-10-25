@@ -25,4 +25,10 @@ class FileTypeBeanFinder extends AbstractBeanFinder
         $this->getLoader()->filterValue('FileType_Active', $active);
         return $this;
     }
+
+    public function setFileType_Code(string $code): self
+    {
+        $this->getLoader()->filterValue('FileType_Code', $code);
+        return $this;
+    }
 }

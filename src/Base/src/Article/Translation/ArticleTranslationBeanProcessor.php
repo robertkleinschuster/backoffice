@@ -6,6 +6,7 @@ namespace Base\Article\Translation;
 
 use Base\Article\ArticleBeanProcessor;
 use Base\Database\DatabaseBeanSaver;
+use Cocur\Slugify\Slugify;
 use Laminas\Db\Adapter\Adapter;
 use NiceshopsDev\Bean\BeanInterface;
 
@@ -32,7 +33,21 @@ class ArticleTranslationBeanProcessor extends ArticleBeanProcessor
             $saver->addColumn('ArticleTranslation_Teaser', 'ArticleTranslation_Teaser', 'ArticleTranslation', 'Article_ID');
             $saver->addColumn('ArticleTranslation_Text', 'ArticleTranslation_Text', 'ArticleTranslation', 'Article_ID');
             $saver->addColumn('ArticleTranslation_Footer', 'ArticleTranslation_Footer', 'ArticleTranslation', 'Article_ID');
+            $saver->addColumn('File_ID', 'File_ID', 'ArticleTranslation', 'File_ID', false, null, ['File'], 'ArticleTranslation');
         }
+    }
+
+    protected function beforeSave(BeanInterface $bean)
+    {
+        $slugify = new Slugify();
+        if ($bean->hasData('ArticleTranslation_Code')) {
+            $bean->setData('ArticleTranslation_Code', $slugify->slugify($bean->getData('ArticleTranslation_Code')));
+        } elseif ($bean->hasData('ArticleTranslation_Name')) {
+            $bean->setData('ArticleTranslation_Code', $slugify->slugify($bean->getData('ArticleTranslation_Name')));
+        } elseif ($bean->hasData('ArticleTranslation_Title')) {
+            $bean->setData('ArticleTranslation_Code', $slugify->slugify($bean->getData('ArticleTranslation_Title')));
+        }
+        parent::beforeSave($bean);
     }
 
 

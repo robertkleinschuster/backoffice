@@ -36,6 +36,7 @@ class SchemaUpdater extends AbstractUpdater
         $this->addColumnToTable($table, new Varchar('FileType_Name', 255));
         $this->addColumnToTable($table, new Boolean('FileType_Active'));
         $this->addConstraintToTable($table, new PrimaryKey('FileType_Code'));
+        $this->addConstraintToTable($table, new UniqueKey('FileType_Mime'));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);
     }
@@ -43,10 +44,12 @@ class SchemaUpdater extends AbstractUpdater
     public function updateTableFileDirectory()
     {
         $table = $this->getTableStatement('FileDirectory');
+        $this->addColumnToTable($table, new Integer('FileDirectory_ID'))->setOption('AUTO_INCREMENT', true);
         $this->addColumnToTable($table, new Varchar('FileDirectory_Code', 255));
         $this->addColumnToTable($table, new Varchar('FileDirectory_Name', 255));
         $this->addColumnToTable($table, new Boolean('FileDirectory_Active'));
-        $this->addConstraintToTable($table, new PrimaryKey('FileDirectory_Code'));
+        $this->addConstraintToTable($table, new PrimaryKey('FileDirectory_ID'));
+        $this->addConstraintToTable($table, new UniqueKey('FileDirectory_Code'));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);
     }
@@ -56,11 +59,13 @@ class SchemaUpdater extends AbstractUpdater
         $table = $this->getTableStatement('File');
         $this->addColumnToTable($table, new Integer('File_ID'))->setOption('AUTO_INCREMENT', true);
         $this->addColumnToTable($table, new Varchar('FileType_Code', 255));
-        $this->addColumnToTable($table, new Varchar('FileDirectory_Code', 255));
+        $this->addColumnToTable($table, new Integer('FileDirectory_ID', 255));
         $this->addColumnToTable($table, new Varchar('File_Name', 255));
+        $this->addColumnToTable($table, new Varchar('File_Code', 255));
         $this->addConstraintToTable($table, new PrimaryKey('File_ID'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'FileType_Code', 'FileType', 'FileType_Code'));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'FileDirectory_Code', 'FileDirectory', 'FileDirectory_Code', 'CASCADE'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'FileDirectory_ID', 'FileDirectory', 'FileDirectory_ID', 'CASCADE'));
+        $this->addConstraintToTable($table, new UniqueKey(['File_Code', 'FileDirectory_ID']));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);
     }
@@ -205,9 +210,11 @@ class SchemaUpdater extends AbstractUpdater
         $this->addColumnToTable($table, new Text('ArticleTranslation_Teaser', 65535, true));
         $this->addColumnToTable($table, new Text('ArticleTranslation_Text', 65535, true));
         $this->addColumnToTable($table, new Text('ArticleTranslation_Footer', 65535, true));
+        $this->addColumnToTable($table, new Integer('File_ID', true));
         $this->addConstraintToTable($table, new PrimaryKey(['Article_ID', 'Locale_Code']));
         $this->addConstraintToTable($table, new ForeignKey(null, 'Article_ID', 'Article', 'Article_ID', 'CASCADE'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'Locale_Code', 'Locale', 'Locale_Code'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'File_ID', 'File', 'File_ID'));
         $this->addConstraintToTable($table, new UniqueKey(['Locale_Code', 'ArticleTranslation_Code']));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);

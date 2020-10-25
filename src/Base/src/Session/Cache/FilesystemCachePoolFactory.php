@@ -11,9 +11,8 @@ class FilesystemCachePoolFactory
     public function __invoke(ContainerInterface $container)
     {
         $config = $container->get('config');
-        $filesystemAdapter = new Local($config['mezzio-session-cache']['filesystem_folder']);
+        $filesystemAdapter = new Local($config['mezzio-session-cache']['filesystem_folder'], LOCK_NB);
         $filesystem        = new Filesystem($filesystemAdapter);
-
         return new FilesystemCachePool($filesystem);
     }
 
