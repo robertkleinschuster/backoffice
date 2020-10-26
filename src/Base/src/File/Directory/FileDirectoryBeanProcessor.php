@@ -5,6 +5,7 @@ namespace Base\File\Directory;
 
 
 use Base\Database\DatabaseBeanSaver;
+use Cocur\Slugify\Slugify;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\I18n\Translator\TranslatorAwareInterface;
 use Laminas\I18n\Translator\TranslatorAwareTrait;
@@ -55,7 +56,10 @@ class FileDirectoryBeanProcessor extends AbstractBeanProcessor implements Valida
     {
         parent::beforeSave($bean);
         $filesystem = $this->getFilesystem();
-
+        if (!$bean->hasData('FileDirectory_Code')) {
+            $slugify = new Slugify();
+            $bean->setData('FileDirectory_Code', $slugify->slugify($bean->getData('FileDirectory_Name')));
+        }
         if (!$filesystem->has($bean->getData('FileDirectory_Code'))) {
             $filesystem->createDir($bean->getData('FileDirectory_Code'));
         }
@@ -75,6 +79,9 @@ class FileDirectoryBeanProcessor extends AbstractBeanProcessor implements Valida
 
     protected function validateForSave(BeanInterface $bean): bool
     {
+        if (!$bean->hasData('FileDirectory_Name') || !strlen(trim(($bean->getData('FileDirectory_Name'))))) {
+            $this->getValidationHelper()->addError('FileDirectory_Name', $this->translate('filedirectory.name.empty'));
+        }
         return !$this->getValidationHelper()->hasError();
     }
 

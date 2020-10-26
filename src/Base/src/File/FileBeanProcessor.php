@@ -44,11 +44,8 @@ class FileBeanProcessor extends AbstractBeanProcessor implements ValidationHelpe
         $filesystem = $this->getFilesystem($bean);
         $slugify = new Slugify();
         if (!$bean->hasData('File_Code')) {
-            $bean->setData('File_Code', $slugify->slugify($bean->getData('File_Name')));
-            $bean->setData('File_Code', "{$bean->getData('File_Code')}.{$bean->getData('FileType_Code')}");
+            $bean->setData('File_Code', "{$slugify->slugify($bean->getData('File_Name'))}.{$bean->getData('FileType_Code')}");
         }
-
-
         if (!$filesystem->has($bean->getData('File_Code')) && $bean->hasData('Upload')) {
             $upload = $bean->getData('Upload');
             if ($upload instanceof UploadedFile) {
@@ -135,7 +132,10 @@ class FileBeanProcessor extends AbstractBeanProcessor implements ValidationHelpe
 
     protected function validateForSave(BeanInterface $bean): bool
     {
-        if (!$bean->hasData('FileDirectory_ID') || !strlen(trim(($bean->getData('FileDirectory_ID'))))) {
+        if (!$bean->hasData('File_Name') || !strlen(trim($bean->getData('File_Name')))) {
+            $this->getValidationHelper()->addError('File_Name', $this->translate('file.name.empty'));
+        }
+        if (!$bean->hasData('FileDirectory_ID') || empty(($bean->getData('FileDirectory_ID')))) {
             $this->getValidationHelper()->addError('FileDirectory_ID', $this->translate('filedirectory.code.empty'));
         }
         if (!$bean->hasData('FileType_Code') || !strlen(trim(($bean->getData('FileType_Code'))))) {
@@ -159,7 +159,6 @@ class FileBeanProcessor extends AbstractBeanProcessor implements ValidationHelpe
         } elseif (!$bean->hasData('File_ID')) {
             $this->getValidationHelper()->addError('Upload', $this->translate('file.upload.empty'));
         }
-
         return !$this->getValidationHelper()->hasError();
     }
 

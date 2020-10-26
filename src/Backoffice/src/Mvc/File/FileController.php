@@ -44,7 +44,11 @@ class FileController extends BaseController
 
     public function createAction()
     {
-        $create = $this->initCreateTemplate();
+        if (isset($this->getControllerRequest()->getViewIdMap()['FileDirectory_ID'])) {
+            $create = $this->initCreateTemplate($this->getPathHelper()->setController('filedirectory')->setAction('detail')->setViewIdMap($this->getControllerRequest()->getViewIdMap())->getPath());
+        } else {
+            $create = $this->initCreateTemplate();
+        }
         $create->setBean($this->getModel()->getFinder()->getFactory()->createBean());
         foreach ($create->getFieldList() as $item) {
             $create->getBean()->setData($item->getKey(), $this->getControllerRequest()->getAttribute($item->getKey()));
@@ -54,7 +58,11 @@ class FileController extends BaseController
 
     public function editAction()
     {
-        $edit = $this->initEditTemplate();
+        if (isset($this->getControllerRequest()->getViewIdMap()['FileDirectory_ID'])) {
+            $edit = $this->initEditTemplate($this->getPathHelper()->setController('filedirectory')->setAction('detail')->setViewIdMap($this->getControllerRequest()->getViewIdMap())->getPath());
+        }else {
+            $edit = $this->initEditTemplate();
+        }
         $edit->setBean($this->getModel()->getFinder()->getBean());
         $edit->getBean()->setFromArray($this->getPreviousAttributes());
     }
@@ -66,7 +74,11 @@ class FileController extends BaseController
 
     public function deleteAction()
     {
-        $delete = $this->initDeleteTemplate();
+        if (isset($this->getControllerRequest()->getViewIdMap()['FileDirectory_ID'])) {
+            $delete = $this->initDeleteTemplate($this->getPathHelper()->setController('filedirectory')->setAction('detail')->setViewIdMap($this->getControllerRequest()->getViewIdMap())->getPath());
+        } else {
+            $delete = $this->initDeleteTemplate();
+        }
         $delete->setBean($this->getModel()->getFinder()->getBean());
     }
 
@@ -92,8 +104,10 @@ class FileController extends BaseController
         parent::addEditFields($edit);
         $edit->addSelect('FileType_Code', $this->translate('filetype.name'))
         ->setSelectOptions($this->getModel()->getFileType_Options());
-        $edit->addSelect('FileDirectory_ID', $this->translate('filedirectory.name'))
-        ->setSelectOptions($this->getModel()->getFileDirectory_Options());
+        if (!isset($this->getControllerRequest()->getViewIdMap()['FileDirectory_ID'])) {
+            $edit->addSelect('FileDirectory_ID', $this->translate('filedirectory.name'))
+                ->setSelectOptions($this->getModel()->getFileDirectory_Options());
+        }
         $edit->addText('File_Name', $this->translate('file.name'));
         $edit->addFile('Upload', $this->translate('file.upload'))->setShow(function(BeanInterface $bean) {
             return !$bean->hasData('File_ID') || !$bean->hasData('File_Code');

@@ -473,9 +473,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
     protected function getIndexRedirectLink()
     {
         $path =  $this->getPathHelper()->setAction('index');
-        if ($this->getUser()->hasData('Locale_Code')) {
-            $path->setParams(['locale' => $this->getUser()->getData('Locale_Code')]);
-        }
+
         return $path->getPath();
     }
 
@@ -513,7 +511,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         if (null === $redirect) {
             $redirect = $this->getIndexRedirectLink();
         }
-        $this->addLocaleButtons(false);
+        $this->addLocaleButtons();
         $this->getView()->setHeading($this->translate('edit.title'));
         $edit = new Edit();
         $this->addEditFields($edit);
