@@ -114,4 +114,6 @@ return [
     'filedirectory.active' => 'Aktiv',
     'filedirectory.active.true' => 'Aktiv',
     'filedirectory.active.false' => 'Inaktiv',
+    'filedirectory.file.overview' => 'Dateien',
+    'filedirectory.file.create' => 'Hinzufügen',
 ];

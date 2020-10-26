@@ -53,6 +53,8 @@ class FileDirectoryController extends BaseController
         $overview->addDeleteIcon($this->getPathHelper()->setController('file')->setAction('delete')->setViewIdMap(['File_ID' => '{File_ID}', 'FileDirectory_ID' => '{FileDirectory_ID}'])->getPath());
 
         $overview->addText('File_Name', $this->translate('file.name'));
+        $overview->addText('FileType_Name', $this->translate('filetype.name'));
+        $overview->addText('FileDirectory_Name', $this->translate('filedirectory.name'));
         $overview->setBeanList($bean->getData('File_BeanList'));
         $this->getView()->addComponent($overview);
     }

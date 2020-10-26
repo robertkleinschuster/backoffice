@@ -69,7 +69,7 @@ class FileController extends BaseController
 
     protected function getDetailPath(): PathHelper
     {
-        return $this->getPathHelper()->setViewIdMap(['File_Code' => '{File_Code}']);
+        return $this->getPathHelper()->setViewIdMap(['File_ID' => '{File_ID}']);
     }
 
     public function deleteAction()
@@ -102,9 +102,11 @@ class FileController extends BaseController
     protected function addEditFields(Edit $edit): void
     {
         parent::addEditFields($edit);
-        $edit->addSelect('FileType_Code', $this->translate('filetype.name'))
-        ->setSelectOptions($this->getModel()->getFileType_Options());
-        if (!isset($this->getControllerRequest()->getViewIdMap()['FileDirectory_ID'])) {
+        if (!isset($this->getControllerRequest()->getViewIdMap()['File_ID'])) {
+            $edit->addSelect('FileType_Code', $this->translate('filetype.name'))
+                ->setSelectOptions($this->getModel()->getFileType_Options());
+        }
+        if (!isset($this->getControllerRequest()->getViewIdMap()['FileDirectory_ID']) && !isset($this->getControllerRequest()->getViewIdMap()['File_ID'])) {
             $edit->addSelect('FileDirectory_ID', $this->translate('filedirectory.name'))
                 ->setSelectOptions($this->getModel()->getFileDirectory_Options());
         }
