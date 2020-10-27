@@ -63,8 +63,8 @@
         "mezzio/mezzio-session": "^1.3",
         "mezzio/mezzio-session-cache": "^1.4",
         "pfaciana/tiny-html-minifier": "^3.0",
-        "robertkleinschuster/mvc": "^1",
-        "robertkleinschuster/nice-beans": "^1.0"
+        "robertkleinschuster/nice-beans": "dev-next",
+        "robertkleinschuster/mvc": "dev-next"
     },
     "require-dev": {
         "laminas/laminas-development-mode": "^3.2",

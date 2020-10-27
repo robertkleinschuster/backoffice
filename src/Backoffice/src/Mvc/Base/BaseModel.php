@@ -60,6 +60,9 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface,
     public function setFinder(BeanFinderInterface $finder): self
     {
         $this->finder = $finder;
+        if (!$this->getFinder()->hasLimit()) {
+            $this->getFinder()->limit(50, 0);
+        }
         return $this;
     }
 
@@ -132,14 +135,10 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface,
     /**
      * @param array $viewIdMap
      */
-    public function find(array $viewIdMap)
+    public function handleViewIdMap(array $viewIdMap)
     {
         if ($this->hasFinder()) {
-            if (!$this->getFinder()->hasLimit()) {
-                $this->getFinder()->limit(50, 0);
-            }
             $this->getFinder()->getLoader()->initByIdMap($viewIdMap);
-            $this->getFinder()->find();
         }
     }
 
@@ -147,12 +146,19 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface,
      * @param int $limit
      * @param int $page
      */
-    public function setLimit(int $limit, int $page)
+    public function handleLimit(int $limit, int $page)
     {
         if ($this->hasFinder()) {
             if ($limit > 0 && $page > 0) {
                 $this->getFinder()->limit($limit, $limit * ($page - 1));
             }
+        }
+    }
+
+    public function load()
+    {
+        if ($this->hasFinder()) {
+            $this->getFinder()->find();
         }
     }
 
@@ -243,5 +249,13 @@ abstract class BaseModel extends AbstractModel implements AdapterAwareInterface,
             $this->getFinder()->getLoader()->addLike("%$search%", ...array_values($this->getFinder()->getLoader()->getField_List()));
         }
     }
+
+    public function handleOrder(string $order)
+    {
+        if ($this->hasProcessor()) {
+
+        }
+    }
+
 
 }

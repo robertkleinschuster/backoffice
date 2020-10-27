@@ -47,7 +47,7 @@ class CmsSiteController extends \Backoffice\Mvc\Base\BaseController
         $toolbar = new Toolbar();
         $toolbar->addButton('{ArticleTranslation_Code}', $this->translate('site.toolbar.frontend'))
             ->setTarget(Link::TARGET_BLANK)->setStyle(Link::STYLE_INFO);
-        $toolbar->addBean($bean);
+        $toolbar->setBean($bean);
         $this->getView()->addComponent($toolbar);
 
         $detail = $this->initDetailTemplate();
@@ -55,7 +55,6 @@ class CmsSiteController extends \Backoffice\Mvc\Base\BaseController
 
         $toolbar = new Toolbar($this->translate('cmssiteparagraph.overview.title'));
         $toolbar->addButton($this->getPathHelper()->setController('cmssiteparagraph')->setAction('create')->setViewIdMap($this->getControllerRequest()->getViewIdMap())->getPath(), $this->translate('cmssiteparagraph.create'));
-        $toolbar->addBean(new ComponentDataBean());
         $this->getView()->addComponent($toolbar);
         $overview = new Overview();
         $overview->addDetailIcon($this->getPathHelper()->setController('cmsparagraph')->setAction('detail')->setViewIdMap(['CmsParagraph_ID' => '{CmsParagraph_ID}'])->getPath())->setWidth(122);

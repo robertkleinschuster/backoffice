@@ -84,30 +84,28 @@ class CmsMenuController extends BaseController
             ->setLink($this->getDetailPath()->setAction('order')->setParams(['order' => 'up'])->getPath())
             ->setValue('')
             ->setIcon(Link::ICON_ARROW_UP)
-            ->setStyle(Link::STYLE_INFO)
+            ->setStyle(Link::STYLE_SECONDARY)
             ->setOutline(true)
             ->addOption(Link::OPTION_TEXT_DECORATION_NONE)
             ->addOption(Link::OPTION_BUTTON_STYLE)
             ->setSize(Link::SIZE_SMALL)
             ->setChapter('order')
             ->setWidth(85)
-        ->setShow(function(BeanInterface $bean){
+        ->setShow(function(BeanInterface $bean) {
             return $bean->hasData('CmsMenu_Order') && $bean->getData('CmsMenu_Order') > 1;
-
         });
 
         $overview->addLink('', '')
             ->setLink($this->getDetailPath()->setAction('order')->setParams(['order' => 'down'])->getPath())
             ->setValue('')
             ->setIcon(Link::ICON_ARROW_DOWN)
-            ->setStyle(Link::STYLE_INFO)
+            ->setStyle(Link::STYLE_SECONDARY)
             ->setOutline(true)
             ->addOption(Link::OPTION_TEXT_DECORATION_NONE)
             ->addOption(Link::OPTION_BUTTON_STYLE)
             ->setSize(Link::SIZE_SMALL)
             ->setChapter('order')->setShow(function(BeanInterface $bean){
                 return $bean->hasData('CmsMenu_Order') && $bean->getData('CmsMenu_Order') < $this->getModel()->getFinder()->count();
-
             });
 
 

@@ -91,6 +91,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
      */
     protected function handleNavigationState(string $id, int $index)
     {
+        $this->getSession()->set('lastnav', $id);
         $this->getSession()->set($id, $index);
     }
 
@@ -202,6 +203,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
             $this->getPathHelper()
                 ->setController('cmsmenu')
                 ->setAction('index')
+                ->setNavState($navigation->getId(), 0)
                 ->getPath()
         );
            $element->setPermission('cmsmenu');
@@ -212,6 +214,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
             $this->getPathHelper()
                 ->setController('cmssite')
                 ->setAction('index')
+                ->setNavState($navigation->getId(), 1)
                 ->getPath()
         );
         $element->setPermission('cmssite');
@@ -222,6 +225,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
             $this->getPathHelper()
                 ->setController('cmsparagraph')
                 ->setAction('index')
+                ->setNavState($navigation->getId(), 2)
                 ->getPath()
         );
         $element->setPermission('cmsparagraph');
@@ -238,6 +242,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
             $this->getPathHelper()
                 ->setController('file')
                 ->setAction('index')
+                ->setNavState($navigation->getId(), 0)
                 ->getPath()
         );
         $element->setPermission('file');
@@ -248,6 +253,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
             $this->getPathHelper()
                 ->setController('filedirectory')
                 ->setAction('index')
+                ->setNavState($navigation->getId(), 1)
                 ->getPath()
         );
         $element->setPermission('filedirectory');
@@ -263,6 +269,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
             $this->getPathHelper()
                 ->setController('translation')
                 ->setAction('index')
+                ->setNavState($navigation->getId(), 0)
                 ->getPath()
         );
         $element->setPermission('translation');
@@ -274,6 +281,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
             $this->getPathHelper()
                 ->setController('locale')
                 ->setAction('index')
+                ->setNavState($navigation->getId(), 1)
                 ->getPath()
         );
         $element->setPermission('locale');
@@ -284,6 +292,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
             $this->getPathHelper()
                 ->setController('user')
                 ->setAction('index')
+                ->setNavState($navigation->getId(), 2)
                 ->getPath()
         );
         $element->setPermission('user');
@@ -293,6 +302,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
             $this->getPathHelper()
                 ->setController('role')
                 ->setAction('index')
+                ->setNavState($navigation->getId(), 3)
                 ->getPath()
         );
         $element->setPermission('role');
@@ -337,11 +347,21 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         $this->getModel()->init();
     }
 
+
+
     /**
      * @return mixed|void
      */
     public function end()
     {
+        if ($this->hasView()) {
+            $navList = $this->getView()->getNavigationList();
+            foreach ($navList as $nav) {
+                if ($nav->getId() == $this->getSession()->get('lastnav')) {
+                    $nav->setActive($this->getNavigationState($nav->getId()));
+                }
+            }
+        }
         $this->getView()->setData('token', $this->generateToken('submit_token'));
         $validationHelper = new ValidationHelper();
         $validationHelper->addErrorFieldMap($this->getValidationErrorMap());
