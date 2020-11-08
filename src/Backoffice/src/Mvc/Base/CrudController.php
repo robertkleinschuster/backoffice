@@ -184,7 +184,7 @@ abstract class CrudController extends BaseController
         $edit = $this->initEditTemplate();
         $edit->setBean(
             $this->getModel()->getBeanConverter()
-                ->convert($this->getModel()->getBean(), $this->getPreviousAttributes())
+                ->convert($this->getModel()->getBean(), $this->getPreviousAttributes())->toBean()
         );
     }
 

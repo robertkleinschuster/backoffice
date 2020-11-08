@@ -7,6 +7,7 @@ use Pars\Backoffice\Mvc\Base\CrudController;
 use Pars\Mvc\Helper\PathHelper;
 use Pars\Mvc\Parameter\IdParameter;
 use Pars\Mvc\Parameter\MoveParameter;
+use Pars\Mvc\Parameter\RedirectParameter;
 use Pars\Mvc\View\Components\Detail\Detail;
 use Pars\Mvc\View\Components\Edit\Edit;
 use Pars\Mvc\View\Components\Overview\Overview;
@@ -36,13 +37,14 @@ class CmsMenuController extends CrudController
 
     protected function addOverviewFields(Overview $overview): void
     {
-        $overview->addMoveDownIcon($this->getPathHelper()->addParameter((new MoveParameter())->setDown('CmsMenu_Order'))->getPath())
+        $redirect = $this->getPathHelper()->getPath();
+        $overview->addMoveDownIcon($this->getDetailPath()->addParameter((new MoveParameter())->setDown('CmsMenu_Order'))->addParameter((new RedirectParameter())->setLink($redirect))->getPath())
             ->setWidth(85)
             ->setShow(function (BeanInterface $bean) {
                 return $bean->hasData('CmsMenu_Order')
                     && $bean->getData('CmsMenu_Order') < $this->getModel()->getBeanFinder()->count();
             });
-        $overview->addMoveUpIcon($this->getPathHelper()->addParameter((new MoveParameter())->setUp('CmsMenu_Order'))->getPath())
+        $overview->addMoveUpIcon($this->getDetailPath()->addParameter((new MoveParameter())->setUp('CmsMenu_Order'))->addParameter((new RedirectParameter())->setLink($redirect))->getPath())
             ->setShow(function (BeanInterface $bean) {
                 return $bean->hasData('CmsMenu_Order') && $bean->getData('CmsMenu_Order') > 1;
             });

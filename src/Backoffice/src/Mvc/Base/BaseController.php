@@ -2,6 +2,7 @@
 
 namespace Pars\Backoffice\Mvc\Base;
 
+use Laminas\I18n\Translator\TranslatorAwareInterface;
 use Pars\Base\Authentication\User\UserBean;
 use Pars\Base\Database\DatabaseMiddleware;
 use Pars\Base\Logging\LoggingMiddleware;
@@ -372,6 +373,12 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         $this->getModel()->setTranslator($this->getTranslator());
         $this->getModel()->setBeanConverter(new BackofficeBeanConverter());
         $this->getModel()->initialize();
+        if ($this->getModel()->hasBeanProcessor()) {
+            $processor = $this->getModel()->getBeanProcessor();
+            if ($processor instanceof TranslatorAwareInterface) {
+                $processor->setTranslator($this->getTranslator());
+            }
+        }
     }
 
 
@@ -381,6 +388,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
      */
     public function finalize()
     {
+        parent::finalize();
         if ($this->hasView()) {
             $navList = $this->getView()->getNavigationList();
             foreach ($navList as $nav) {
@@ -401,7 +409,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         }
 
         $profiler = $this->getModel()->getDbAdpater()->getProfiler();
-        if ($profiler instanceof ProfilerInterface && $this->getSession()->get('debug', false)) {
+        if ($profiler instanceof ProfilerInterface) {
             $profiles = $profiler->getProfiles();
             $alert = new Alert();
             $alert->setHeading('Debug');
