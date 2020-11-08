@@ -1,7 +1,6 @@
 <?php
 
-
-namespace Base\Authentication;
+namespace Pars\Base\Authentication;
 
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Authentication\AuthenticationInterface;
@@ -9,16 +8,23 @@ use Mezzio\Authentication\UserInterface;
 use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Session\SessionMiddleware;
-use Mvc\Helper\PathHelper;
+use Pars\Mvc\Helper\PathHelper;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+/**
+ * Class AuthenticationMiddleware
+ * @package Pars\Base\Authentication
+ */
 class AuthenticationMiddleware implements MiddlewareInterface
 {
 
+    /**
+     * @var ContainerInterface
+     */
     private $container;
 
     /**
@@ -54,8 +60,8 @@ class AuthenticationMiddleware implements MiddlewareInterface
         $config = $this->container->get('config');
 
         $redirect = $this->pathHelper
-            ->setController( $config['authentication']['redirect']['controller'])
-            ->setAction( $config['authentication']['redirect']['action'])
+            ->setController($config['authentication']['redirect']['controller'])
+            ->setAction($config['authentication']['redirect']['action'])
             ->getPath();
 
         $whitelist = [];
@@ -66,7 +72,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
         }
         $current = $this->normalizePath($request->getUri()->getPath());
 
-        $session =$request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
+        $session = $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
 
 
 
@@ -101,7 +107,8 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
 
 
-    protected function normalizePath(string $path) {
+    protected function normalizePath(string $path)
+    {
         return trim(strtolower(str_replace('/', '', $path)));
     }
 }

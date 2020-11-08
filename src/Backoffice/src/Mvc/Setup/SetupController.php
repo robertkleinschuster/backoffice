@@ -1,13 +1,20 @@
 <?php
-namespace Backoffice\Mvc\Setup;
 
+namespace Pars\Backoffice\Mvc\Setup;
 
-use Base\Authentication\User\UserBean;
-use Base\Database\DatabaseMiddleware;
-use Mvc\View\Components\Edit\Edit;
-use Mvc\View\Components\Edit\Fields\Text;
+use Pars\Backoffice\Mvc\Base\BaseController;
+use Pars\Base\Authentication\User\UserBean;
+use Pars\Base\Database\DatabaseMiddleware;
+use Pars\Mvc\Helper\PathHelper;
+use Pars\Mvc\Parameter\RedirectParameter;
+use Pars\Mvc\View\Components\Edit\Edit;
+use Pars\Mvc\View\Components\Edit\Fields\Text;
 
-class SetupController extends \Backoffice\Mvc\Base\BaseController
+/**
+ * Class SetupController
+ * @package Pars\Backoffice\Mvc\Setup
+ */
+class SetupController extends BaseController
 {
     protected function initView()
     {
@@ -19,40 +26,55 @@ class SetupController extends \Backoffice\Mvc\Base\BaseController
     {
         $this->initView();
         $this->initModel();
-        $this->handleSubmit();
     }
 
 
     protected function initModel()
     {
-        $this->getModel()->setDbAdapter($this->getControllerRequest()->getServerRequest()->getAttribute(DatabaseMiddleware::ADAPTER_ATTRIBUTE));
-        $this->getModel()->init();
+        $this->getModel()
+            ->setDbAdapter($this->getControllerRequest()->getServerRequest()->getAttribute(DatabaseMiddleware::ADAPTER_ATTRIBUTE));
+        $this->getModel()->initialize();
         $metadata = \Laminas\Db\Metadata\Source\Factory::createSourceFromAdapter($this->getModel()->getDbAdpater());
         $tableNames = $metadata->getTableNames($this->getModel()->getDbAdpater()->getCurrentSchema());
         if (in_array('Person', $tableNames) && in_array('User', $tableNames)) {
-            $count = $this->getModel()->getFinder()->count();
+            $count = $this->getModel()->getBeanFinder()->count();
         } else {
             $count = 0;
         }
         if ($count > 0) {
-            $this->getControllerResponse()->setRedirect($this->getPathHelper()->setController('index')->setAction('index')->getPath());
+            $this->getControllerResponse()->setRedirect($this->getRedirectPath()->getPath());
         } else {
             $this->getModel()->addOption(SetupModel::OPTION_CREATE_ALLOWED);
         }
     }
 
+    /**
+     * @return PathHelper
+     */
+    protected function getRedirectPath(): PathHelper
+    {
+        return $this->getPathHelper()->setController('index')->setAction('index');
+    }
 
     public function indexAction()
     {
         $this->getView()->setHeading($this->translate('setup.title'));
-        $edit = $this->initCreateTemplate();
-        $bean = $this->getModel()->getFinder()->getFactory()->createBean();
+        $this->getView()->setHeading($this->translate('create.title'));
+        $edit = new Edit();
+        $this->addEditFields($edit);
+        $edit->addSubmitCreate(
+            $this->translate('create.submit'),
+            (new RedirectParameter())->setLink($this->getRedirectPath()->getPath())
+        );
+        $edit->addCancel($this->getRedirectPath()->getPath(), $this->translate('create.cancel'), true);
+        $edit->getValidationHelper()->addErrorFieldMap($this->getValidationErrorMap());
+        $this->getView()->addComponent($edit);
+        $bean = $this->getModel()->getEmptyBean();
         $edit->setBean($bean);
         $bean->setData('User_Password', '');
         foreach ($edit->getFieldList() as $item) {
             $bean->setData($item->getKey(), $this->getControllerRequest()->getAttribute($item->getKey()));
         }
-        $bean->setFromArray($this->getPreviousAttributes());
     }
 
     protected function addEditFields(Edit $edit): void

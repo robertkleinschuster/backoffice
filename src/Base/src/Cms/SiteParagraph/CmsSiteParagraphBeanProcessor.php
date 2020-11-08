@@ -1,14 +1,16 @@
 <?php
 
+namespace Pars\Base\Cms\SiteParagraph;
 
-namespace Base\Cms\SiteParagraph;
-
-
-use Base\Database\DatabaseBeanSaver;
+use Pars\Base\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
+use Niceshops\Bean\Type\Base\BeanInterface;
+use Niceshops\Bean\Processor\AbstractBeanProcessor;
 
+/**
+ * Class CmsSiteParagraphBeanProcessor
+ * @package Pars\Base\Cms\SiteParagraph
+ */
 class CmsSiteParagraphBeanProcessor extends AbstractBeanProcessor
 {
     private $adapter;
@@ -28,7 +30,7 @@ class CmsSiteParagraphBeanProcessor extends AbstractBeanProcessor
             $order = 1;
             $finder = new CmsSiteParagraphBeanFinder($this->adapter);
             $finder->setCmsSite_ID($bean->getData('CmsSite_ID'));
-            $finder->getLoader()->addOrder('CmsSite_CmsParagraph_Order', true);
+            $finder->getBeanLoader()->addOrder('CmsSite_CmsParagraph_Order', true);
             $finder->limit(1, 0);
             if ($finder->find() == 1) {
                 $lastBean = $finder->getBean();

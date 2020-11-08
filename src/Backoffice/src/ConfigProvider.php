@@ -2,42 +2,40 @@
 
 declare(strict_types=1);
 
-namespace Backoffice;
+namespace Pars\Backoffice;
 
-use Backoffice\Mvc\Authentication\AuthenticationController;
-use Backoffice\Mvc\Authentication\AuthenticationModel;
-use Backoffice\Mvc\Cms\Menu\CmsMenuController;
-use Backoffice\Mvc\Cms\Menu\CmsMenuModel;
-use Backoffice\Mvc\Cms\Paragraph\CmsParagraphController;
-use Backoffice\Mvc\Cms\Paragraph\CmsParagraphModel;
-use Backoffice\Mvc\Cms\Site\CmsSiteController;
-use Backoffice\Mvc\Cms\Site\CmsSiteModel;
-use Backoffice\Mvc\Cms\SiteParagraph\CmsSiteParagraphController;
-use Backoffice\Mvc\Cms\SiteParagraph\CmsSiteParagraphModel;
-use Backoffice\Mvc\File\Directory\FileDirectoryController;
-use Backoffice\Mvc\File\Directory\FileDirectoryModel;
-use Backoffice\Mvc\File\FileController;
-use Backoffice\Mvc\File\FileModel;
-use Backoffice\Mvc\Index\IndexController;
-use Backoffice\Mvc\Index\IndexModel;
-use Backoffice\Mvc\Locale\LocaleController;
-use Backoffice\Mvc\Locale\LocaleModel;
-use Backoffice\Mvc\Role\RoleController;
-use Backoffice\Mvc\Role\RoleModel;
-use Backoffice\Mvc\RolePermission\RolePermissionController;
-use Backoffice\Mvc\RolePermission\RolePermissionModel;
-use Backoffice\Mvc\Setup\SetupController;
-use Backoffice\Mvc\Setup\SetupModel;
-use Backoffice\Mvc\Translation\TranslationController;
-use Backoffice\Mvc\Translation\TranslationModel;
-use Backoffice\Mvc\Update\UpdateController;
-use Backoffice\Mvc\Update\UpdateModel;
-use Backoffice\Mvc\User\UserController;
-use Backoffice\Mvc\User\UserModel;
-use Backoffice\Mvc\UserRole\UserRoleController;
-use Backoffice\Mvc\UserRole\UserRoleModel;
-
-
+use Pars\Backoffice\Mvc\Authentication\AuthenticationController;
+use Pars\Backoffice\Mvc\Authentication\AuthenticationModel;
+use Pars\Backoffice\Mvc\Cms\Menu\CmsMenuController;
+use Pars\Backoffice\Mvc\Cms\Menu\CmsMenuModel;
+use Pars\Backoffice\Mvc\Cms\Paragraph\CmsParagraphController;
+use Pars\Backoffice\Mvc\Cms\Paragraph\CmsParagraphModel;
+use Pars\Backoffice\Mvc\Cms\Site\CmsSiteController;
+use Pars\Backoffice\Mvc\Cms\Site\CmsSiteModel;
+use Pars\Backoffice\Mvc\Cms\SiteParagraph\CmsSiteParagraphController;
+use Pars\Backoffice\Mvc\Cms\SiteParagraph\CmsSiteParagraphModel;
+use Pars\Backoffice\Mvc\File\Directory\FileDirectoryController;
+use Pars\Backoffice\Mvc\File\Directory\FileDirectoryModel;
+use Pars\Backoffice\Mvc\File\FileController;
+use Pars\Backoffice\Mvc\File\FileModel;
+use Pars\Backoffice\Mvc\Index\IndexController;
+use Pars\Backoffice\Mvc\Index\IndexModel;
+use Pars\Backoffice\Mvc\Locale\LocaleController;
+use Pars\Backoffice\Mvc\Locale\LocaleModel;
+use Pars\Backoffice\Mvc\Role\RoleController;
+use Pars\Backoffice\Mvc\Role\RoleModel;
+use Pars\Backoffice\Mvc\RolePermission\RolePermissionController;
+use Pars\Backoffice\Mvc\RolePermission\RolePermissionModel;
+use Pars\Backoffice\Mvc\Setup\SetupController;
+use Pars\Backoffice\Mvc\Setup\SetupModel;
+use Pars\Backoffice\Mvc\Translation\TranslationController;
+use Pars\Backoffice\Mvc\Translation\TranslationModel;
+use Pars\Backoffice\Mvc\Update\UpdateController;
+use Pars\Backoffice\Mvc\Update\UpdateModel;
+use Pars\Backoffice\Mvc\User\UserController;
+use Pars\Backoffice\Mvc\User\UserModel;
+use Pars\Backoffice\Mvc\UserRole\UserRoleController;
+use Pars\Backoffice\Mvc\UserRole\UserRoleModel;
 
 /**
  * The configuration provider for the Backoffice module

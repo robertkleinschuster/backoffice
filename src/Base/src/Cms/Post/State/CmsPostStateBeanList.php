@@ -1,12 +1,14 @@
 <?php
 
+namespace Pars\Base\Cms\Post\State;
 
-namespace Base\Cms\Post\State;
+use Niceshops\Bean\Type\Base\AbstractBaseBeanList;
 
-
-use NiceshopsDev\Bean\BeanList\JsonSerializable\AbstractJsonSerializableBeanList;
-
-class CmsPostStateBeanList extends AbstractJsonSerializableBeanList
+/**
+ * Class CmsPostStateBeanList
+ * @package Pars\Base\Cms\Post\State
+ */
+class CmsPostStateBeanList extends AbstractBaseBeanList
 {
 
 }

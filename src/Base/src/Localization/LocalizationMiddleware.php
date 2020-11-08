@@ -1,20 +1,21 @@
 <?php
 
+namespace Pars\Base\Localization;
 
-namespace Base\Localization;
-
-
-use Base\Database\DatabaseMiddleware;
-use Base\Localization\Locale\LocaleBeanFinder;
+use Pars\Base\Database\DatabaseMiddleware;
+use Pars\Base\Localization\Locale\LocaleBeanFinder;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Locale;
 use Mezzio\Helper\UrlHelper;
-use Mvc\Helper\PathHelper;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+/**
+ * Class LocalizationMiddleware
+ * @package Pars\Base\Localization
+ */
 class LocalizationMiddleware implements MiddlewareInterface
 {
 
@@ -24,19 +25,18 @@ class LocalizationMiddleware implements MiddlewareInterface
     private $urlHelper;
 
 
-
     public const LOCALIZATION_ATTRIBUTE = 'locale';
 
     /**
      * LocalizationMiddleware constructor.
-     * @param PathHelper $urlHelper
+     * @param UrlHelper $urlHelper
      */
     public function __construct(UrlHelper $urlHelper)
     {
         $this->urlHelper = $urlHelper;
     }
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
             $adapter = $request->getAttribute(DatabaseMiddleware::ADAPTER_ATTRIBUTE);
@@ -48,9 +48,8 @@ class LocalizationMiddleware implements MiddlewareInterface
                     $finder = new LocaleBeanFinder($adapter);
                     $finder->setLocale_Code($locale);
                     $finder->setLocale_Active(true);
-                    $finder->limit(1,0);
+                    $finder->limit(1, 0);
                     if ($finder->count() == 1) {
-                        $finder->find();
                         $this->urlHelper->setBasePath($finder->getBean()->getData('Locale_UrlCode'));
                     } else {
                         $locale = false;
@@ -60,9 +59,8 @@ class LocalizationMiddleware implements MiddlewareInterface
                     $finder = new LocaleBeanFinder($adapter);
                     $finder->setLanguage(Locale::getPrimaryLanguage(Locale::acceptFromHttp($request->getServerParams()['HTTP_ACCEPT_LANGUAGE'])));
                     $finder->setLocale_Active(true);
-                    $finder->limit(1,0);
+                    $finder->limit(1, 0);
                     if ($finder->count() == 1) {
-                        $finder->find();
                         $this->urlHelper->setBasePath($finder->getBean()->getData('Locale_UrlCode'));
                     } else {
                         $locale = false;
@@ -71,8 +69,7 @@ class LocalizationMiddleware implements MiddlewareInterface
                 if ($locale === false) {
                     $finder = new LocaleBeanFinder($adapter);
                     $finder->setLocale_Active(true);
-                    $finder->limit(1,0);
-                    $finder->find();
+                    $finder->limit(1, 0);
                     $this->urlHelper->setBasePath($finder->getBean()->getData('Locale_UrlCode'));
                 }
                 return new RedirectResponse($this->urlHelper->generate());

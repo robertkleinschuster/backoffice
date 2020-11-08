@@ -1,12 +1,14 @@
 <?php
 
+namespace Pars\Base\Article;
 
-namespace Base\Article;
+use Niceshops\Bean\Type\Base\AbstractBaseBeanList;
 
-
-use NiceshopsDev\Bean\BeanList\JsonSerializable\AbstractJsonSerializableBeanList;
-
-class ArticleBeanList extends AbstractJsonSerializableBeanList
+/**
+ * Class ArticleBeanList
+ * @package Pars\Base\Article
+ */
+class ArticleBeanList extends AbstractBaseBeanList
 {
 
 }

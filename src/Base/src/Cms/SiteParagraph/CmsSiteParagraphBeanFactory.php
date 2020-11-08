@@ -1,29 +1,24 @@
 <?php
 
+namespace Pars\Base\Cms\SiteParagraph;
 
-namespace Base\Cms\SiteParagraph;
+use Niceshops\Bean\Factory\AbstractBeanFactory;
 
-
-use NiceshopsDev\Bean\BeanFactory\AbstractBeanFactory;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanList\BeanListInterface;
-
+/**
+ * Class CmsSiteParagraphBeanFactory
+ * @package Pars\Base\Cms\SiteParagraph
+ */
 class CmsSiteParagraphBeanFactory extends AbstractBeanFactory
 {
-    /**
-     * @return BeanInterface
-     */
-    public function createBean(): BeanInterface
+
+    protected function getBeanClass(array $data): string
     {
-       return new CmsSiteParagraphBean();
+        return CmsSiteParagraphBean::class;
     }
 
-    /**
-     * @return BeanListInterface
-     */
-    public function createBeanList(): BeanListInterface
+    protected function getBeanListClass(): string
     {
-        return new CmsSiteParagraphBeanList();
+        return CmsSiteParagraphBeanList::class;
     }
 
 }

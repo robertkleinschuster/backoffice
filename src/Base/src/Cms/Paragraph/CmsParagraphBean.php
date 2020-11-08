@@ -1,10 +1,8 @@
 <?php
 
+namespace Pars\Base\Cms\Paragraph;
 
-namespace Base\Cms\Paragraph;
-
-
-use Base\Article\Translation\ArticleTranslationBean;
+use Pars\Base\Article\Translation\ArticleTranslationBean;
 
 class CmsParagraphBean extends ArticleTranslationBean
 {

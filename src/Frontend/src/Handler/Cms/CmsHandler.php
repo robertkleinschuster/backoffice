@@ -1,18 +1,16 @@
 <?php
-namespace Frontend\Handler\Cms;
 
-use Base\Cms\Menu\CmsMenuBeanFinder;
-use Base\Cms\Site\CmsSiteBeanFinder;
-use Base\Database\DatabaseMiddleware;
-use Base\Localization\Locale\LocaleBeanFinder;
-use Base\Localization\LocalizationMiddleware;
-use Base\Translation\TranslatorMiddleware;
+namespace Pars\Frontend\Handler\Cms;
+
+use Pars\Base\Cms\Menu\CmsMenuBeanFinder;
+use Pars\Base\Cms\Site\CmsSiteBeanFinder;
+use Pars\Base\Database\DatabaseMiddleware;
+use Pars\Base\Localization\LocalizationMiddleware;
+use Pars\Base\Translation\TranslatorMiddleware;
 use Laminas\Diactoros\Response\HtmlResponse;
-use Locale;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Template\TemplateRendererInterface;
 use Minifier\TinyMinify;
-use Mvc\Helper\PathHelper;
 
 class CmsHandler implements \Psr\Http\Server\RequestHandlerInterface
 {
@@ -29,7 +27,6 @@ class CmsHandler implements \Psr\Http\Server\RequestHandlerInterface
     {
         $this->renderer = $renderer;
         $this->urlHelper = $urlHelper;
-
     }
 
     public function handle(\Psr\Http\Message\ServerRequestInterface $request): \Psr\Http\Message\ResponseInterface
@@ -44,14 +41,14 @@ class CmsHandler implements \Psr\Http\Server\RequestHandlerInterface
         $menuFinder = new CmsMenuBeanFinder($adapter);
         $menuFinder->findByLocaleWithFallback($locale, 'de_AT');
 
-        $this->renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'menu', $menuFinder->getBeanGenerator());
+        $this->renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'menu', $menuFinder->getBeanListDecorator());
         $this->renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'code', $code);
         $this->renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'placeholder', $placeholder);
-        $this->renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'url', function($code) {
+        $this->renderer->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'url', function ($code) {
             if (trim($code) == '/' || trim($code) == '') {
                 return $this->urlHelper->generate(null, ['code' => null]);
             }
-            return $this->urlHelper->generate(null, ['code' => str_replace('/','' , $code)]);
+            return $this->urlHelper->generate(null, ['code' => str_replace('/', '', $code)]);
         });
         $siteFinder = new CmsSiteBeanFinder($adapter);
         $siteFinder->setArticleTranslation_Code($code);

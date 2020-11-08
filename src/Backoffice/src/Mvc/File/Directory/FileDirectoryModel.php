@@ -1,18 +1,16 @@
 <?php
 
+namespace Pars\Backoffice\Mvc\File\Directory;
 
-namespace Backoffice\Mvc\File\Directory;
+use Pars\Backoffice\Mvc\Base\CrudModel;
+use Pars\Base\File\Directory\FileDirectoryBeanFinder;
+use Pars\Base\File\Directory\FileDirectoryBeanProcessor;
 
-use Backoffice\Mvc\Base\BaseModel;
-use Base\File\Directory\FileDirectoryBeanFinder;
-use Base\File\Directory\FileDirectoryBeanProcessor;
-
-class FileDirectoryModel extends BaseModel
+class FileDirectoryModel extends CrudModel
 {
-    public function init()
+    public function initialize()
     {
-        $this->setFinder(new FileDirectoryBeanFinder($this->getDbAdpater()));
-        $this->setProcessor(new FileDirectoryBeanProcessor($this->getDbAdpater()));
+        $this->setBeanFinder(new FileDirectoryBeanFinder($this->getDbAdpater()));
+        $this->setBeanProcessor(new FileDirectoryBeanProcessor($this->getDbAdpater()));
     }
-
 }

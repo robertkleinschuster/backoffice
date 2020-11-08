@@ -1,13 +1,16 @@
 <?php
 
+namespace Pars\Base\Localization\Locale;
 
-namespace Base\Localization\Locale;
-
-
-use Base\Database\DatabaseBeanLoader;
+use Pars\Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
+use Niceshops\Bean\Finder\AbstractBeanFinder;
 
-class LocaleBeanFinder extends \NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder
+/**
+ * Class LocaleBeanFinder
+ * @package Pars\Base\Localization\Locale
+ */
+class LocaleBeanFinder extends AbstractBeanFinder
 {
     public function __construct(Adapter $adapter)
     {
@@ -19,31 +22,29 @@ class LocaleBeanFinder extends \NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder
         $loader->addColumn('Locale_Order', 'Locale_Order', 'Locale', 'Locale_Code');
         $loader->addOrder('Locale_Order');
         parent::__construct($loader, new LocaleBeanFactory());
-
     }
 
     public function setLocale_Order(int $order)
     {
-        $this->getLoader()->filterValue('Locale_Order', $order);
+        $this->getBeanLoader()->filterValue('Locale_Order', $order);
         return $this;
     }
 
     public function setLocale_Active(bool $active): self
     {
-        $this->getLoader()->filterValue('Locale_Active', $active);
+        $this->getBeanLoader()->filterValue('Locale_Active', $active);
         return $this;
     }
 
     public function setLocale_Code(string $code): self
     {
-        $this->getLoader()->filterValue('Locale_Code', $code);
+        $this->getBeanLoader()->filterValue('Locale_Code', $code);
         return $this;
     }
 
     public function setLanguage(string $language): self
     {
-        $this->getLoader()->addLike("$language%", 'Locale_Code');
+        $this->getBeanLoader()->addLike("$language%", 'Locale_Code');
         return $this;
     }
-
 }

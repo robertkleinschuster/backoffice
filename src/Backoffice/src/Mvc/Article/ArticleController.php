@@ -1,8 +1,6 @@
 <?php
 
-
-namespace Backoffice\Mvc\Article;
-
+namespace Pars\Backoffice\Mvc\Article;
 
 class ArticleController
 {

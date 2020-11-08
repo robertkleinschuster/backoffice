@@ -1,12 +1,10 @@
 <?php
 
+namespace Pars\Base\Authentication\UserState;
 
-namespace Base\Authentication\UserState;
+use Niceshops\Bean\Type\Base\AbstractBaseBeanList;
 
-
-use NiceshopsDev\Bean\BeanList\JsonSerializable\AbstractJsonSerializableBeanList;
-
-class UserStateBeanList extends AbstractJsonSerializableBeanList
+class UserStateBeanList extends AbstractBaseBeanList
 {
 
 }

@@ -1,17 +1,13 @@
 <?php
 
+namespace Pars\Backoffice\Mvc\Authentication;
 
-namespace Backoffice\Mvc\Authentication;
+use Pars\Backoffice\Mvc\Base\BaseModel;
 
-
-
-use Backoffice\Mvc\Base\BaseModel;
-
+/**
+ * Class AuthenticationModel
+ * @package Pars\Backoffice\Mvc\Authentication
+ */
 class AuthenticationModel extends BaseModel
 {
-    public function init()
-    {
-        // TODO: Implement init() method.
-    }
-
 }

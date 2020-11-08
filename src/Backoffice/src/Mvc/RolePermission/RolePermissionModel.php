@@ -1,31 +1,32 @@
 <?php
-namespace Backoffice\Mvc\RolePermission;
 
+namespace Pars\Backoffice\Mvc\RolePermission;
 
-use Base\Authorization\Permission\PermissionBeanFinder;
-use Base\Authorization\RolePermission\RolePermissionBeanFinder;
-use Base\Authorization\RolePermission\RolePermissionBeanProcessor;
-use Backoffice\Mvc\Base\BaseModel;
+use Pars\Backoffice\Mvc\Base\CrudModel;
+use Pars\Base\Authorization\Permission\PermissionBeanFinder;
+use Pars\Base\Authorization\RolePermission\RolePermissionBeanFinder;
+use Pars\Base\Authorization\RolePermission\RolePermissionBeanProcessor;
+use Pars\Mvc\Parameter\IdParameter;
 
-class RolePermissionModel extends BaseModel
+class RolePermissionModel extends CrudModel
 {
-    public function init()
+    public function initialize()
     {
-        $this->setFinder(new RolePermissionBeanFinder($this->getDbAdpater()));
-        $this->setProcessor(new RolePermissionBeanProcessor($this->getDbAdpater()));
+        $this->setBeanFinder(new RolePermissionBeanFinder($this->getDbAdpater()));
+        $this->setBeanProcessor(new RolePermissionBeanProcessor($this->getDbAdpater()));
     }
 
 
-    public function getPermissionList(array $userPermissions, array $viewId): array
+    public function getPermissionList(array $userPermissions, IdParameter $idParameter): array
     {
         $finder = new RolePermissionBeanFinder($this->getDbAdpater());
-        $finder->getLoader()->initByIdMap($viewId);
-        $finder->find();
+        $finder->getBeanLoader()->initByIdMap($idParameter->getAttribute_List());
+
         $beanList = $finder->getBeanList();
         $existing = $beanList->getData('UserPermission_Code');
         $finder = new PermissionBeanFinder($this->getDbAdpater());
         $finder->setUserPermission_Active(true);
-        $finder->find();
+
         $permissionList = [];
         $beanList = $finder->getBeanList();
         foreach ($beanList as $item) {

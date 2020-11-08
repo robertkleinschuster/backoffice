@@ -1,10 +1,15 @@
 <?php
-namespace Base\Cms\Paragraph\State;
+
+namespace Pars\Base\Cms\Paragraph\State;
 
 
-use NiceshopsDev\Bean\JsonSerializable\AbstractJsonSerializableBean;
+use Niceshops\Bean\Type\Base\AbstractBaseBean;
 
-class CmsParagraphStateBean extends AbstractJsonSerializableBean
+/**
+ * Class CmsParagraphStateBean
+ * @package Pars\Base\Cms\Paragraph\State
+ */
+class CmsParagraphStateBean extends AbstractBaseBean
 {
 
     /**

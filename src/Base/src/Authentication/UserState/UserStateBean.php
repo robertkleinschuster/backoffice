@@ -1,14 +1,10 @@
 <?php
 
+namespace Pars\Base\Authentication\UserState;
 
-namespace Base\Authentication\UserState;
+use Niceshops\Bean\Type\Base\AbstractBaseBean;
 
-
-use Base\Authorization\Role\RoleBeanList;
-use Mezzio\Authentication\UserInterface;
-use NiceshopsDev\Bean\JsonSerializable\AbstractJsonSerializableBean;
-
-class UserStateBean extends AbstractJsonSerializableBean
+class UserStateBean extends AbstractBaseBean
 {
 
     /**
@@ -18,7 +14,5 @@ class UserStateBean extends AbstractJsonSerializableBean
     {
         $this->setDataType('UserState_Code', self::DATA_TYPE_STRING, true);
         $this->setDataType('UserState_Active', self::DATA_TYPE_BOOL, true);
-
     }
-
 }

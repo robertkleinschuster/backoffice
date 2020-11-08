@@ -1,12 +1,14 @@
 <?php
 
-
-namespace Base\Session\Cache;
-
+namespace Pars\Base\Session\Cache;
 
 use Cache\Adapter\Memcached\MemcachedCachePool;
 use Psr\Container\ContainerInterface;
 
+/**
+ * Class MemcachedCachePoolFactory
+ * @package Pars\Base\Session\Cache
+ */
 class MemcachedCachePoolFactory
 {
     public function __invoke(ContainerInterface $container)
@@ -20,5 +22,4 @@ class MemcachedCachePoolFactory
         $cachePool->setLogger($container->get('Logger'));
         return $cachePool;
     }
-
 }

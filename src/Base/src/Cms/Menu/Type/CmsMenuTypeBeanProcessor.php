@@ -1,14 +1,16 @@
 <?php
 
+namespace Pars\Base\Cms\Menu\Type;
 
-namespace Base\Cms\Menu\Type;
-
-
-use Base\Database\DatabaseBeanSaver;
+use Pars\Base\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
+use Niceshops\Bean\Processor\AbstractBeanProcessor;
+use Niceshops\Bean\Type\Base\BeanInterface;
 
+/**
+ * Class CmsMenuTypeBeanProcessor
+ * @package Pars\Base\Cms\Menu\Type
+ */
 class CmsMenuTypeBeanProcessor extends AbstractBeanProcessor
 {
 
@@ -32,5 +34,4 @@ class CmsMenuTypeBeanProcessor extends AbstractBeanProcessor
     {
         return true;
     }
-
 }

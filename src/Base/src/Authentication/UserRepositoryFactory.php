@@ -1,11 +1,15 @@
 <?php
 
-namespace Base\Authentication;
+namespace Pars\Base\Authentication;
 
-use Base\Authentication\User\UserBeanFinder;
+use Pars\Base\Authentication\User\UserBeanFinder;
 use Laminas\Db\Adapter\AdapterInterface;
 use Psr\Container\ContainerInterface;
 
+/**
+ * Class UserRepositoryFactory
+ * @package Pars\Base\Authentication
+ */
 class UserRepositoryFactory
 {
     /**

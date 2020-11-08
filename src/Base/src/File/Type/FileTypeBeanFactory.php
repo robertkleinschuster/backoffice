@@ -1,23 +1,22 @@
 <?php
 
+namespace Pars\Base\File\Type;
 
-namespace Base\File\Type;
+use Niceshops\Bean\Factory\AbstractBeanFactory;
 
-
-use NiceshopsDev\Bean\BeanFactory\AbstractBeanFactory;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanList\BeanListInterface;
-
+/**
+ * Class FileTypeBeanFactory
+ * @package Pars\Base\File\Type
+ */
 class FileTypeBeanFactory extends AbstractBeanFactory
 {
-    public function createBean(): BeanInterface
+    protected function getBeanClass(array $data): string
     {
-       return new FileTypeBean();
+        return FileTypeBean::class;
     }
 
-    public function createBeanList(): BeanListInterface
+    protected function getBeanListClass(): string
     {
-        return new FileTypeBeanList();
+        return FileTypeBeanList::class;
     }
-
 }

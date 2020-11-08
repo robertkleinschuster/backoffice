@@ -1,6 +1,6 @@
 <?php
 
-namespace Base\Database\Updater;
+namespace Pars\Base\Database\Updater;
 
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterAwareInterface;
@@ -50,7 +50,6 @@ class AbstractUpdater implements ValidationHelperAwareInterface, AdapterAwareInt
         $this->adapter = $adapter;
         $this->metadata = \Laminas\Db\Metadata\Source\Factory::createSourceFromAdapter($this->adapter);
         $this->existingTableList = $this->metadata->getTableNames($adapter->getCurrentSchema());
-
     }
 
     /**
@@ -162,7 +161,6 @@ class AbstractUpdater implements ValidationHelperAwareInterface, AdapterAwareInt
             $this->getValidationHelper()->addError($method, $ex->getMessage());
             return $ex->getMessage();
         }
-
     }
 
     protected function query(AbstractSql $statement)
@@ -301,5 +299,4 @@ class AbstractUpdater implements ValidationHelperAwareInterface, AdapterAwareInt
     {
         return preg_replace('~[^A-Z_][^A-Z_][^A-Z_]~', '', $value);
     }
-
 }

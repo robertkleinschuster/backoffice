@@ -1,10 +1,8 @@
 <?php
 
+namespace Pars\Base\Authorization\Permission;
 
-namespace Base\Authorization\Permission;
-
-
-use NiceshopsDev\Bean\BeanList\JsonSerializable\AbstractJsonSerializableBeanList;
+use Niceshops\Bean\Type\JsonSerializable\AbstractJsonSerializableBeanList;
 
 class PermissionBeanList extends AbstractJsonSerializableBeanList
 {

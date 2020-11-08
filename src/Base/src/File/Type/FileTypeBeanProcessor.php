@@ -1,14 +1,16 @@
 <?php
 
+namespace Pars\Base\File\Type;
 
-namespace Base\File\Type;
-
-
-use Base\Database\DatabaseBeanSaver;
+use Pars\Base\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
+use Niceshops\Bean\Processor\AbstractBeanProcessor;
+use Niceshops\Bean\Type\Base\BeanInterface;
 
+/**
+ * Class FileTypeBeanProcessor
+ * @package Pars\Base\File\Type
+ */
 class FileTypeBeanProcessor extends AbstractBeanProcessor
 {
 
@@ -34,5 +36,4 @@ class FileTypeBeanProcessor extends AbstractBeanProcessor
     {
         return true;
     }
-
 }

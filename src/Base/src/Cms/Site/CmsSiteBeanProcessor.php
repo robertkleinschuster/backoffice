@@ -1,22 +1,23 @@
 <?php
 
+namespace Pars\Base\Cms\Site;
 
-namespace Base\Cms\Site;
-
-
-use Base\Article\Translation\ArticleTranslationBeanProcessor;
-use Base\Database\DatabaseBeanSaver;
+use Niceshops\Bean\Type\Base\BeanInterface;
+use Pars\Base\Article\Translation\ArticleTranslationBeanProcessor;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Diactoros\UploadedFile;
-use NiceshopsDev\Bean\BeanInterface;
+use Pars\Base\Database\DatabaseBeanSaver;
 
+/**
+ * Class CmsSiteBeanProcessor
+ * @package Pars\Base\Cms\Site
+ */
 class CmsSiteBeanProcessor extends ArticleTranslationBeanProcessor
 {
 
     public function __construct(Adapter $adapter)
     {
         parent::__construct($adapter);
-        $saver = $this->getSaver();
+        $saver = $this->getBeanSaver();
         if ($saver instanceof DatabaseBeanSaver) {
             $saver->addColumn('Article_ID', 'Article_ID', 'Article', 'CmsSite_ID', true, null, ['ArticleTranslation', 'CmsSite']);
             $saver->addColumn('CmsSite_ID', 'CmsSite_ID', 'CmsSite', 'CmsSite_ID', true);
@@ -40,5 +41,4 @@ class CmsSiteBeanProcessor extends ArticleTranslationBeanProcessor
     {
         return parent::validateForDelete($bean) && $bean->hasData('CmsSite_ID') && $bean->hasData('Article_ID');
     }
-
 }

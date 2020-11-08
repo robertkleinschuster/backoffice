@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Base\Localization\LocalizationMiddleware;
-use Base\Translation\TranslatorMiddleware;
+use Pars\Base\Localization\LocalizationMiddleware;
+use Pars\Base\Translation\TranslatorMiddleware;
 use Laminas\Stratigility\Middleware\ErrorHandler;
 use Mezzio\Application;
 use Mezzio\Handler\NotFoundHandler;
@@ -20,10 +20,11 @@ use Psr\Container\ContainerInterface;
 /**
  * Setup middleware pipeline:
  */
-return function (Application $app, MiddlewareFactory $factory, ContainerInterface $container) : void {
+
+return function (Application $app, MiddlewareFactory $factory, ContainerInterface $container): void {
     // The error handler should be the first (most outer) middleware to catch
     // all Exceptions.
-    $app->pipe(\Base\Logging\LoggingMiddleware::class);
+    $app->pipe(\Pars\Base\Logging\LoggingMiddleware::class);
     $app->pipe(ErrorHandler::class);
     $app->pipe(ServerUrlMiddleware::class);
     $app->pipe(\Mezzio\Session\SessionMiddleware::class);
@@ -72,7 +73,7 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
     // - route-based authentication
     // - route-based validation
     // - etc.
-    $app->pipe(\Base\Database\DatabaseMiddleware::class);
+    $app->pipe(\Pars\Base\Database\DatabaseMiddleware::class);
 
     $app->pipe(LocalizationMiddleware::class);
     $app->pipe(TranslatorMiddleware::class);

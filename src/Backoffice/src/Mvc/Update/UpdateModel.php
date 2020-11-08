@@ -1,25 +1,18 @@
 <?php
 
+namespace Pars\Backoffice\Mvc\Update;
 
-namespace Backoffice\Mvc\Update;
-
-
-use Base\Database\Updater\DataUpdater;
-use Base\Database\Updater\SchemaUpdater;
-use Backoffice\Mvc\Base\BaseModel;
-use Mvc\Controller\ControllerRequest;
+use Pars\Base\Database\Updater\DataUpdater;
+use Pars\Base\Database\Updater\SchemaUpdater;
+use Pars\Backoffice\Mvc\Base\BaseModel;
+use Pars\Mvc\Parameter\IdParameter;
+use Pars\Mvc\Parameter\SubmitParameter;
 
 class UpdateModel extends BaseModel
 {
 
     public const OPTION_SCHEMA_ALLOWED = 'schema_allowed';
     public const OPTION_DATA_ALLOWED = 'data_allowed';
-
-    public function init()
-    {
-
-    }
-
 
 
     public function getSchemaUpdater()
@@ -33,17 +26,18 @@ class UpdateModel extends BaseModel
     }
 
     /**
-     * @param string $submitModel
-     * @param array $viewIdMap
-     * @param array $attributes
+     * @param SubmitParameter $submitParameter
+     * @param IdParameter $idParameter
+     * @param array $attribute_List
+     * @throws \Niceshops\Core\Exception\AttributeNotFoundException
      */
-    public function submit(string $submitModel, array $viewIdMap, array $attributes)
+    public function submit(SubmitParameter $submitParameter, IdParameter $idParameter, array $attribute_List)
     {
-        switch ($submitModel) {
+        switch ($submitParameter->getMode()) {
             case 'schema':
                 if ($this->hasOption(self::OPTION_SCHEMA_ALLOWED)) {
                     $schemaUpdater = new SchemaUpdater($this->getDbAdpater());
-                    $schemaUpdater->execute($attributes);
+                    $schemaUpdater->execute($attribute_List);
                     $this->getValidationHelper()->addErrorFieldMap($schemaUpdater->getValidationHelper()->getErrorFieldMap());
                 } else {
                     $this->handlePermissionDenied();
@@ -52,7 +46,7 @@ class UpdateModel extends BaseModel
             case 'data':
                 if ($this->hasOption(self::OPTION_DATA_ALLOWED)) {
                     $schemaUpdater = new DataUpdater($this->getDbAdpater());
-                    $schemaUpdater->execute($attributes);
+                    $schemaUpdater->execute($attribute_List);
                     $this->getValidationHelper()->addErrorFieldMap($schemaUpdater->getValidationHelper()->getErrorFieldMap());
                 } else {
                     $this->handlePermissionDenied();

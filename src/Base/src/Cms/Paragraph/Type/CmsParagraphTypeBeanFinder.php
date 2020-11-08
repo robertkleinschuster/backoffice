@@ -1,12 +1,10 @@
 <?php
 
+namespace Pars\Base\Cms\Paragraph\Type;
 
-namespace Base\Cms\Paragraph\Type;
-
-
-use Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
+use Niceshops\Bean\Finder\AbstractBeanFinder;
+use Pars\Base\Database\DatabaseBeanLoader;
 
 class CmsParagraphTypeBeanFinder extends AbstractBeanFinder
 {
@@ -20,7 +18,7 @@ class CmsParagraphTypeBeanFinder extends AbstractBeanFinder
 
     public function setCmsParagraphType_Active(bool $active): self
     {
-        $this->getLoader()->filterValue('CmsParagraphType_Active', $active);
+        $this->getBeanLoader()->filterValue('CmsParagraphType_Active', $active);
         return $this;
     }
 }

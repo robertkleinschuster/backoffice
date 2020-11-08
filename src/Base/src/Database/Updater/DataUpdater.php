@@ -1,10 +1,9 @@
 <?php
 
-namespace Base\Database\Updater;
+namespace Pars\Base\Database\Updater;
 
-
-use Base\Article\ArticleBean;
-use Base\Authentication\User\UserBean;
+use Pars\Base\Article\ArticleBean;
+use Pars\Base\Authentication\User\UserBean;
 
 class DataUpdater extends AbstractUpdater
 {
@@ -634,6 +633,4 @@ class DataUpdater extends AbstractUpdater
 
         return $this->saveDataMap('UserPermission', 'UserPermission_Code', $data_Map);
     }
-
-
 }

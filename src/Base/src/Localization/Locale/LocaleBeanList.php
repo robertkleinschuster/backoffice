@@ -1,10 +1,14 @@
 <?php
 
+namespace Pars\Base\Localization\Locale;
 
-namespace Base\Localization\Locale;
+use Niceshops\Bean\Type\Base\AbstractBaseBeanList;
 
-
-class LocaleBeanList extends \NiceshopsDev\Bean\BeanList\JsonSerializable\AbstractJsonSerializableBeanList
+/**
+ * Class LocaleBeanList
+ * @package Pars\Base\Localization\Locale
+ */
+class LocaleBeanList extends AbstractBaseBeanList
 {
 
 }

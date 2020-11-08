@@ -1,28 +1,22 @@
 <?php
 
+namespace Pars\Base\Localization\Locale;
 
-namespace Base\Localization\Locale;
+use Niceshops\Bean\Factory\AbstractBeanFactory;
 
-
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanList\BeanListInterface;
-
-class LocaleBeanFactory extends \NiceshopsDev\Bean\BeanFactory\AbstractBeanFactory
+/**
+ * Class LocaleBeanFactory
+ * @package Pars\Base\Localization\Locale
+ */
+class LocaleBeanFactory extends AbstractBeanFactory
 {
-
-    /**
-     * @inheritDoc
-     */
-    public function createBean(): BeanInterface
+    protected function getBeanClass(array $data): string
     {
-        return new LocaleBean();
+        return LocaleBean::class;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function createBeanList(): BeanListInterface
+    protected function getBeanListClass(): string
     {
-        return new LocaleBeanList();
+        return LocaleBeanList::class;
     }
 }

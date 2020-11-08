@@ -1,20 +1,24 @@
 <?php
 
+namespace Pars\Base\Article;
 
-namespace Base\Article;
-
-
-use Base\Database\DatabaseBeanSaver;
 use Cocur\Slugify\Slugify;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\I18n\Translator\TranslatorAwareInterface;
 use Laminas\I18n\Translator\TranslatorAwareTrait;
-use Mvc\Helper\ValidationHelperAwareInterface;
-use Mvc\Helper\ValidationHelperAwareTrait;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
+use Niceshops\Bean\Processor\AbstractBeanProcessor;
+use Niceshops\Bean\Type\Base\BeanInterface;
+use Pars\Base\Database\DatabaseBeanSaver;
+use Pars\Mvc\Helper\ValidationHelperAwareInterface;
+use Pars\Mvc\Helper\ValidationHelperAwareTrait;
 
-class ArticleBeanProcessor extends AbstractBeanProcessor implements ValidationHelperAwareInterface, TranslatorAwareInterface
+/**
+ * Class ArticleBeanProcessor
+ * @package Pars\Base\Article
+ */
+class ArticleBeanProcessor extends AbstractBeanProcessor implements
+    ValidationHelperAwareInterface,
+    TranslatorAwareInterface
 {
     use ValidationHelperAwareTrait;
     use TranslatorAwareTrait;
@@ -71,6 +75,4 @@ class ArticleBeanProcessor extends AbstractBeanProcessor implements ValidationHe
     {
         return $bean->hasData('Article_ID');
     }
-
-
 }

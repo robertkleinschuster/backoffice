@@ -1,15 +1,16 @@
 <?php
-namespace Base\Authorization\Role;
 
+namespace Pars\Base\Authorization\Role;
 
-use Base\Authorization\Permission\PermissionBeanFactory;
-use Base\Authorization\Permission\PermissionBeanFinder;
-use Base\Authorization\RolePermission\RolePermissionBeanFinder;
-use Base\Database\DatabaseBeanLoader;
+use Pars\Base\Authorization\RolePermission\RolePermissionBeanFinder;
+use Pars\Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
-use NiceshopsDev\Bean\BeanInterface;
+use Niceshops\Bean\Finder\AbstractBeanFinder;
 
+/**
+ * Class RoleBeanFinder
+ * @package Pars\Base\Authorization\Role
+ */
 class RoleBeanFinder extends AbstractBeanFinder
 {
 
@@ -25,7 +26,7 @@ class RoleBeanFinder extends AbstractBeanFinder
         parent::__construct($loader, new RoleBeanFactory());
         $rolePermissionFinder = new RolePermissionBeanFinder($adapter);
         $rolePermissionFinder->setUserPermission_Active(true);
-        $this->linkBeanFinder($rolePermissionFinder, 'UserPermission_BeanList', 'UserRole_ID', 'UserRole_ID');
+        $this->addLinkedFinder($rolePermissionFinder, 'UserPermission_BeanList', 'UserRole_ID', 'UserRole_ID');
     }
 
     /**
@@ -33,11 +34,12 @@ class RoleBeanFinder extends AbstractBeanFinder
      * @param bool $exclude
      * @return $this
      */
-    public function setUserRole_ID(int $userRole_id, bool $exclude = false): self {
+    public function setUserRole_ID(int $userRole_id, bool $exclude = false): self
+    {
         if ($exclude) {
-            $this->getLoader()->excludeValue('UserRole_ID', $userRole_id);
+            $this->getBeanLoader()->excludeValue('UserRole_ID', $userRole_id);
         } else {
-            $this->getLoader()->filterValue('UserRole_ID', $userRole_id);
+            $this->getBeanLoader()->filterValue('UserRole_ID', $userRole_id);
         }
         return $this;
     }
@@ -47,25 +49,24 @@ class RoleBeanFinder extends AbstractBeanFinder
      * @param bool $exclude
      * @return $this
      */
-    public function setUserRole_Code(string $userRole_code, bool $exclude = false): self {
+    public function setUserRole_Code(string $userRole_code, bool $exclude = false): self
+    {
         if ($exclude) {
-            $this->getLoader()->excludeValue('UserRole_Code', $userRole_code);
+            $this->getBeanLoader()->excludeValue('UserRole_Code', $userRole_code);
         } else {
-            $this->getLoader()->filterValue('UserRole_Code', $userRole_code);
+            $this->getBeanLoader()->filterValue('UserRole_Code', $userRole_code);
         }
         return $this;
     }
 
 
     /**
-     * @param string $userRole_active
+     * @param bool $userRole_active
      * @return $this
      */
-    public function setUserRole_Active(bool $userRole_active): self {
-        $this->getLoader()->filterValue('UserRole_Active', $userRole_active);
+    public function setUserRole_Active(bool $userRole_active): self
+    {
+        $this->getBeanLoader()->filterValue('UserRole_Active', $userRole_active);
         return $this;
     }
-
-
-
 }

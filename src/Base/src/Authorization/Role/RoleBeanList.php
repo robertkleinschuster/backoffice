@@ -1,8 +1,13 @@
 <?php
-namespace Base\Authorization\Role;
 
-use NiceshopsDev\Bean\BeanList\JsonSerializable\AbstractJsonSerializableBeanList;
+namespace Pars\Base\Authorization\Role;
 
+use Niceshops\Bean\Type\JsonSerializable\AbstractJsonSerializableBeanList;
+
+/**
+ * Class RoleBeanList
+ * @package Pars\Base\Authorization\Role
+ */
 class RoleBeanList extends AbstractJsonSerializableBeanList
 {
     public function getPermission_List(): array

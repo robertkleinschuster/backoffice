@@ -1,32 +1,25 @@
 <?php
 
+namespace Pars\Base\Authentication\User;
 
-namespace Base\Authentication\User;
-
-use Base\Authorization\UserRole\UserRoleBeanList;
+use Pars\Base\Authorization\UserRole\UserRoleBeanList;
 use Mezzio\Authentication\UserInterface;
-use NiceshopsDev\Bean\BeanFactory\BeanFactoryInterface;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanList\BeanListInterface;
-use NiceshopsDev\NiceCore\Attribute\AttributeTrait;
-use NiceshopsDev\NiceCore\Option\OptionTrait;
+use Niceshops\Bean\Factory\AbstractBeanFactory;
 use Psr\Container\ContainerInterface;
 
 /**
  * Class UserBeanFactory
- * @package Base\Authentication\User
+ * @package Pars\Base\Authentication\User
+ * @method UserBean getEmptyBean(array $data) : BeanInterface
  */
-class UserBeanFactory implements BeanFactoryInterface
+class UserBeanFactory extends AbstractBeanFactory
 {
-    use OptionTrait;
-    use AttributeTrait;
 
-
-    public function __invoke(ContainerInterface $container) : callable
+    public function __invoke(ContainerInterface $container): callable
     {
-        return function (string $identity, array $roles = [], array $details = []) : UserInterface {
-            $bean = $this->createBean();
-            $bean->setFromArray($details);
+        return function (string $identity, array $roles = [], array $details = []): UserInterface {
+            $bean = $this->getEmptyBean($details);
+            $bean->setSerializeData($details);
             $roleBeanList = new UserRoleBeanList();
             $roleBeanList->setSerializeData($roles);
             $bean->setData('UserRole_BeanList', $roleBeanList);
@@ -34,21 +27,14 @@ class UserBeanFactory implements BeanFactoryInterface
         };
     }
 
-    /**
-     * @return UserBean
-     */
-    public function createBean(): BeanInterface
+
+    protected function getBeanClass(array $data): string
     {
-        return new UserBean();
+        return UserBean::class;
     }
 
-    /**
-     * @return UserBeanList
-     */
-    public function createBeanList(): BeanListInterface
+    protected function getBeanListClass(): string
     {
-        return new UserBeanList();
+        return UserBeanList::class;
     }
-
-
 }

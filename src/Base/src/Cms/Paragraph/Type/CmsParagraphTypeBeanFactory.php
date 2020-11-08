@@ -1,23 +1,19 @@
 <?php
 
+namespace Pars\Base\Cms\Paragraph\Type;
 
-namespace Base\Cms\Paragraph\Type;
-
-
-use NiceshopsDev\Bean\BeanFactory\AbstractBeanFactory;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanList\BeanListInterface;
+use Niceshops\Bean\Factory\AbstractBeanFactory;
 
 class CmsParagraphTypeBeanFactory extends AbstractBeanFactory
 {
-    public function createBean(): BeanInterface
+
+    protected function getBeanClass(array $data): string
     {
-       return new CmsParagraphTypeBean();
+        return CmsParagraphTypeBean::class;
     }
 
-    public function createBeanList(): BeanListInterface
+    protected function getBeanListClass(): string
     {
-        return new CmsParagraphTypeBeanList();
+        return CmsParagraphTypeBeanList::class;
     }
-
 }

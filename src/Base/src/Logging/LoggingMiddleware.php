@@ -1,8 +1,6 @@
 <?php
 
-
-namespace Base\Logging;
-
+namespace Pars\Base\Logging;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -10,6 +8,10 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class LoggingMiddleware
+ * @package Pars\Base\Logging
+ */
 class LoggingMiddleware implements MiddlewareInterface
 {
 
@@ -35,5 +37,4 @@ class LoggingMiddleware implements MiddlewareInterface
     {
         return $handler->handle($request->withAttribute(self::LOGGER_ATTRIBUTE, $this->logger));
     }
-
 }

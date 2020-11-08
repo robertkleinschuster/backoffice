@@ -1,6 +1,6 @@
 <?php
 
-use Base\Translation\TranslationLoader\TranslationBeanFinder;
+use Pars\Base\Translation\TranslationLoader\TranslationBeanFinder;
 
 return [
     'translator' => [

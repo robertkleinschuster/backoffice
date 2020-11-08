@@ -1,11 +1,13 @@
 <?php
 
+namespace Pars\Base\Cms\Site;
 
-namespace Base\Cms\Site;
+use Pars\Base\Article\Translation\ArticleTranslationBean;
 
-
-use Base\Article\Translation\ArticleTranslationBean;
-
+/**
+ * Class CmsSiteBean
+ * @package Pars\Base\Cms\Site
+ */
 class CmsSiteBean extends ArticleTranslationBean
 {
 

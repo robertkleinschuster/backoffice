@@ -1,14 +1,10 @@
 <?php
 
+namespace Pars\Base\Translation;
 
-namespace Base\Translation;
-
-
-use Base\Database\DatabaseMiddleware;
-use Base\Localization\LocalizationMiddleware;
-use Base\Logging\LoggingMiddleware;
-use Base\Translation\TranslationLoader\TranslationBeanFinder;
-use Base\Translation\TranslationLoader\TranslationLoaderFactory;
+use Pars\Base\Localization\LocalizationMiddleware;
+use Pars\Base\Logging\LoggingMiddleware;
+use Pars\Base\Translation\TranslationLoader\TranslationBeanFinder;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\I18n\Translator\Translator;
 use Psr\Http\Message\ResponseInterface;
@@ -16,6 +12,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+/**
+ * Class TranslatorMiddleware
+ * @package Pars\Base\Translation
+ */
 class TranslatorMiddleware implements MiddlewareInterface
 {
     public const TRANSLATOR_ATTRIBUTE = 'translater';
@@ -35,7 +35,7 @@ class TranslatorMiddleware implements MiddlewareInterface
     }
 
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $locale = $request->getAttribute(LocalizationMiddleware::LOCALIZATION_ATTRIBUTE);
         $logger = $request->getAttribute(LoggingMiddleware::LOGGER_ATTRIBUTE);
@@ -58,7 +58,7 @@ class TranslatorMiddleware implements MiddlewareInterface
             );
         }
 
-        $this->translator->getPluginManager()->setFactory(TranslationBeanFinder::class, function($container) {
+        $this->translator->getPluginManager()->setFactory(TranslationBeanFinder::class, function ($container) {
             return new TranslationBeanFinder($container->get(AdapterInterface::class));
         });
 

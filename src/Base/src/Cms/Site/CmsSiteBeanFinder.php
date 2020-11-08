@@ -1,29 +1,23 @@
 <?php
 
+namespace Pars\Base\Cms\Site;
 
-namespace Base\Cms\Site;
-
-
-use Base\Article\Translation\ArticleTranslationBeanFinder;
-use Base\Cms\SiteParagraph\CmsSiteParagraphBeanFinder;
-use Base\Database\DatabaseBeanLoader;
+use Pars\Base\Article\Translation\ArticleTranslationBeanFinder;
+use Pars\Base\Cms\SiteParagraph\CmsSiteParagraphBeanFinder;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Expression;
-use Laminas\Db\Sql\Join;
-use Laminas\Db\Sql\Predicate\Like;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
+use Pars\Base\Database\DatabaseBeanLoader;
 
 /**
  * Class CmsSiteBeanFinder
- * @package Base\Cms\Site
- * @method DatabaseBeanLoader getLoader() : BeanLoaderInterface
+ * @package Pars\Base\Cms\Site
+ * @method DatabaseBeanLoader getBeanLoader() : BeanLoaderInterface
  */
 class CmsSiteBeanFinder extends ArticleTranslationBeanFinder
 {
     public function __construct(Adapter $adapter)
     {
         parent::__construct($adapter, new CmsSiteBeanFactory());
-        $loader = $this->getLoader();
+        $loader = $this->getBeanLoader();
         if ($loader instanceof  DatabaseBeanLoader) {
             $loader->addColumn('CmsSite_ID', 'CmsSite_ID', 'CmsSite', 'CmsSite_ID', true);
             $loader->addColumn('CmsSiteType_Code', 'CmsSiteType_Code', 'CmsSite', 'CmsSite_ID');
@@ -31,13 +25,13 @@ class CmsSiteBeanFinder extends ArticleTranslationBeanFinder
             $loader->addColumn('CmsSiteState_Code', 'CmsSiteState_Code', 'CmsSite', 'CmsSite_ID');
             $loader->addColumn('Article_ID', 'Article_ID', 'CmsSite', 'CmsSite_ID', false, null, ['Article', 'ArticleTranslation']);
         }
-        $this->linkBeanFinder(new CmsSiteParagraphBeanFinder($adapter), 'CmsParagraph_BeanList', 'CmsSite_ID', 'CmsSite_ID');
+        $this->addLinkedFinder(new CmsSiteParagraphBeanFinder($adapter), 'CmsParagraph_BeanList', 'CmsSite_ID', 'CmsSite_ID');
     }
 
 
     public function setLocale_Code(string $locale, bool $leftJoin = true): ArticleTranslationBeanFinder
     {
-        foreach ($this->getBeanFinderLinkList() as $finderLink) {
+        foreach ($this->getLinkedFinderList() as $finderLink) {
             if (method_exists($finderLink->getBeanFinder(), 'setLocale_Code')) {
                 $finderLink->getBeanFinder()->setLocale_Code($locale, $leftJoin);
             }
@@ -53,8 +47,7 @@ class CmsSiteBeanFinder extends ArticleTranslationBeanFinder
      */
     public function setArticleTranslation_Code(string $code): self
     {
-        $this->getLoader()->filterValue('ArticleTranslation_Code', $code);
+        $this->getBeanLoader()->filterValue('ArticleTranslation_Code', $code);
         return $this;
     }
-
 }

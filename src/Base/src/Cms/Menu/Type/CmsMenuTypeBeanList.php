@@ -1,11 +1,13 @@
 <?php
 
+namespace Pars\Base\Cms\Menu\Type;
 
-namespace Base\Cms\Menu\Type;
+use Niceshops\Bean\Type\JsonSerializable\AbstractJsonSerializableBeanList;
 
-
-use NiceshopsDev\Bean\BeanList\JsonSerializable\AbstractJsonSerializableBeanList;
-
+/**
+ * Class CmsMenuTypeBeanList
+ * @package Pars\Base\Cms\Menu\Type
+ */
 class CmsMenuTypeBeanList extends AbstractJsonSerializableBeanList
 {
 

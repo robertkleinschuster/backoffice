@@ -1,13 +1,14 @@
 <?php
 
+namespace Pars\Base\File;
 
-namespace Base\File;
+use Niceshops\Bean\Type\Base\AbstractBaseBean;
 
-
-use NiceshopsDev\Bean\JsonSerializable\AbstractJsonSerializableBean;
-
-class FileBean extends AbstractJsonSerializableBean
-
+/**
+ * Class FileBean
+ * @package Pars\Base\File
+ */
+class FileBean extends AbstractBaseBean
 {
 
     /**
@@ -25,5 +26,4 @@ class FileBean extends AbstractJsonSerializableBean
         $this->setDataType('FileDirectory_Code', self::DATA_TYPE_STRING, true);
         $this->setDataType('FileDirectory_Name', self::DATA_TYPE_STRING, true);
     }
-
 }

@@ -1,22 +1,27 @@
 <?php
 
+namespace Pars\Base\File\Directory;
 
-namespace Base\File\Directory;
-
-
-use Base\Database\DatabaseBeanSaver;
+use Pars\Base\Database\DatabaseBeanSaver;
 use Cocur\Slugify\Slugify;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\I18n\Translator\TranslatorAwareInterface;
 use Laminas\I18n\Translator\TranslatorAwareTrait;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
-use Mvc\Helper\ValidationHelperAwareInterface;
-use Mvc\Helper\ValidationHelperAwareTrait;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
 
-class FileDirectoryBeanProcessor extends AbstractBeanProcessor implements ValidationHelperAwareInterface, TranslatorAwareInterface
+use Niceshops\Bean\Processor\AbstractBeanProcessor;
+use Niceshops\Bean\Type\Base\BeanInterface;
+use Pars\Mvc\Helper\ValidationHelperAwareInterface;
+use Pars\Mvc\Helper\ValidationHelperAwareTrait;
+
+/**
+ * Class FileDirectoryBeanProcessor
+ * @package Pars\Base\File\Directory
+ */
+class FileDirectoryBeanProcessor extends AbstractBeanProcessor implements
+    ValidationHelperAwareInterface,
+    TranslatorAwareInterface
 {
     use ValidationHelperAwareTrait;
     use TranslatorAwareTrait;
@@ -89,5 +94,4 @@ class FileDirectoryBeanProcessor extends AbstractBeanProcessor implements Valida
     {
         return !$this->getValidationHelper()->hasError();
     }
-
 }

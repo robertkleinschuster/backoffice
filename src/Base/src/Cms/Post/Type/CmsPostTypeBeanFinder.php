@@ -1,13 +1,15 @@
 <?php
 
+namespace Pars\Base\Cms\Post\Type;
 
-namespace Base\Cms\Post\Type;
-
-
-use Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
+use Niceshops\Bean\Finder\AbstractBeanFinder;
+use Pars\Base\Database\DatabaseBeanLoader;
 
+/**
+ * Class CmsPostTypeBeanFinder
+ * @package Pars\Base\Cms\Post\Type
+ */
 class CmsPostTypeBeanFinder extends AbstractBeanFinder
 {
     public function __construct(Adapter $adapter)
@@ -20,7 +22,7 @@ class CmsPostTypeBeanFinder extends AbstractBeanFinder
 
     public function setCmsPostType_Active(bool $active): self
     {
-        $this->getLoader()->filterValue('CmsPostType_Active', $active);
+        $this->getBeanLoader()->filterValue('CmsPostType_Active', $active);
         return $this;
     }
 }

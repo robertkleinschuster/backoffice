@@ -1,31 +1,38 @@
 <?php
 
-namespace Backoffice\Mvc\Setup;
+namespace Pars\Backoffice\Mvc\Setup;
 
+use Pars\Base\Authorization\Permission\PermissionBeanFinder;
+use Pars\Base\Authorization\Role\RoleBeanFinder;
+use Pars\Base\Authorization\Role\RoleBeanProcessor;
+use Pars\Base\Authorization\RolePermission\RolePermissionBeanFinder;
+use Pars\Base\Authorization\RolePermission\RolePermissionBeanProcessor;
+use Pars\Base\Authorization\UserRole\UserRoleBeanFinder;
+use Pars\Base\Authorization\UserRole\UserRoleBeanProcessor;
+use Pars\Mvc\Parameter\IdParameter;
 
-use Base\Authorization\Role\RoleBeanFinder;
-use Base\Authorization\Role\RoleBeanProcessor;
-use Base\Authorization\UserRole\UserRoleBeanFinder;
-use Base\Authorization\UserRole\UserRoleBeanProcessor;
-
-class SetupModel extends \Backoffice\Mvc\Base\BaseModel
+/**
+ * Class SetupModel
+ * @package Pars\Backoffice\Mvc\Setup
+ */
+class SetupModel extends \Pars\Backoffice\Mvc\Base\BaseModel
 {
-    public function init()
+    public function initialize()
     {
-        $this->setProcessor(new \Base\Authentication\User\UserBeanProcessor($this->getDbAdpater()));
-        $this->setFinder(new \Base\Authentication\User\UserBeanFinder($this->getDbAdpater()));
+        $this->setBeanProcessor(new \Pars\Base\Authentication\User\UserBeanProcessor($this->getDbAdpater()));
+        $this->setBeanFinder(new \Pars\Base\Authentication\User\UserBeanFinder($this->getDbAdpater()));
     }
 
-    protected function create(array $viewIdMap, array $attributes)
+    protected function create(IdParameter $idParameter, array $attributes): void
     {
-        $schemaUpdater = new \Base\Database\Updater\SchemaUpdater($this->getDbAdpater());
+        $schemaUpdater = new \Pars\Base\Database\Updater\SchemaUpdater($this->getDbAdpater());
         $methods = [];
         foreach ($schemaUpdater->getUpdateMethodList() as $method) {
             $methods[$method] = true;
         }
         $result = $schemaUpdater->execute($methods);
 
-        $dataUpdater = new \Base\Database\Updater\DataUpdater($this->getDbAdpater());
+        $dataUpdater = new \Pars\Base\Database\Updater\DataUpdater($this->getDbAdpater());
         $methods = [];
         foreach ($dataUpdater->getUpdateMethodList() as $method) {
             $methods[$method] = true;
@@ -33,44 +40,43 @@ class SetupModel extends \Backoffice\Mvc\Base\BaseModel
         $result = $dataUpdater->execute($methods);
 
 
-        parent::create($viewIdMap, $attributes);
+        parent::create($idParameter, $attributes);
 
-        if ($this->getFinder()->find() == 1) {
-            $user = $this->getFinder()->getBean();
+        if ($this->getBeanFinder()->count() == 1) {
+            $user = $this->getBeanFinder()->getBean();
 
             $roleFinder = new RoleBeanFinder($this->getDbAdpater());
-            $role = $roleFinder->getFactory()->createBean();
+            $role = $roleFinder->getBeanFactory()->getEmptyBean([]);
             $role->setData('UserRole_Code', 'admin');
-            $roleList = $roleFinder->getFactory()->createBeanList();
+            $roleList = $roleFinder->getBeanFactory()->getEmptyBeanList();
             $roleList->addBean($role);
 
             $roleProcessor = new RoleBeanProcessor($this->getDbAdpater());
             $roleProcessor->setBeanList($roleList);
             $roleProcessor->save();
 
-            if ($roleFinder->find() == 1) {
+            if ($roleFinder->count() == 1) {
                 $role = $roleFinder->getBean();
-                $permissionFinder = new \Base\Authorization\Permission\PermissionBeanFinder($this->getDbAdpater());
-                $permissionFinder->find();
+                $permissionFinder = new PermissionBeanFinder($this->getDbAdpater());
                 $permissionBeanList = $permissionFinder->getBeanList();
 
-                $rolePermissionFinder = new \Base\Authorization\RolePermission\RolePermissionBeanFinder($this->getDbAdpater());
-                $rolePermissionBeanList = $rolePermissionFinder->getFactory()->createBeanList();
+                $rolePermissionFinder = new RolePermissionBeanFinder($this->getDbAdpater());
+                $rolePermissionBeanList = $rolePermissionFinder->getBeanFactory()->getEmptyBeanList();
 
                 foreach ($permissionBeanList as $permission) {
-                    $rolePermission = $rolePermissionFinder->getFactory()->createBean();
+                    $rolePermission = $rolePermissionFinder->getBeanFactory()->getEmptyBean([]);
                     $rolePermission->setData('UserRole_ID', $role->getData('UserRole_ID'));
                     $rolePermission->setData('UserPermission_Code', $permission->getData('UserPermission_Code'));
                     $rolePermissionBeanList->addBean($rolePermission);
                 }
 
-                $rolePermissionProcessor = new \Base\Authorization\RolePermission\RolePermissionBeanProcessor($this->getDbAdpater());
+                $rolePermissionProcessor = new RolePermissionBeanProcessor($this->getDbAdpater());
                 $rolePermissionProcessor->setBeanList($rolePermissionBeanList);
                 $rolePermissionProcessor->save();
 
                 $userRoleFinder = new UserRoleBeanFinder($this->getDbAdpater());
-                $userRole = $userRoleFinder->getFactory()->createBean();
-                $userRoleList = $userRoleFinder->getFactory()->createBeanList();
+                $userRole = $userRoleFinder->getBeanFactory()->getEmptyBean([]);
+                $userRoleList = $userRoleFinder->getBeanFactory()->getEmptyBeanList();
                 $userRole->setData('Person_ID', $user->getData('Person_ID'));
                 $userRole->setData('UserRole_ID', $role->getData('UserRole_ID'));
                 $userRoleList->addBean($userRole);
@@ -81,6 +87,4 @@ class SetupModel extends \Backoffice\Mvc\Base\BaseModel
             }
         }
     }
-
-
 }

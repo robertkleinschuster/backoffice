@@ -1,41 +1,45 @@
 <?php
 
+namespace Pars\Backoffice\Mvc\Translation;
 
-namespace Backoffice\Mvc\Translation;
+use Pars\Backoffice\Mvc\Base\CrudModel;
+use Pars\Base\Localization\Locale\LocaleBeanFinder;
+use Pars\Base\Translation\TranslationLoader\TranslationBeanFinder;
+use Pars\Base\Translation\TranslationLoader\TranslationBeanProcessor;
+use Pars\Mvc\Parameter\IdParameter;
+use Pars\Mvc\Parameter\SubmitParameter;
 
-
-use Backoffice\Mvc\Base\BaseModel;
-use Base\Localization\Locale\LocaleBeanFinder;
-use Base\Translation\TranslationLoader\TranslationBeanFinder;
-use Base\Translation\TranslationLoader\TranslationBeanProcessor;
-
-class TranslationModel extends BaseModel
+class TranslationModel extends CrudModel
 {
-    public function init()
+    public function initialize()
     {
-        $this->setFinder(new TranslationBeanFinder($this->getDbAdpater()));
-        $this->setProcessor(new TranslationBeanProcessor($this->getDbAdpater()));
+        $this->setBeanFinder(new TranslationBeanFinder($this->getDbAdpater()));
+        $this->setBeanProcessor(new TranslationBeanProcessor($this->getDbAdpater()));
     }
 
     /**
      * @return array
-     * @throws \NiceshopsDev\Bean\BeanException
      */
-    public function getLocale_Options(): array {
+    public function getLocale_Options(): array
+    {
         $options = [];
         $finder = new LocaleBeanFinder($this->getDbAdpater());
         $finder->setLocale_Active(true);
-        $finder->find();
-        foreach ($finder->getBeanGenerator() as $bean) {
+        foreach ($finder->getBeanListDecorator() as $bean) {
             $options[$bean->getData('Locale_Code')] = $bean->getData('Locale_Name');
         }
         return $options;
     }
 
-    public function submit(string $submitMode, array $viewIdMap, array $attributes)
+    /**
+     * @param SubmitParameter $submitParameter
+     * @param IdParameter $idParameter
+     * @param array $attribute_List
+     * @throws \Niceshops\Core\Exception\AttributeNotFoundException
+     */
+    public function submit(SubmitParameter $submitParameter, IdParameter $idParameter, array $attribute_List)
     {
-        parent::submit($submitMode, $viewIdMap, $attributes);
+        parent::submit($submitParameter, $idParameter, $attribute_List);
         $this->getTranslator()->clearCache($attributes['Translation_Namespace'] ?? 'default', $attributes['Locale_Code'] ?? $this->getTranslator()->getLocale());
     }
-
 }

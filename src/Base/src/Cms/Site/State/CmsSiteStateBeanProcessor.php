@@ -1,14 +1,16 @@
 <?php
 
+namespace Pars\Base\Cms\Site\State;
 
-namespace Base\Cms\Site\State;
-
-
-use Base\Database\DatabaseBeanSaver;
+use Pars\Base\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
+use Niceshops\Bean\Type\Base\BeanInterface;
+use Niceshops\Bean\Processor\AbstractBeanProcessor;
 
+/**
+ * Class CmsSiteStateBeanProcessor
+ * @package Pars\Base\Cms\Site\State
+ */
 class CmsSiteStateBeanProcessor extends AbstractBeanProcessor
 {
 
@@ -31,7 +33,6 @@ class CmsSiteStateBeanProcessor extends AbstractBeanProcessor
 
     protected function validateForDelete(BeanInterface $bean): bool
     {
-       return true;
+        return true;
     }
-
 }

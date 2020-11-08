@@ -1,28 +1,24 @@
 <?php
 
+namespace Pars\Base\Authorization\RolePermission;
 
-namespace Base\Authorization\RolePermission;
+use Niceshops\Bean\Factory\AbstractBeanFactory;
 
-
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanList\BeanListInterface;
-
-class RolePermissionBeanFactory extends \NiceshopsDev\Bean\BeanFactory\AbstractBeanFactory
+/**
+ * Class RolePermissionBeanFactory
+ * @package Pars\Base\Authorization\RolePermission
+ */
+class RolePermissionBeanFactory extends AbstractBeanFactory
 {
 
-    /**
-     * @inheritDoc
-     */
-    public function createBean(): BeanInterface
+
+    protected function getBeanClass(array $data): string
     {
-        return new RolePermissionBean();
+        return RolePermissionBean::class;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function createBeanList(): BeanListInterface
+    protected function getBeanListClass(): string
     {
-        return new RolePermissionBeanList();
+        return RolePermissionBeanList::class;
     }
 }

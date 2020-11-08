@@ -1,8 +1,6 @@
 <?php
 
-
-namespace Base\Database;
-
+namespace Pars\Base\Database;
 
 class DatabaseColumnDefinition
 {
@@ -223,5 +221,4 @@ class DatabaseColumnDefinition
             ->setAdditionalTableList($definition['table_List'])
             ->setJoinTableSelf($definition['joinTableSelf']);
     }
-
 }

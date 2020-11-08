@@ -1,15 +1,15 @@
 <?php
 
+namespace Pars\Base\Cms\Post\State;
 
-namespace Base\Cms\Post\State;
-
-
-use Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanFactory\BeanFactoryInterface;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
-use NiceshopsDev\Bean\BeanFinder\BeanLoaderInterface;
+use Niceshops\Bean\Finder\AbstractBeanFinder;
+use Pars\Base\Database\DatabaseBeanLoader;
 
+/**
+ * Class CmsPostStateBeanFinder
+ * @package Pars\Base\Cms\Post\State
+ */
 class CmsPostStateBeanFinder extends AbstractBeanFinder
 {
     public function __construct(Adapter $adapter)
@@ -22,8 +22,7 @@ class CmsPostStateBeanFinder extends AbstractBeanFinder
 
     public function setCmsPostState_Active(bool $active): self
     {
-        $this->getLoader()->filterValue('CmsPostState_Active', $active);
+        $this->getBeanLoader()->filterValue('CmsPostState_Active', $active);
         return $this;
     }
-
 }

@@ -1,17 +1,16 @@
 <?php
 
+namespace Pars\Backoffice\Mvc\Update;
 
-namespace Backoffice\Mvc\Update;
-
-use Base\Database\Updater\AbstractUpdater;
-use Backoffice\Mvc\Base\BaseController;
-use Mvc\View\ComponentDataBean;
-use Mvc\View\Components\Edit\Edit;
-
+use Pars\Base\Database\Updater\AbstractUpdater;
+use Pars\Backoffice\Mvc\Base\BaseController;
+use Pars\Mvc\Parameter\SubmitParameter;
+use Pars\Mvc\View\Components\Edit\Edit;
+use Pars\Mvc\View\Components\Navigation\Navigation;
 
 /**
  * Class UpdateController
- * @package Backoffice\Mvc\Controller
+ * @package Pars\Backoffice\Mvc\Controller
  * @method UpdateModel getModel()
  */
 class UpdateController extends BaseController
@@ -36,11 +35,11 @@ class UpdateController extends BaseController
     public function indexAction()
     {
         $this->getView()->setHeading('Updates');
-        $navigation = new \Mvc\View\Components\Navigation\Navigation($this->translate('update.database'));
-        $dataComponent = $this->getUpdaterComponent($this->getModel()->getDataUpdater(), $this->translate('update.database.data'), 'data');
+        $navigation = new Navigation($this->translate('update.database'));
+        $dataComponent = $this->initUpdaterTemplate($this->getModel()->getDataUpdater(), $this->translate('update.database.data'), 'data');
         $dataComponent->setPermission('update.data');
         $navigation->addComponent($dataComponent);
-        $schemaComponent = $this->getUpdaterComponent($this->getModel()->getSchemaUpdater(),$this->translate('update.database.schema'), 'schema');
+        $schemaComponent = $this->initUpdaterTemplate($this->getModel()->getSchemaUpdater(), $this->translate('update.database.schema'), 'schema');
         $schemaComponent->setPermission('update.schema');
         $navigation->addComponent($schemaComponent);
         $navigation->setPermission('update');
@@ -48,11 +47,10 @@ class UpdateController extends BaseController
         $this->getView()->addComponent($navigation);
     }
 
-    public function getUpdaterComponent(AbstractUpdater $updater, string $title, string $submitAction)
+    public function initUpdaterTemplate(AbstractUpdater $updater, string $title, string $submitAction)
     {
         $previewList = $updater->getPreviewMap();
         $edit = new Edit($title);
-        $edit->setBean(new ComponentDataBean());
         $edit->getValidationHelper()->addErrorFieldMap($this->getValidationErrorMap());
 
         $edit->setCols(1);
@@ -62,7 +60,7 @@ class UpdateController extends BaseController
                 ->setChecked(true)
                 ->setHint('<pre>' . json_encode($item, JSON_PRETTY_PRINT) . '</pre>');
         }
-        $edit->addSubmit($submitAction, $this->translate('update.submit'));
+        $edit->addSubmit((new SubmitParameter())->setMode($submitAction), $this->translate('update.submit'));
         return $edit;
     }
 }

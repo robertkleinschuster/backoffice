@@ -1,15 +1,10 @@
 <?php
 
+namespace Pars\Backoffice\Mvc\Article;
 
-namespace Backoffice\Mvc\Article;
-
-
-use Backoffice\Mvc\Base\BaseModel;
+use Pars\Backoffice\Mvc\Base\BaseModel;
 
 class ArticleModel extends BaseModel
 {
-    public function init()
-    {
-        // TODO: Implement init() method.
-    }
+
 }

@@ -1,14 +1,16 @@
 <?php
 
+namespace Pars\Base\Cms\Post\Type;
 
-namespace Base\Cms\Post\Type;
-
-
-use Base\Database\DatabaseBeanSaver;
+use Pars\Base\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
+use Niceshops\Bean\Type\Base\BeanInterface;
+use Niceshops\Bean\Processor\AbstractBeanProcessor;
 
+/**
+ * Class CmsPostTypeBeanProcessor
+ * @package Pars\Base\Cms\Post\Type
+ */
 class CmsPostTypeBeanProcessor extends AbstractBeanProcessor
 {
 
@@ -32,5 +34,4 @@ class CmsPostTypeBeanProcessor extends AbstractBeanProcessor
     {
         return true;
     }
-
 }

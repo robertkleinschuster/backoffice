@@ -1,20 +1,19 @@
 <?php
 
+namespace Pars\Backoffice\Mvc\File;
 
-namespace Backoffice\Mvc\File;
+use Pars\Backoffice\Mvc\Base\CrudModel;
+use Pars\Base\File\Directory\FileDirectoryBeanFinder;
+use Pars\Base\File\FileBeanFinder;
+use Pars\Base\File\FileBeanProcessor;
+use Pars\Base\File\Type\FileTypeBeanFinder;
 
-use Backoffice\Mvc\Base\BaseModel;
-use Base\File\Directory\FileDirectoryBeanFinder;
-use Base\File\FileBeanFinder;
-use Base\File\FileBeanProcessor;
-use Base\File\Type\FileTypeBeanFinder;
-
-class FileModel extends BaseModel
+class FileModel extends CrudModel
 {
-    public function init()
+    public function initialize()
     {
-        $this->setFinder(new FileBeanFinder($this->getDbAdpater()));
-        $this->setProcessor(new FileBeanProcessor($this->getDbAdpater()));
+        $this->setBeanFinder(new FileBeanFinder($this->getDbAdpater()));
+        $this->setBeanProcessor(new FileBeanProcessor($this->getDbAdpater()));
     }
 
     public function getFileType_Options()
@@ -22,7 +21,7 @@ class FileModel extends BaseModel
         $options = [];
         $finder = new FileTypeBeanFinder($this->getDbAdpater());
         $finder->setFileType_Active(true);
-        $finder->find();
+
         $beanList = $finder->getBeanList();
         foreach ($beanList as $bean) {
             $options[$bean->getData('FileType_Code')] = $bean->getData('FileType_Name');
@@ -35,12 +34,11 @@ class FileModel extends BaseModel
         $options = [];
         $finder = new FileDirectoryBeanFinder($this->getDbAdpater());
         $finder->setFileDirectory_Active(true);
-        $finder->find();
+
         $beanList = $finder->getBeanList();
         foreach ($beanList as $bean) {
             $options[$bean->getData('FileDirectory_ID')] = $bean->getData('FileDirectory_Name');
         }
         return $options;
     }
-
 }

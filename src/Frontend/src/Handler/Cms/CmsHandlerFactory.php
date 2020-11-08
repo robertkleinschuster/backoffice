@@ -1,8 +1,6 @@
 <?php
 
-
-namespace Frontend\Handler\Cms;
-
+namespace Pars\Frontend\Handler\Cms;
 
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Template\TemplateRendererInterface;
@@ -14,5 +12,4 @@ class CmsHandlerFactory
     {
         return new CmsHandler($container->get(TemplateRendererInterface::class), $container->get(UrlHelper::class));
     }
-
 }

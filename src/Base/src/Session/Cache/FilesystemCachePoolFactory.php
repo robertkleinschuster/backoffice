@@ -1,11 +1,16 @@
 <?php
-namespace Base\Session\Cache;
+
+namespace Pars\Base\Session\Cache;
 
 use Cache\Adapter\Filesystem\FilesystemCachePool;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use Psr\Container\ContainerInterface;
 
+/**
+ * Class FilesystemCachePoolFactory
+ * @package Pars\Base\Session\Cache
+ */
 class FilesystemCachePoolFactory
 {
     public function __invoke(ContainerInterface $container)
@@ -15,6 +20,4 @@ class FilesystemCachePoolFactory
         $filesystem        = new Filesystem($filesystemAdapter);
         return new FilesystemCachePool($filesystem);
     }
-
-
 }

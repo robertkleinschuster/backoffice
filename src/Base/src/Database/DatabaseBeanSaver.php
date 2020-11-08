@@ -1,20 +1,17 @@
 <?php
 
-
-namespace Base\Database;
-
+namespace Pars\Base\Database;
 
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterAwareInterface;
 use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Sql;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanProcessor\AbstractBeanSaver;
+use Niceshops\Bean\Saver\AbstractBeanSaver;
+use Niceshops\Bean\Type\Base\BeanInterface;
 
 class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterface
 {
-
     use AdapterAwareTrait;
     use DatabaseInfoTrait;
 
@@ -199,19 +196,19 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
      */
     protected function getDataFromBean(BeanInterface $bean, string $table = null, bool $includeKeys = true): array
     {
-        $formatter = new DatabaseBeanFormatter();
+        $converter = new DatabaseBeanConverter();
         $data = [];
         $fieldList = $this->getField_List($table);
         foreach ($fieldList as $field) {
             if ($bean->hasData($field)) {
-                $data[$this->getColumn($field)] = $formatter->format($bean)->getValue($field);
+                $data[$this->getColumn($field)] = $converter->convert($bean)->getData($field);
             }
         }
         if ($includeKeys) {
             $keyFieldList = $this->getKeyField_List($table);
             foreach ($keyFieldList as $field) {
                 if ($bean->hasData($field)) {
-                    $data[$this->getColumn($field)] = $formatter->format($bean)->getValue($field);
+                    $data[$this->getColumn($field)] = $converter->convert($bean)->getData($field);
                 }
             }
         }
@@ -225,12 +222,12 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
      */
     protected function getKeyDataFromBean(BeanInterface $bean, string $table): array
     {
-        $formatter = new DatabaseBeanFormatter();
+        $formatter = new DatabaseBeanConverter();
         $data = [];
         $fieldList = $this->getKeyField_List($table);
         foreach ($fieldList as $field) {
             if ($bean->hasData($field)) {
-                $data[$this->getColumn($field)] = $formatter->format($bean)->getValue($field);
+                $data[$this->getColumn($field)] = $formatter->convert($bean)->getData($field);
             }
         }
         return $data;
@@ -250,6 +247,4 @@ class DatabaseBeanSaver extends AbstractBeanSaver implements AdapterAwareInterfa
         $result = $this->adapter->query($sql->buildSqlString($select), $this->adapter::QUERY_MODE_EXECUTE);
         return intval($result->current()['COUNT'] ?? 0);
     }
-
-
 }

@@ -1,14 +1,17 @@
 <?php
 
+namespace Pars\Base\Localization\Locale;
 
-namespace Base\Localization\Locale;
-
-
-use Base\Database\DatabaseBeanSaver;
+use Pars\Base\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanInterface;
+use Niceshops\Bean\Processor\AbstractBeanProcessor;
+use Niceshops\Bean\Type\Base\BeanInterface;
 
-class LocaleBeanProcessor extends \NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor
+/**
+ * Class LocaleBeanProcessor
+ * @package Pars\Base\Localization\Locale
+ */
+class LocaleBeanProcessor extends AbstractBeanProcessor
 {
     private $adapter;
 
@@ -29,9 +32,9 @@ class LocaleBeanProcessor extends \NiceshopsDev\Bean\BeanProcessor\AbstractBeanP
         if (!$bean->hasData('Locale_Order') || $bean->getData('Locale_Order') === 0) {
             $order = 1;
             $finder = new LocaleBeanFinder($this->adapter);
-            $finder->getLoader()->addOrder('Locale_Order', true);
+            $finder->getBeanLoader()->addOrder('Locale_Order', true);
             $finder->limit(1, 0);
-            if ($finder->find() == 1) {
+            if ($finder->count() == 1) {
                 $lastBean = $finder->getBean();
                 if ($lastBean->hasData('Locale_Order')) {
                     $order = $lastBean->getData('Locale_Order') + 1;
@@ -57,5 +60,4 @@ class LocaleBeanProcessor extends \NiceshopsDev\Bean\BeanProcessor\AbstractBeanP
     {
         return true;
     }
-
 }

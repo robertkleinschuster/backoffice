@@ -1,8 +1,8 @@
 <?php
-namespace Base\Authorization\Permission;
 
+namespace Pars\Base\Authorization\Permission;
 
-use NiceshopsDev\Bean\JsonSerializable\AbstractJsonSerializableBean;
+use Niceshops\Bean\Type\JsonSerializable\AbstractJsonSerializableBean;
 
 class PermissionBean extends AbstractJsonSerializableBean
 {
@@ -11,6 +11,4 @@ class PermissionBean extends AbstractJsonSerializableBean
         $this->setDataType('UserPermission_Code', self::DATA_TYPE_STRING, true);
         $this->setDataType('UserPermission_Active', self::DATA_TYPE_BOOL, true);
     }
-
-
 }

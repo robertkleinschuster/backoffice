@@ -1,13 +1,11 @@
 <?php
 
+namespace Pars\Base\Cms\Paragraph\Type;
 
-namespace Base\Cms\Paragraph\Type;
-
-
-use Base\Database\DatabaseBeanSaver;
+use Pars\Base\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
+use Niceshops\Bean\Type\Base\BeanInterface;
+use Niceshops\Bean\Processor\AbstractBeanProcessor;
 
 class CmsParagraphTypeBeanProcessor extends AbstractBeanProcessor
 {
@@ -32,5 +30,4 @@ class CmsParagraphTypeBeanProcessor extends AbstractBeanProcessor
     {
         return true;
     }
-
 }

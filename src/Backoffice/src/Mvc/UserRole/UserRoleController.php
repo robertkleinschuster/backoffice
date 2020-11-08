@@ -1,13 +1,15 @@
 <?php
 
+namespace Pars\Backoffice\Mvc\UserRole;
 
-namespace Backoffice\Mvc\UserRole;
 
-use Backoffice\Mvc\Base\BaseController;
-use Mvc\Helper\PathHelper;
-use Mvc\View\Components\Edit\Edit;
+use Pars\Backoffice\Mvc\Base\CrudController;
+use Pars\Mvc\Helper\PathHelper;
+use Pars\Mvc\View\Components\Detail\Detail;
+use Pars\Mvc\View\Components\Edit\Edit;
+use Pars\Mvc\View\Components\Overview\Overview;
 
-class UserRoleController extends BaseController
+class UserRoleController extends CrudController
 {
     protected function initView()
     {
@@ -18,31 +20,33 @@ class UserRoleController extends BaseController
         }
     }
 
-
-    public function createAction()
+    protected function addOverviewFields(Overview $overview): void
     {
-        $edit = $this->initCreateTemplate($this->getRoleDetailRedirectPath()->getPath());
-        $bean = $this->getModel()->getFinder()->getFactory()->createBean();
-        $edit->setBean($bean);
+        // TODO: Implement addOverviewFields() method.
     }
+
+    protected function addDetailFields(Detail $detail): void
+    {
+        // TODO: Implement addDetailFields() method.
+    }
+
 
     protected function addEditFields(Edit $edit): void
     {
-        parent::addEditFields($edit);
         $edit->addSelect('UserRole_ID', 'Rolle')
             ->setSelectOptions($this->getModel()->getRoleList($this->getUser()->getPermission_List(), $this->getControllerRequest()->getViewIdMap()));
     }
 
     public function deleteAction()
     {
-        $viewId = $this->getControllerRequest()->getViewIdMap();
-        unset($viewId['UserRole_ID']);
-        $edit = $this->initDeleteTemplate($this->getRoleDetailRedirectPath()->setViewIdMap($viewId)->getPath());
-        $edit->setBean($this->getModel()->getFinder()->getBean());
+        $viewId = $this->getControllerRequest()->getId();
+        $viewId->unsetAttribute('UserRole_ID');
+        $edit = $this->initDeleteTemplate($this->getRoleDetailRedirectPath()->setId($viewId)->getPath());
+        $edit->setBean($this->getModel()->getBeanFinder()->getBean());
     }
 
     protected function getRoleDetailRedirectPath(): PathHelper
     {
-        return $this->getPathHelper()->setController('user')->setAction('detail')->setViewIdMap($this->getControllerRequest()->getViewIdMap());
+        return $this->getPathHelper()->setController('user')->setAction('detail');
     }
 }

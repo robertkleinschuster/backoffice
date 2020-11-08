@@ -1,15 +1,15 @@
 <?php
 
+namespace Pars\Base\Cms\Menu\State;
 
-namespace Base\Cms\Menu\State;
-
-
-use Base\Database\DatabaseBeanLoader;
+use Pars\Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanFactory\BeanFactoryInterface;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
-use NiceshopsDev\Bean\BeanFinder\BeanLoaderInterface;
+use Niceshops\Bean\Finder\AbstractBeanFinder;
 
+/**
+ * Class CmsMenuStateBeanFinder
+ * @package Pars\Base\Cms\Menu\State
+ */
 class CmsMenuStateBeanFinder extends AbstractBeanFinder
 {
     public function __construct(Adapter $adapter)
@@ -22,8 +22,7 @@ class CmsMenuStateBeanFinder extends AbstractBeanFinder
 
     public function setCmsMenuState_Active(bool $active): self
     {
-        $this->getLoader()->filterValue('CmsMenuState_Active', $active);
+        $this->getBeanLoader()->filterValue('CmsMenuState_Active', $active);
         return $this;
     }
-
 }

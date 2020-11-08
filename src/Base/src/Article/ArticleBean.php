@@ -1,12 +1,14 @@
 <?php
 
+namespace Pars\Base\Article;
 
-namespace Base\Article;
+use Niceshops\Bean\Type\Base\AbstractBaseBean;
 
-
-use NiceshopsDev\Bean\JsonSerializable\AbstractJsonSerializableBean;
-
-class ArticleBean extends AbstractJsonSerializableBean
+/**
+ * Class ArticleBean
+ * @package Pars\Base\Article
+ */
+class ArticleBean extends AbstractBaseBean
 {
 
     public const STATE_ACTIVE = 'active';
@@ -20,5 +22,4 @@ class ArticleBean extends AbstractJsonSerializableBean
         $this->setDataType('Article_Code', self::DATA_TYPE_STRING, true);
         $this->setDataType('ArticleTranslation_BeanList', self::DATA_TYPE_ITERABLE, true);
     }
-
 }

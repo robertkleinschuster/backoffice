@@ -1,12 +1,14 @@
 <?php
 
+namespace Pars\Base\Authorization\UserRole;
 
-namespace Base\Authorization\UserRole;
+use Pars\Base\Authorization\Permission\PermissionBeanList;
+use Niceshops\Bean\Type\JsonSerializable\AbstractJsonSerializableBean;
 
-
-use Base\Authorization\Permission\PermissionBeanList;
-use NiceshopsDev\Bean\JsonSerializable\AbstractJsonSerializableBean;
-
+/**
+ * Class UserRoleBean
+ * @package Pars\Base\Authorization\UserRole
+ */
 class UserRoleBean extends AbstractJsonSerializableBean
 {
     public function __construct()
@@ -17,16 +19,13 @@ class UserRoleBean extends AbstractJsonSerializableBean
         $this->setDataType('UserRole_Active', self::DATA_TYPE_BOOL);
         $this->setDataType('UserPermission_BeanList', self::DATA_TYPE_ITERABLE);
         $this->setData('UserPermission_BeanList', new PermissionBeanList());
-
     }
 
     /**
      * @param array $arrData
      * @return UserRoleBean|mixed
-     * @throws \NiceshopsDev\Bean\BeanException
-     * @throws \NiceshopsDev\Bean\BeanList\BeanListException
      */
-    static public function createFromArray(array $arrData)
+    public static function createFromArray(array $arrData)
     {
         $bean = parent::createFromArray($arrData);
         $permissionBeanList = new PermissionBeanList();

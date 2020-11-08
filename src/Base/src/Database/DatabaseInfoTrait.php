@@ -1,8 +1,6 @@
 <?php
 
-
-namespace Base\Database;
-
+namespace Pars\Base\Database;
 
 trait DatabaseInfoTrait
 {
@@ -74,7 +72,8 @@ trait DatabaseInfoTrait
      * @param string $table
      * @return mixed
      */
-    private function getJoinOn(string $table) {
+    private function getJoinOn(string $table)
+    {
         return $this->dbJoinInfo_Map[$table]['on'];
     }
 
@@ -87,7 +86,9 @@ trait DatabaseInfoTrait
         if (null === $table) {
             return array_keys($this->dbInfo_Map);
         } else {
-            return array_keys(array_filter($this->dbInfo_Map, function ($item) use ($table) {return $item['table'] === $table || in_array($table, $item['table_List']);}));
+            return array_keys(array_filter($this->dbInfo_Map, function ($item) use ($table) {
+                return $item['table'] === $table || in_array($table, $item['table_List']);
+            }));
         }
     }
 
@@ -105,7 +106,7 @@ trait DatabaseInfoTrait
      */
     private function getTable_List(): array
     {
-       return array_unique(array_column($this->dbInfo_Map, 'table'));
+        return array_unique(array_column($this->dbInfo_Map, 'table'));
     }
 
     /**

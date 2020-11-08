@@ -1,11 +1,13 @@
 <?php
 
+namespace Pars\Base\Authentication\User;
 
-namespace Base\Authentication\User;
+use Niceshops\Bean\Type\JsonSerializable\AbstractJsonSerializableBeanList;
 
-
-use NiceshopsDev\Bean\BeanList\JsonSerializable\AbstractJsonSerializableBeanList;
-
+/**
+ * Class UserBeanList
+ * @package Pars\Base\Authentication\User
+ */
 class UserBeanList extends AbstractJsonSerializableBeanList
 {
 

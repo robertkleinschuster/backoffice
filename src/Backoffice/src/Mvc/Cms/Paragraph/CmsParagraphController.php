@@ -1,17 +1,21 @@
 <?php
 
+namespace Pars\Backoffice\Mvc\Cms\Paragraph;
 
-namespace Backoffice\Mvc\Cms\Paragraph;
+use Pars\Backoffice\Mvc\Base\CrudController;
+use Pars\Mvc\Helper\PathHelper;
+use Pars\Mvc\Parameter\IdParameter;
+use Pars\Mvc\View\Components\Detail\Detail;
+use Pars\Mvc\View\Components\Edit\Edit;
+use Pars\Mvc\View\Components\Edit\Fields\Wysiwyg;
+use Pars\Mvc\View\Components\Overview\Overview;
 
-
-use Backoffice\Mvc\Base\BackofficeBeanFormatter;
-use Mvc\Helper\PathHelper;
-use Mvc\View\Components\Detail\Detail;
-use Mvc\View\Components\Edit\Edit;
-use Mvc\View\Components\Edit\Fields\Wysiwyg;
-use Mvc\View\Components\Overview\Overview;
-
-class CmsParagraphController extends \Backoffice\Mvc\Base\BaseController
+/**
+ * Class CmsParagraphController
+ * @package Pars\Backoffice\Mvc\Cms\Paragraph
+ * @method CmsParagraphModel getModel()
+ */
+class CmsParagraphController extends CrudController
 {
     protected function initModel()
     {
@@ -24,50 +28,15 @@ class CmsParagraphController extends \Backoffice\Mvc\Base\BaseController
         return $this->checkPermission('cmsparagraph');
     }
 
-    public function indexAction()
-    {
-        $overview = $this->initOverviewTemplate(new BackofficeBeanFormatter());
-        $overview->setBeanList($this->getModel()->getFinder()->getBeanGenerator());
-    }
-    public function detailAction()
-    {
-        $detail = $this->initDetailTemplate();
-        $detail->setBean($this->getModel()->getFinder()->getBean());
-    }
-
-    public function createAction()
-    {
-        $create = $this->initCreateTemplate();
-        $create->setBean($this->getModel()->getFinder()->getFactory()->createBean());
-        foreach ($create->getFieldList() as $item) {
-            $create->getBean()->setData($item->getKey(), $this->getControllerRequest()->getAttribute($item->getKey()));
-        }
-        $create->getBean()->setFromArray($this->getPreviousAttributes());
-    }
-
-    public function editAction()
-    {
-        $edit = $this->initEditTemplate();
-        $edit->setBean($this->getModel()->getFinder()->getBean());
-        $edit->getBean()->setFromArray($this->getPreviousAttributes());
-    }
-
-
-    public function deleteAction()
-    {
-        $delete = $this->initDeleteTemplate();
-        $delete->setBean($this->getModel()->getFinder()->getBean());
-    }
 
     protected function getDetailPath(): PathHelper
     {
-        return $this->getPathHelper()->setViewIdMap(['CmsParagraph_ID' => '{CmsParagraph_ID}']);
+        return $this->getPathHelper()->setId((new IdParameter())->addId('CmsParagraph_ID'));
     }
 
 
     protected function addOverviewFields(Overview $overview): void
     {
-        parent::addOverviewFields($overview);
         $overview->addText('Article_Code', $this->translate('article.code'))->setWidth(150);
         $overview->addText('ArticleTranslation_Name', $this->translate('articletranslation.name'));
         $overview->addText('ArticleTranslation_Code', $this->translate('articletranslation.code'));
@@ -75,7 +44,6 @@ class CmsParagraphController extends \Backoffice\Mvc\Base\BaseController
 
     protected function addDetailFields(Detail $detail): void
     {
-        parent::addDetailFields($detail);
         $detail->setCols(2);
         $detail->addText('ArticleTranslation_Title', $this->translate('articletranslation.title'))
             ->setChapter($this->translate('article.detail.content'));
@@ -113,7 +81,6 @@ class CmsParagraphController extends \Backoffice\Mvc\Base\BaseController
 
     protected function addEditFields(Edit $edit): void
     {
-        parent::addEditFields($edit);
         $edit->setCols(2);
         $edit->addText('ArticleTranslation_Title', $this->translate('articletranslation.title'))
             ->setChapter($this->translate('article.edit.content'));

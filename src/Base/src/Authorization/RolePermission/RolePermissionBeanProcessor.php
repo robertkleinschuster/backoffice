@@ -1,17 +1,19 @@
 <?php
 
+namespace Pars\Base\Authorization\RolePermission;
 
-namespace Base\Authorization\RolePermission;
-
-
-use Base\Database\DatabaseBeanSaver;
+use Pars\Base\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
-use Mvc\Helper\ValidationHelperAwareInterface;
-use Mvc\Helper\ValidationHelperAwareTrait;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanProcessor\BeanSaverInterface;
+use Niceshops\Bean\Processor\AbstractBeanProcessor;
+use Niceshops\Bean\Type\Base\BeanInterface;
+use Pars\Mvc\Helper\ValidationHelperAwareInterface;
+use Pars\Mvc\Helper\ValidationHelperAwareTrait;
 
-class RolePermissionBeanProcessor extends \NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor implements ValidationHelperAwareInterface
+/**
+ * Class RolePermissionBeanProcessor
+ * @package Pars\Base\Authorization\RolePermission
+ */
+class RolePermissionBeanProcessor extends AbstractBeanProcessor implements ValidationHelperAwareInterface
 {
     use ValidationHelperAwareTrait;
 

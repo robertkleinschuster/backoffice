@@ -1,12 +1,14 @@
 <?php
 
-
-namespace Base\Session\Cache;
-
+namespace Pars\Base\Session\Cache;
 
 use Cache\Adapter\Redis\RedisCachePool;
 use Psr\Container\ContainerInterface;
 
+/**
+ * Class RedisCachePoolFactory
+ * @package Pars\Base\Session\Cache
+ */
 class RedisCachePoolFactory
 {
     public function __invoke(ContainerInterface $container)
@@ -21,5 +23,4 @@ class RedisCachePoolFactory
         $cachePool->setLogger($container->get('Logger'));
         return $cachePool;
     }
-
 }

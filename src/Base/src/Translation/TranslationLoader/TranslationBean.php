@@ -1,12 +1,14 @@
 <?php
 
+namespace Pars\Base\Translation\TranslationLoader;
 
-namespace Base\Translation\TranslationLoader;
+use Niceshops\Bean\Type\Base\AbstractBaseBean;
 
-
-use NiceshopsDev\Bean\JsonSerializable\AbstractJsonSerializableBean;
-
-class TranslationBean extends AbstractJsonSerializableBean
+/**
+ * Class TranslationBean
+ * @package Pars\Base\Translation\TranslationLoader
+ */
+class TranslationBean extends AbstractBaseBean
 {
     public function __construct()
     {
@@ -17,5 +19,4 @@ class TranslationBean extends AbstractJsonSerializableBean
         $this->setDataType('Translation_Text', self::DATA_TYPE_STRING, true);
         $this->setData('Translation_Namespace', 'default');
     }
-
 }

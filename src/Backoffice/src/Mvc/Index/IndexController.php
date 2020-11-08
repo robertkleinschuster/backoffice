@@ -1,10 +1,8 @@
 <?php
 
+namespace Pars\Backoffice\Mvc\Index;
 
-namespace Backoffice\Mvc\Index;
-
-
-use Backoffice\Mvc\Base\BaseController;
+use Pars\Backoffice\Mvc\Base\BaseController;
 
 class IndexController extends BaseController
 {
@@ -13,5 +11,4 @@ class IndexController extends BaseController
         $this->getView()->setHeading($this->translate('index.title'));
         $this->getControllerResponse()->setRedirect($this->getPathHelper()->setController('cmsmenu')->getPath());
     }
-
 }

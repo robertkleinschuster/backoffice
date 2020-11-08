@@ -1,24 +1,23 @@
 <?php
 
-namespace Base\Cms\Post;
+namespace Pars\Base\Cms\Post;
 
-use Base\Article\Translation\ArticleTranslationBeanFinder;
-use Base\Database\DatabaseBeanLoader;
+use Pars\Base\Article\Translation\ArticleTranslationBeanFinder;
+use Pars\Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Join;
-use Laminas\Db\Sql\Predicate\Expression;
+
 
 /**
  * Class CmsSiteBeanFinder
- * @package Base\Cms\Site
- * @method DatabaseBeanLoader getLoader() : BeanLoaderInterface
+ * @package Pars\Base\Cms\Site
+ * @method DatabaseBeanLoader getBeanLoader() : BeanLoaderInterface
  */
 class CmsPostBeanFinder extends ArticleTranslationBeanFinder
 {
     public function __construct(Adapter $adapter)
     {
         parent::__construct($adapter, new CmsPostBeanFactory());
-        $loader = $this->getLoader();
+        $loader = $this->getBeanLoader();
         if ($loader instanceof DatabaseBeanLoader) {
             $loader->addColumn('CmsPost_ID', 'CmsPost_ID', 'CmsPost', 'CmsPost_ID', true);
             $loader->addColumn('CmsPostType_Code', 'CmsPostType_Code', 'CmsPost', 'CmsPost_ID');
@@ -36,7 +35,7 @@ class CmsPostBeanFinder extends ArticleTranslationBeanFinder
      */
     public function setArticleTranslation_Code(string $code): self
     {
-        $this->getLoader()->filterValue('ArticleTranslation_Code', $code);
+        $this->getBeanLoader()->filterValue('ArticleTranslation_Code', $code);
         return $this;
     }
 }

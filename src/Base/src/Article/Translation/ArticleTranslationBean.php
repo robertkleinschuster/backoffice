@@ -1,11 +1,13 @@
 <?php
 
+namespace Pars\Base\Article\Translation;
 
-namespace Base\Article\Translation;
+use Pars\Base\Article\ArticleBean;
 
-
-use Base\Article\ArticleBean;
-
+/**
+ * Class ArticleTranslationBean
+ * @package Pars\Base\Article\Translation
+ */
 class ArticleTranslationBean extends ArticleBean
 {
 

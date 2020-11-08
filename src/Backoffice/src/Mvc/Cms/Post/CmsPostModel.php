@@ -1,32 +1,28 @@
 <?php
 
+namespace Pars\Backoffice\Mvc\Cms\Post;
 
-namespace Backoffice\Mvc\Cms\Post;
+use Pars\Backoffice\Mvc\Base\CrudModel;
+use Pars\Base\Cms\Post\State\CmsPostStateBeanFinder;
+use Pars\Base\Cms\Post\Type\CmsPostTypeBeanFinder;
+use Pars\Base\Cms\Post\CmsPostBeanFinder;
+use Pars\Base\Cms\Post\CmsPostBeanProcessor;
 
-
-use Backoffice\Mvc\Base\BaseModel;
-use Base\Cms\Post\State\CmsPostStateBeanFinder;
-use Base\Cms\Post\Type\CmsPostTypeBeanFinder;
-use Base\Cms\Post\CmsPostBeanFinder;
-use Base\Cms\Post\CmsPostBeanProcessor;
-
-class CmsPostModel extends BaseModel
+class CmsPostModel extends CrudModel
 {
-    public function init()
+    public function initialize()
     {
-        $this->setFinder(new CmsPostBeanFinder($this->getDbAdpater()));
-        $this->setProcessor(new CmsPostBeanProcessor($this->getDbAdpater()));
-        $this->getFinder()->setLocale_Code($this->getTranslator()->getLocale());
+        $this->setBeanFinder(new CmsPostBeanFinder($this->getDbAdpater()));
+        $this->setBeanProcessor(new CmsPostBeanProcessor($this->getDbAdpater()));
+        $this->getBeanFinder()->setLocale_Code($this->getTranslator()->getLocale());
     }
-
 
     public function getCmsPostType_Options(): array
     {
         $options = [];
         $finder = new CmsPostTypeBeanFinder($this->getDbAdpater());
         $finder->setCmsPostType_Active(true);
-        $finder->find();
-        foreach ($finder->getBeanGenerator() as $bean) {
+        foreach ($finder->getBeanListDecorator() as $bean) {
             $options[$bean->getData('CmsPostType_Code')] = $bean->getData('CmsPostType_Code');
         }
         return $options;
@@ -37,11 +33,9 @@ class CmsPostModel extends BaseModel
         $options = [];
         $finder = new CmsPostStateBeanFinder($this->getDbAdpater());
         $finder->setCmsPostState_Active(true);
-        $finder->find();
-        foreach ($finder->getBeanGenerator() as $bean) {
+        foreach ($finder->getBeanListDecorator() as $bean) {
             $options[$bean->getData('CmsPostState_Code')] = $bean->getData('CmsPostState_Code');
         }
         return $options;
     }
-
 }

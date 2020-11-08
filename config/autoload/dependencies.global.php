@@ -2,17 +2,20 @@
 
 declare(strict_types=1);
 
-use Base\Authentication\AuthenticationMiddleware;
-use Base\Authentication\AuthenticationMiddlewareFactory;
-use Base\Authentication\User\UserBeanFactory;
-use Base\Authentication\UserRepositoryFactory;
-use Base\Database\DatabaseMiddleware;
-use Base\Database\DatabaseMiddlewareFactory;
-use Base\Localization\LocalizationMiddleware;
-use Base\Logging\LoggingErrorListenerDelegatorFactory;
-use Base\Session\Cache\MemcachedCachePoolFactory;
-use Base\Translation\TranslatorMiddleware;
-use Base\Translation\TranslatorMiddlewareFactory;
+use Pars\Base\Database\DatabaseMiddlewareFactory;
+use Pars\Base\Authentication\AuthenticationMiddleware;
+use Pars\Base\Authentication\AuthenticationMiddlewareFactory;
+use Pars\Base\Authentication\User\UserBeanFactory;
+use Pars\Base\Authentication\UserRepositoryFactory;
+use Pars\Base\Database\DatabaseMiddleware;
+use Pars\Base\Localization\LocalizationMiddleware;
+use Pars\Base\Localization\LocalizationMiddlewareFactory;
+use Pars\Base\Logging\LoggingErrorListenerDelegatorFactory;
+use Pars\Base\Logging\LoggingMiddleware;
+use Pars\Base\Logging\LoggingMiddlewareFactory;
+use Pars\Base\Session\Cache\FilesystemCachePoolFactory;
+use Pars\Base\Translation\TranslatorMiddleware;
+use Pars\Base\Translation\TranslatorMiddlewareFactory;
 use Laminas\Stratigility\Middleware\ErrorHandler;
 use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\Session\PhpSession;
@@ -30,14 +33,14 @@ return [
         'invokables' => [
         ],
         'factories' => [
-            'SessionCache' => \Base\Session\Cache\FilesystemCachePoolFactory::class,
+            'SessionCache' => FilesystemCachePoolFactory::class,
             AuthenticationMiddleware::class => AuthenticationMiddlewareFactory::class,
             UserRepositoryInterface::class => UserRepositoryFactory::class,
             UserInterface::class => UserBeanFactory::class,
             DatabaseMiddleware::class => DatabaseMiddlewareFactory::class,
             TranslatorMiddleware::class => TranslatorMiddlewareFactory::class,
-            \Base\Logging\LoggingMiddleware::class => \Base\Logging\LoggingMiddlewareFactory::class,
-            LocalizationMiddleware::class => \Base\Localization\LocalizationMiddlewareFactory::class,
+            LoggingMiddleware::class => LoggingMiddlewareFactory::class,
+            LocalizationMiddleware::class => LocalizationMiddlewareFactory::class,
         ],
         'delegators' => [
             ErrorHandler::class => [

@@ -1,14 +1,16 @@
 <?php
 
+namespace Pars\Base\Article;
 
-namespace Base\Article;
-
-
-use Base\Database\DatabaseBeanLoader;
+use Pars\Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanFactory\BeanFactoryInterface;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
+use Niceshops\Bean\Factory\BeanFactoryInterface;
+use Niceshops\Bean\Finder\AbstractBeanFinder;
 
+/**
+ * Class ArticleBeanFinder
+ * @package Pars\Base\Article
+ */
 class ArticleBeanFinder extends AbstractBeanFinder
 {
     public function __construct(Adapter $adapter, BeanFactoryInterface $beanFactory = null)
@@ -25,7 +27,7 @@ class ArticleBeanFinder extends AbstractBeanFinder
      */
     public function setArticle_Code(string $articleCode): self
     {
-        $this->getLoader()->filterValue('Article_Code', $articleCode);
+        $this->getBeanLoader()->filterValue('Article_Code', $articleCode);
         return $this;
     }
     /**
@@ -37,11 +39,10 @@ class ArticleBeanFinder extends AbstractBeanFinder
     public function setArticle_ID(int $article_id, bool $exclude = false): self
     {
         if ($exclude) {
-            $this->getLoader()->excludeValue('Article_ID', $article_id);
+            $this->getBeanLoader()->excludeValue('Article_ID', $article_id);
         } else {
-            $this->getLoader()->filterValue('Article_ID', $article_id);
+            $this->getBeanLoader()->filterValue('Article_ID', $article_id);
         }
         return $this;
     }
-
 }

@@ -1,42 +1,22 @@
 <?php
 
+namespace Pars\Base\Authentication\UserState;
 
-namespace Base\Authentication\UserState;
-
-use Base\Authorization\UserRole\UserRoleBeanList;
-use Mezzio\Authentication\UserInterface;
-use NiceshopsDev\Bean\BeanFactory\BeanFactoryInterface;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanList\BeanListInterface;
-use NiceshopsDev\NiceCore\Attribute\AttributeTrait;
-use NiceshopsDev\NiceCore\Option\OptionTrait;
-use Psr\Container\ContainerInterface;
+use Niceshops\Bean\Factory\AbstractBeanFactory;
 
 /**
  * Class UserBeanFactory
- * @package Base\Authentication\User
+ * @package Pars\Base\Authentication\User
  */
-class UserStateBeanFactory implements BeanFactoryInterface
+class UserStateBeanFactory extends AbstractBeanFactory
 {
-    use OptionTrait;
-    use AttributeTrait;
-
-
-    /**
-     * @return UserBean
-     */
-    public function createBean(): BeanInterface
+    protected function getBeanClass(array $data): string
     {
-        return new UserStateBean();
+        return UserStateBean::class;
     }
 
-    /**
-     * @return UserBeanList
-     */
-    public function createBeanList(): BeanListInterface
+    protected function getBeanListClass(): string
     {
-        return new UserStateBeanList();
+        return UserStateBeanList::class;
     }
-
-
 }

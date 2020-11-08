@@ -1,13 +1,16 @@
 <?php
 
+namespace Pars\Base\Authorization\RolePermission;
 
-namespace Base\Authorization\RolePermission;
-
-
-use Base\Database\DatabaseBeanLoader;
+use Pars\Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
+use Niceshops\Bean\Finder\AbstractBeanFinder;
 
-class RolePermissionBeanFinder extends \NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder
+/**
+ * Class RolePermissionBeanFinder
+ * @package Pars\Base\Authorization\RolePermission
+ */
+class RolePermissionBeanFinder extends AbstractBeanFinder
 {
 
     public function __construct(Adapter $adapter)
@@ -24,27 +27,30 @@ class RolePermissionBeanFinder extends \NiceshopsDev\Bean\BeanFinder\AbstractBea
      * @param string $userPermission_code
      * @return $this
      */
-    public function setUserPersmission_Code(string $userPermission_code): self {
-        $this->getLoader()->filterValue('UserPermission_Code', $userPermission_code);
+    public function setUserPersmission_Code(string $userPermission_code): self
+    {
+        $this->getBeanLoader()->filterValue('UserPermission_Code', $userPermission_code);
         return $this;
     }
 
     /**
-     * @param string $userRole_id
+     * @param int $userRole_id
      * @return $this
      */
-    public function setUserRole_ID(int $userRole_id): self {
-        $this->getLoader()->filterValue('UserRole_ID', $userRole_id);
+    public function setUserRole_ID(int $userRole_id): self
+    {
+        $this->getBeanLoader()->filterValue('UserRole_ID', $userRole_id);
         return $this;
     }
 
 
     /**
-     * @param string $userPermission_active
+     * @param bool $userPermission_active
      * @return $this
      */
-    public function setUserPermission_Active(bool $userPermission_active): self {
-        $this->getLoader()->filterValue('UserPermission_Active', $userPermission_active);
+    public function setUserPermission_Active(bool $userPermission_active): self
+    {
+        $this->getBeanLoader()->filterValue('UserPermission_Active', $userPermission_active);
         return $this;
     }
 }

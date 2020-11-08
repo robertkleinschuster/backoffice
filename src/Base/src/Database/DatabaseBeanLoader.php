@@ -1,8 +1,6 @@
 <?php
 
-
-namespace Base\Database;
-
+namespace Pars\Base\Database;
 
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterAwareInterface;
@@ -10,22 +8,17 @@ use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\Db\Adapter\Driver\StatementInterface;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Expression;
-use Laminas\Db\Sql\Join;
 use Laminas\Db\Sql\Predicate\Like;
 use Laminas\Db\Sql\Predicate\Predicate;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
-use Laminas\Db\Sql\Where;
-use NiceshopsDev\Bean\BeanException;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanLoader;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\NiceCore\Attribute\AttributeTrait;
-use NiceshopsDev\NiceCore\Option\OptionTrait;
+use Niceshops\Bean\Finder\BeanFinderInterface;
+use Niceshops\Bean\Loader\AbstractBeanLoader;
+use Niceshops\Bean\Type\Base\BeanInterface;
+use Niceshops\Core\Exception\DatabaseException;
 
 class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInterface
 {
-    use OptionTrait;
-    use AttributeTrait;
     use AdapterAwareTrait;
     use DatabaseInfoTrait;
 
@@ -304,13 +297,25 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
         return $result->current()['COUNT'] ?? 0;
     }
 
-    /**
-     * @return int
-     */
-    public function find(): int
+    protected function init(): int
     {
         return $this->getResult()->count();
     }
+
+    protected function load(): ?array
+    {
+        if ($this->result === null) {
+            throw new DatabaseException('Could not fetch data. Run find first.');
+        }
+        if ($this->result->key() < $this->result->count() - 1) {
+            $ret = $this->result->current();
+            $this->result->next();
+            return $ret;
+        }
+        return null;
+    }
+
+
 
     /**
      * @param bool $limit
@@ -325,42 +330,19 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
     }
 
     /**
-     * @return bool
-     */
-    public function fetch(): bool
-    {
-        if ($this->result === null) {
-            throw new BeanException('Could not fetch data. Run find first.');
-        }
-        if ($this->result->key() < $this->result->count() - 1) {
-            $this->result->next();
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * @return array
-     */
-    public function data(): array
-    {
-        return $this->result->current();
-    }
-
-    /**
      * @param BeanInterface $bean
+     * @param array $data
      * @return BeanInterface
      * @throws \Exception
      */
-    public function initializeBeanWithData(BeanInterface $bean): BeanInterface
+    public function initializeBeanWithData(BeanInterface $bean, array $data): BeanInterface
     {
-        $parser = new DatabaseBeanParser();
-        $data = $this->data();
+        $converter = new DatabaseBeanConverter();
         $beanData = [];
         foreach ($this->getField_List() as $field) {
             $beanData[$field] = $data["{$this->getTable($field)}.{$this->getColumn($field)}"];
         }
-        return $parser->parse($beanData, $bean)->toBean();
+        return $converter->convert($bean, $beanData)->toBean();
     }
 
 
@@ -397,7 +379,6 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
         foreach ($this->order_Map as $field => $order) {
             $select->order("{$this->getTable($field)}.{$this->getColumn($field)} $order");
         }
-        $select->order($this->order_Map);
     }
 
     /**
@@ -434,7 +415,7 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
         $column = $this->getColumn($field);
         $table = $this->getTable($field);
         $tableColumn = "$table.$column";
-        $select->columns([$tableColumn => $tableColumn],false);
+        $select->columns([$tableColumn => $tableColumn], false);
         $result = $this->getPreparedStatement($select)->execute();
         $ret = [];
         foreach ($result as $row) {
@@ -450,5 +431,43 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
     {
         return $this->adapter->getProfiler()->getLastProfile()['sql'];
     }
+
+    public function search(string $search, array $field_List = null)
+    {
+        $this->addLike($search, ...$field_List);
+        return $this;
+    }
+
+    public function order(array $field_List)
+    {
+        foreach ($field_List as $field => $mode) {
+            if ($mode == BeanFinderInterface::ORDER_MODE_ASC) {
+                $this->addOrder($field);
+            }
+            if ($mode == BeanFinderInterface::ORDER_MODE_DESC) {
+                $this->addOrder($field, true);
+            }
+        }
+    }
+
+    public function filter(array $data_Map, string $mode)
+    {
+        foreach ($data_Map as $field => $values) {
+            if ($mode == BeanFinderInterface::FILTER_MODE_AND) {
+                $this->filterValue($field, $values);
+            }
+            if ($mode == BeanFinderInterface::FILTER_MODE_OR) {
+                $this->filterValue($field, $values, Predicate::OP_OR);
+            }
+        }
+    }
+
+    public function exclude(array $data_Map)
+    {
+        foreach ($data_Map as $field => $value) {
+            $this->excludeValue($field, $value);
+        }
+    }
+
 
 }

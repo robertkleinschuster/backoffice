@@ -1,25 +1,29 @@
 <?php
 
+namespace Pars\Base\Authentication\User;
 
-namespace Base\Authentication\User;
-
-
-use Base\Authorization\UserRole\UserRoleBeanFinder;
-use Base\Database\DatabaseBeanLoader;
+use Pars\Base\Authorization\UserRole\UserRoleBeanFinder;
+use Pars\Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
+use Laminas\I18n\Translator\TranslatorAwareInterface;
+use Laminas\I18n\Translator\TranslatorAwareTrait;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepositoryInterface;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
+use Niceshops\Bean\Finder\AbstractBeanFinder;
+use Pars\Mvc\Helper\ValidationHelperAwareInterface;
+use Pars\Mvc\Helper\ValidationHelperAwareTrait;
 
 /**
  * Class UserBeanFinder
- * @package Base\Authentication\User
- * @method UserBean getBean() : BeanInterface
- * @method UserBeanList getBeanList() : BeanListInterface
- * @method DatabaseBeanLoader getLoader() : BeanLoaderInterface
+ * @package Pars\Base\Authentication\User
  */
-class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterface
+class UserBeanFinder extends AbstractBeanFinder implements
+    UserRepositoryInterface,
+    ValidationHelperAwareInterface,
+    TranslatorAwareInterface
 {
+    use ValidationHelperAwareTrait;
+    use TranslatorAwareTrait;
 
     /**
      * @var Adapter
@@ -45,40 +49,54 @@ class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterfa
         parent::__construct($loader, new UserBeanFactory());
         $userRoleFinder = new UserRoleBeanFinder($adapter);
         $userRoleFinder->setUserRole_Active(true);
-        $this->linkBeanFinder($userRoleFinder, 'UserRole_BeanList', 'Person_ID', 'Person_ID');
+        $this->addLinkedFinder($userRoleFinder, 'UserRole_BeanList', 'Person_ID', 'Person_ID');
     }
 
     /**
      * @param string $credential
      * @param string|null $password
      * @return UserInterface|null
-     * @throws \NiceshopsDev\Bean\BeanException
      */
     public function authenticate(string $credential, string $password = null): ?UserInterface
     {
         $this->setUser_Username($credential);
         $this->setUserState_Code(UserBean::STATE_ACTIVE);
-        if ($this->find()) {
+        if ($this->count() === 1) {
             $bean = $this->getBean(true);
             if (password_verify($password, $bean->getData('User_Password'))) {
                 return $bean;
+            } else {
+                $this->getValidationHelper()->addError('User_Password', $this->translate('user.password.invalid'));
             }
+        } else {
+            $this->getValidationHelper()->addError('User_Username', $this->translate('user.username.invalid'));
         }
         return null;
+    }
+
+    /**
+     * @param string $message
+     * @return string
+     */
+    protected function translate(string $message)
+    {
+        if ($this->hasTranslator()) {
+            return $this->getTranslator()->translate($message, 'validation');
+        }
+        return $message;
     }
 
     /**
      * @param int $person_id
      * @param bool $exclude
      * @return $this
-     * @throws \Exception
      */
     public function setPerson_ID(int $person_id, bool $exclude = false): self
     {
         if ($exclude) {
-            $this->getLoader()->excludeValue('Person_ID', $person_id);
+            $this->getBeanLoader()->excludeValue('Person_ID', $person_id);
         } else {
-            $this->getLoader()->filterValue('Person_ID', $person_id);
+            $this->getBeanLoader()->filterValue('Person_ID', $person_id);
         }
         return $this;
     }
@@ -86,11 +104,10 @@ class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterfa
     /**
      * @param string $user_username
      * @return $this
-     * @throws \Exception
      */
     public function setUser_Username(string $user_username): self
     {
-        $this->getLoader()->filterValue('User_Username', $user_username);
+        $this->getBeanLoader()->filterValue('User_Username', $user_username);
         return $this;
     }
 
@@ -98,12 +115,10 @@ class UserBeanFinder extends AbstractBeanFinder implements UserRepositoryInterfa
     /**
      * @param string $userState_Code
      * @return $this
-     * @throws \Exception
      */
     public function setUserState_Code(string $userState_Code): self
     {
-        $this->getLoader()->filterValue('UserState_Code', $userState_Code);
+        $this->getBeanLoader()->filterValue('UserState_Code', $userState_Code);
         return $this;
     }
-
 }

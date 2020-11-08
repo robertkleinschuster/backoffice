@@ -1,10 +1,14 @@
 <?php
 
+namespace Pars\Base\Authorization\RolePermission;
 
-namespace Base\Authorization\RolePermission;
+use Niceshops\Bean\Type\JsonSerializable\AbstractJsonSerializableBean;
 
-
-class RolePermissionBean extends \NiceshopsDev\Bean\JsonSerializable\AbstractJsonSerializableBean
+/**
+ * Class RolePermissionBean
+ * @package Pars\Base\Authorization\RolePermission
+ */
+class RolePermissionBean extends AbstractJsonSerializableBean
 {
     public function __construct()
     {
@@ -12,5 +16,4 @@ class RolePermissionBean extends \NiceshopsDev\Bean\JsonSerializable\AbstractJso
         $this->setDataType('UserPermission_Code', self::DATA_TYPE_STRING);
         $this->setDataType('UserPermission_Active', self::DATA_TYPE_BOOL);
     }
-
 }

@@ -1,11 +1,13 @@
 <?php
 
-
-namespace Base\Logging;
-
+namespace Pars\Base\Logging;
 
 use Psr\Container\ContainerInterface;
 
+/**
+ * Class LoggingMiddlewareFactory
+ * @package Pars\Base\Logging
+ */
 class LoggingMiddlewareFactory
 {
 
@@ -17,5 +19,4 @@ class LoggingMiddlewareFactory
     {
         return new LoggingMiddleware($container->get('Logger'));
     }
-
 }

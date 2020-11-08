@@ -1,12 +1,10 @@
 <?php
 
+namespace Pars\Base\Cms\SiteParagraph;
 
-namespace Base\Cms\SiteParagraph;
-
-
-use Base\Database\DatabaseBeanLoader;
+use Niceshops\Bean\Finder\AbstractBeanFinder;
+use Pars\Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
 
 class CmsSiteParagraphBeanFinder extends AbstractBeanFinder
 {
@@ -38,7 +36,7 @@ class CmsSiteParagraphBeanFinder extends AbstractBeanFinder
      */
     public function setLocale_Code(string $locale_Code): self
     {
-        $this->getLoader()->filterValue('Locale_Code', $locale_Code);
+        $this->getBeanLoader()->filterValue('Locale_Code', $locale_Code);
         return $this;
     }
 
@@ -47,14 +45,14 @@ class CmsSiteParagraphBeanFinder extends AbstractBeanFinder
      */
     public function setCmsSite_CmsParagraph_Order(int $order): self
     {
-        $this->getLoader()->filterValue('CmsSite_CmsParagraph_Order', $order);
+        $this->getBeanLoader()->filterValue('CmsSite_CmsParagraph_Order', $order);
         return $this;
     }
 
 
     public function setCmsSite_ID(int $cmsSite_Id): self
     {
-        $this->getLoader()->filterValue('CmsSite_ID', $cmsSite_Id);
+        $this->getBeanLoader()->filterValue('CmsSite_ID', $cmsSite_Id);
         return $this;
     }
 }

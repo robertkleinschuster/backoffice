@@ -1,7 +1,6 @@
 <?php
 
-namespace Base\Database\Updater;
-
+namespace Pars\Base\Database\Updater;
 
 use Laminas\Db\Sql\Ddl\Column\Boolean;
 use Laminas\Db\Sql\Ddl\Column\Integer;
@@ -140,7 +139,6 @@ class SchemaUpdater extends AbstractUpdater
         $this->addDefaultColumnsToTable($table);
 
         return $this->query($table);
-
     }
 
     public function updateTableUserPermission()
@@ -173,7 +171,8 @@ class SchemaUpdater extends AbstractUpdater
     {
         $table = $this->getTableStatement('Translation');
         $this->addColumnToTable($table, new Integer('Translation_ID'))
-            ->setOption('AUTO_INCREMENT', true);;
+            ->setOption('AUTO_INCREMENT', true);
+        ;
         $this->addColumnToTable($table, new Varchar('Translation_Code', 255));
         $this->addColumnToTable($table, new Varchar('Locale_Code', 255));
         $this->addColumnToTable($table, new Varchar('Translation_Namespace', 255));
@@ -388,5 +387,4 @@ class SchemaUpdater extends AbstractUpdater
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);
     }
-
 }

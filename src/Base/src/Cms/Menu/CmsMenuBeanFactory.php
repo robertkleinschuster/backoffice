@@ -1,23 +1,28 @@
 <?php
 
+namespace Pars\Base\Cms\Menu;
 
-namespace Base\Cms\Menu;
 
 
-use NiceshopsDev\Bean\BeanFactory\AbstractBeanFactory;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanList\BeanListInterface;
+use Niceshops\Bean\Factory\AbstractBeanFactory;
 
+/**
+ * Class CmsMenuBeanFactory
+ * @package Pars\Base\Cms\Menu
+ */
 class CmsMenuBeanFactory extends AbstractBeanFactory
 {
-    public function createBean(): BeanInterface
+
+
+    protected function getBeanClass(array $data): string
     {
-        return new CmsMenuBean();
+       return CmsMenuBean::class;
     }
 
-    public function createBeanList(): BeanListInterface
+    protected function getBeanListClass(): string
     {
-        return new CmsMenuBeanList();
+        return CmsMenuBeanList::class;
     }
+
 
 }

@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-use Base\Authentication\AuthenticationMiddleware;
-use Base\Database\DatabaseMiddleware;
-use Base\Localization\LocalizationMiddleware;
+use Pars\Base\Authentication\AuthenticationMiddleware;
 use Mezzio\Application;
 use Mezzio\MiddlewareFactory;
-use Mvc\Handler\MvcHandler;
+use Pars\Frontend\Handler\Cms\CmsHandler;
+use Pars\Mvc\Handler\MvcHandler;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -40,6 +39,7 @@ use Psr\Container\ContainerInterface;
  *     'contact'
  * );
  */
+
 return static function (Application $app, MiddlewareFactory $factory, ContainerInterface $container): void {
 
 
@@ -48,6 +48,6 @@ return static function (Application $app, MiddlewareFactory $factory, ContainerI
         MvcHandler::class
     ], 'backoffice');
     $app->any('[/[{locale}[/[{code}]]]]', [
-        \Frontend\Handler\Cms\CmsHandler::class
+        CmsHandler::class
     ]);
 };

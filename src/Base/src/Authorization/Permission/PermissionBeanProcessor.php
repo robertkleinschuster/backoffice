@@ -1,15 +1,13 @@
 <?php
 
+namespace Pars\Base\Authorization\Permission;
 
-namespace Base\Authorization\Permission;
-
-
-use Base\Database\DatabaseBeanSaver;
+use Pars\Base\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
-use Mvc\Helper\ValidationHelperAwareInterface;
-use Mvc\Helper\ValidationHelperAwareTrait;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
+use Niceshops\Bean\Processor\AbstractBeanProcessor;
+use Niceshops\Bean\Type\Base\BeanInterface;
+use Pars\Mvc\Helper\ValidationHelperAwareInterface;
+use Pars\Mvc\Helper\ValidationHelperAwareTrait;
 
 class PermissionBeanProcessor extends AbstractBeanProcessor implements ValidationHelperAwareInterface
 {
@@ -37,5 +35,4 @@ class PermissionBeanProcessor extends AbstractBeanProcessor implements Validatio
     {
         return true;
     }
-
 }

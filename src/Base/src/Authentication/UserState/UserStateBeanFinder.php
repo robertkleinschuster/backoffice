@@ -1,19 +1,14 @@
 <?php
 
+namespace Pars\Base\Authentication\UserState;
 
-namespace Base\Authentication\UserState;
-
-
-use Base\Database\DatabaseBeanLoader;
+use Pars\Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
+use Niceshops\Bean\Finder\AbstractBeanFinder;
 
 /**
  * Class UserBeanFinder
- * @package Base\Authentication\User
- * @method UserStateBean getBean() : BeanInterface
- * @method UserStateBeanList getBeanList() : BeanListInterface
- * @method DatabaseBeanLoader getLoader() : BeanLoaderInterface
+ * @package Pars\Base\Authentication\User
  */
 class UserStateBeanFinder extends AbstractBeanFinder
 {
@@ -34,7 +29,5 @@ class UserStateBeanFinder extends AbstractBeanFinder
         $loader->addColumn('UserState_Code', 'UserState_Code', 'UserState', 'UserState_Code', true);
         $loader->addColumn('UserState_Active', 'UserState_Active', 'UserState', 'UserState_Code');
         parent::__construct($loader, new UserStateBeanFactory());
-
     }
-
 }

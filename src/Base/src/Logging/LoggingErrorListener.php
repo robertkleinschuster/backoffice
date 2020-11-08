@@ -1,14 +1,16 @@
 <?php
 
-
-namespace Base\Logging;
-
+namespace Pars\Base\Logging;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
+/**
+ * Class LoggingErrorListener
+ * @package Pars\Base\Logging
+ */
 class LoggingErrorListener
 {
     /**

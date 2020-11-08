@@ -1,13 +1,15 @@
 <?php
 
+namespace Pars\Base\File\Type;
 
-namespace Base\File\Type;
-
-
-use Base\Database\DatabaseBeanLoader;
+use Pars\Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
+use Niceshops\Bean\Finder\AbstractBeanFinder;
 
+/**
+ * Class FileTypeBeanFinder
+ * @package Pars\Base\File\Type
+ */
 class FileTypeBeanFinder extends AbstractBeanFinder
 {
     public function __construct(Adapter $adapter)
@@ -22,13 +24,13 @@ class FileTypeBeanFinder extends AbstractBeanFinder
 
     public function setFileType_Active(bool $active): self
     {
-        $this->getLoader()->filterValue('FileType_Active', $active);
+        $this->getBeanLoader()->filterValue('FileType_Active', $active);
         return $this;
     }
 
     public function setFileType_Code(string $code): self
     {
-        $this->getLoader()->filterValue('FileType_Code', $code);
+        $this->getBeanLoader()->filterValue('FileType_Code', $code);
         return $this;
     }
 }

@@ -1,15 +1,15 @@
 <?php
 
+namespace Pars\Base\Cms\Paragraph\State;
 
-namespace Base\Cms\Paragraph\State;
-
-
-use Base\Database\DatabaseBeanLoader;
+use Niceshops\Bean\Finder\AbstractBeanFinder;
+use Pars\Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanFactory\BeanFactoryInterface;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
-use NiceshopsDev\Bean\BeanFinder\BeanLoaderInterface;
 
+/**
+ * Class CmsParagraphStateBeanFinder
+ * @package Pars\Base\Cms\Paragraph\State
+ */
 class CmsParagraphStateBeanFinder extends AbstractBeanFinder
 {
     public function __construct(Adapter $adapter)
@@ -22,8 +22,7 @@ class CmsParagraphStateBeanFinder extends AbstractBeanFinder
 
     public function setCmsParagraphState_Active(bool $active): self
     {
-        $this->getLoader()->filterValue('CmsParagraphState_Active', $active);
+        $this->getBeanLoader()->filterValue('CmsParagraphState_Active', $active);
         return $this;
     }
-
 }

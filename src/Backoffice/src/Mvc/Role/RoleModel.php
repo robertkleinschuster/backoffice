@@ -1,26 +1,23 @@
 <?php
 
+namespace Pars\Backoffice\Mvc\Role;
 
-namespace Backoffice\Mvc\Role;
-
-
-use Base\Authorization\Role\RoleBeanFinder;
-use Base\Authorization\Role\RoleBeanProcessor;
-use Backoffice\Mvc\Base\BaseModel;
+use Pars\Backoffice\Mvc\Base\CrudModel;
+use Pars\Base\Authorization\Role\RoleBeanFinder;
+use Pars\Base\Authorization\Role\RoleBeanProcessor;
 
 /**
  * Class UserRoleModel
- * @package Backoffice\Mvc\Model
- * @method RoleBeanFinder getFinder() : BeanFinderInterface
+ * @package Pars\Backoffice\Mvc\Model
+ * @method RoleBeanFinder getBeanFinder() : BeanFinderInterface
  * @method RoleBeanProcessor getProcessor() : BeanProcessorInterface
  */
-class RoleModel extends BaseModel
+class RoleModel extends CrudModel
 {
 
-    public function init()
+    public function initialize()
     {
-        $this->setFinder(new RoleBeanFinder($this->adapter));
-        $this->setProcessor(new RoleBeanProcessor($this->adapter));
+        $this->setBeanFinder(new RoleBeanFinder($this->adapter));
+        $this->setBeanProcessor(new RoleBeanProcessor($this->adapter));
     }
-
 }

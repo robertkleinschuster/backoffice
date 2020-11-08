@@ -1,23 +1,22 @@
 <?php
 
+namespace Pars\Base\Article\Translation;
 
-namespace Base\Article\Translation;
+use Niceshops\Bean\Factory\AbstractBeanFactory;
 
-
-use NiceshopsDev\Bean\BeanFactory\AbstractBeanFactory;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanList\BeanListInterface;
-
+/**
+ * Class ArticleTranslationBeanFactory
+ * @package Pars\Base\Article\Translation
+ */
 class ArticleTranslationBeanFactory extends AbstractBeanFactory
 {
-    public function createBean(): BeanInterface
+    protected function getBeanClass(array $data): string
     {
-        return new ArticleTranslationBean();
+        return ArticleTranslationBean::class;
     }
 
-    public function createBeanList(): BeanListInterface
+    protected function getBeanListClass(): string
     {
-        return new ArticleTranslationBeanList();
+        return ArticleTranslationBeanList::class;
     }
-
 }

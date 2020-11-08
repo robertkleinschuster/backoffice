@@ -1,28 +1,20 @@
 <?php
 
+namespace Pars\Base\Authorization\Permission;
 
-namespace Base\Authorization\Permission;
+use Niceshops\Bean\Factory\AbstractBeanFactory;
 
-
-use NiceshopsDev\Bean\BeanFactory\BeanFactoryInterface;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanList\BeanListInterface;
-use NiceshopsDev\NiceCore\Attribute\AttributeTrait;
-use NiceshopsDev\NiceCore\Option\OptionTrait;
-
-class PermissionBeanFactory implements BeanFactoryInterface
+class PermissionBeanFactory extends AbstractBeanFactory
 {
-    use OptionTrait;
-    use AttributeTrait;
 
-    public function createBean(): BeanInterface
+
+    protected function getBeanClass(array $data): string
     {
-        return new PermissionBean();
+        return PermissionBean::class;
     }
 
-    public function createBeanList(): BeanListInterface
+    protected function getBeanListClass(): string
     {
-       return new PermissionBeanList();
+        return PermissionBeanList::class;
     }
-
 }

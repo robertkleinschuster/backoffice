@@ -1,10 +1,8 @@
 <?php
 
+namespace Pars\Base\Cms\Post;
 
-namespace Base\Cms\Post;
-
-
-use Base\Article\Translation\ArticleTranslationBean;
+use Pars\Base\Article\Translation\ArticleTranslationBean;
 
 class CmsPostBean extends ArticleTranslationBean
 {

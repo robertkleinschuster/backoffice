@@ -1,12 +1,14 @@
 <?php
 
+namespace Pars\Base\Cms\Site\Type;
 
-namespace Base\Cms\Site\Type;
+use Niceshops\Bean\Type\Base\AbstractBaseBean;
 
-
-use NiceshopsDev\Bean\JsonSerializable\AbstractJsonSerializableBean;
-
-class CmsSiteTypeBean extends AbstractJsonSerializableBean
+/**
+ * Class CmsSiteTypeBean
+ * @package Pars\Base\Cms\Site\Type
+ */
+class CmsSiteTypeBean extends AbstractBaseBean
 {
 
     /**

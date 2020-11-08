@@ -1,34 +1,25 @@
 <?php
 
+namespace Pars\Backoffice\Mvc\User;
 
-namespace Backoffice\Mvc\User;
-
-use Backoffice\Mvc\Base\BaseController;
-use Backoffice\Mvc\Role\RoleBeanFormatter;
-use Base\Authentication\User\UserBean;
-use Base\Localization\LocalizationMiddleware;
-use Mvc\Helper\PathHelper;
-use Mvc\View\ComponentDataBean;
-use Mvc\View\Components\Detail\Detail;
-use Mvc\View\Components\Edit\Edit;
-use Mvc\View\Components\Edit\Fields\Text;
-use Mvc\View\Components\Overview\Fields\Badge;
-use Mvc\View\Components\Overview\Overview;
-use Mvc\View\Components\Toolbar\Toolbar;
-use NiceshopsDev\Bean\BeanInterface;
+use Niceshops\Bean\Type\Base\BeanInterface;
+use Pars\Backoffice\Mvc\Base\CrudController;
+use Pars\Base\Authentication\User\UserBean;
+use Pars\Mvc\Helper\PathHelper;
+use Pars\Mvc\Parameter\IdParameter;
+use Pars\Mvc\View\Components\Detail\Detail;
+use Pars\Mvc\View\Components\Edit\Edit;
+use Pars\Mvc\View\Components\Edit\Fields\Text;
+use Pars\Mvc\View\Components\Overview\Fields\Badge;
+use Pars\Mvc\View\Components\Overview\Overview;
 
 /**
  * Class UserController
- * @package Backoffice\Mvc\Controller
+ * @package Pars\Backoffice\Mvc\Controller
  * @method UserModel getModel()
  */
-class UserController extends BaseController
+class UserController extends CrudController
 {
-    protected function initView()
-    {
-        parent::initView();
-    }
-
     protected function initModel()
     {
         parent::initModel();
@@ -43,89 +34,9 @@ class UserController extends BaseController
         return $this->checkPermission('user');
     }
 
-
-    public function indexAction()
-    {
-        $overview = $this->initOverviewTemplate(new RoleBeanFormatter());
-        $overview->setBeanList($this->getModel()->getFinder()->getBeanGenerator());
-    }
-
-    public function detailAction()
-    {
-        $detail = $this->initDetailTemplate();
-
-        $bean = $this->getModel()->getFinder()->getBean();
-        $detail->setBean($bean);
-        $toolbar = new Toolbar($this->translate('user.detail.role.title'));
-        $toolbar->setBean(new ComponentDataBean());
-        $toolbar->addButton(
-            $this->getPathHelper()
-                ->setController('userrole')
-                ->setAction('create')
-                ->setViewIdMap(['Person_ID' => $bean->getData('Person_ID')])
-                ->getPath(),
-            $this->translate('user.detail.role.create')
-        )->setPermission('userrole.create');
-        $this->getView()->addComponent($toolbar);
-
-        $overview = new Overview();
-        $overview->addDeleteIcon(
-            $this->getPathHelper()
-                ->setController('userrole')
-                ->setAction('delete')
-                ->setViewIdMap([
-                    'Person_ID' => $bean->getData('Person_ID'),
-                    'UserRole_ID' => "{UserRole_ID}"
-                ])
-                ->getPath()
-        )->setWidth(45)->setPermission('userrole.delete');
-        $overview->addText('UserRole_Code', $this->translate('userrole.code'));
-        $overview->setBeanList($bean->getData('UserRole_BeanList'));
-        $this->getView()->addComponent($overview);
-    }
-
-    public function createAction()
-    {
-        $edit = $this->initCreateTemplate();
-        $bean = $this->getModel()->getFinder()->getFactory()->createBean();
-        $edit->setBean($bean);
-        $bean->setData('User_Password', '');
-        foreach ($edit->getFieldList() as $item) {
-            $bean->setData($item->getKey(), $this->getControllerRequest()->getAttribute($item->getKey()));
-        }
-        $bean->setFromArray($this->getPreviousAttributes());
-    }
-
-    public function editAction()
-    {
-        $edit = $this->initEditTemplate();
-        $bean = $this->getModel()->getFinder()->getBean();
-        $edit->setBean($bean);
-        $bean->setData('User_Password', '');
-        $edit->getBean()->setFromArray($this->getPreviousAttributes());
-    }
-
-    public function edit_meAction()
-    {
-        $edit = $this->initEditTemplate($this->getPathHelper()->setController('index')->setAction('index')->getPath());
-        $bean = $this->getModel()->getFinder()->getBean();
-        $edit->setBean($bean);
-        $bean->setData('User_Password', '');
-        $this->getView()->setHeading($this->translate('user.edit_me.title'));
-
-    }
-
-    public function deleteAction()
-    {
-        $edit = $this->initDeleteTemplate();
-        $edit->setBean($this->getModel()->getFinder()->getBean());
-
-    }
-
-
     protected function getDetailPath(): PathHelper
     {
-        return $this->getPathHelper()->setViewIdMap(['Person_ID' => '{Person_ID}']);
+        return $this->getPathHelper()->setId((new IdParameter())->addId('Person_ID'));
     }
 
     protected function addOverviewFields(Overview $overview): void
@@ -181,7 +92,7 @@ class UserController extends BaseController
             ->setAppendToColumnPrevious(true)
             ->setSelectOptions($this->getModel()->getLocale_Options());
 
-        if (!$this->getControllerRequest()->hasViewIdMap()) {
+        if (!$this->getControllerRequest()->hasId()) {
             $localeSelect->setValue($this->getTranslator()->getLocale());
         }
 

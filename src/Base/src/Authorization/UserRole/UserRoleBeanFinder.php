@@ -1,14 +1,16 @@
 <?php
 
+namespace Pars\Base\Authorization\UserRole;
 
-namespace Base\Authorization\UserRole;
-
-
-use Base\Authorization\RolePermission\RolePermissionBeanFinder;
-use Base\Database\DatabaseBeanLoader;
+use Pars\Base\Authorization\RolePermission\RolePermissionBeanFinder;
+use Pars\Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
+use Niceshops\Bean\Finder\AbstractBeanFinder;
 
+/**
+ * Class UserRoleBeanFinder
+ * @package Pars\Base\Authorization\UserRole
+ */
 class UserRoleBeanFinder extends AbstractBeanFinder
 {
     public function __construct(Adapter $adapter)
@@ -22,27 +24,26 @@ class UserRoleBeanFinder extends AbstractBeanFinder
         parent::__construct($loader, $factory);
         $rolePermissionFinder = new RolePermissionBeanFinder($adapter);
         $rolePermissionFinder->setUserPermission_Active(true);
-        $this->linkBeanFinder($rolePermissionFinder, 'UserPermission_BeanList', 'UserRole_ID', 'UserRole_ID');
+        $this->addLinkedFinder($rolePermissionFinder, 'UserPermission_BeanList', 'UserRole_ID', 'UserRole_ID');
     }
 
     /**
      * @param int $person_id
      * @return $this
-     * @throws \Exception
      */
     public function setPerson_ID(int $person_id): self
     {
-        $this->getLoader()->filterValue('Person_ID', $person_id);
+        $this->getBeanLoader()->filterValue('Person_ID', $person_id);
         return $this;
     }
 
     /**
-     * @param string $userRole_id
+     * @param int $userRole_id
      * @return $this
      */
     public function setUserRole_ID(int $userRole_id): self
     {
-        $this->getLoader()->filterValue('UserRole_ID', $userRole_id);
+        $this->getBeanLoader()->filterValue('UserRole_ID', $userRole_id);
         return $this;
     }
 
@@ -50,17 +51,19 @@ class UserRoleBeanFinder extends AbstractBeanFinder
      * @param string $userRole_code
      * @return $this
      */
-    public function setUserRole_Code(string $userRole_code): self {
-        $this->getLoader()->filterValue('UserRole_Code', $userRole_code);
+    public function setUserRole_Code(string $userRole_code): self
+    {
+        $this->getBeanLoader()->filterValue('UserRole_Code', $userRole_code);
         return $this;
     }
 
     /**
-     * @param string $userRole_active
+     * @param bool $userRole_active
      * @return $this
      */
-    public function setUserRole_Active(bool $userRole_active): self {
-        $this->getLoader()->filterValue('UserRole_Active', $userRole_active);
+    public function setUserRole_Active(bool $userRole_active): self
+    {
+        $this->getBeanLoader()->filterValue('UserRole_Active', $userRole_active);
         return $this;
     }
 }

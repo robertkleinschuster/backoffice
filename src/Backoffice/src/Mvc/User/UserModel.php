@@ -1,38 +1,38 @@
 <?php
 
+namespace Pars\Backoffice\Mvc\User;
 
-namespace Backoffice\Mvc\User;
-
-use Base\Authentication\User\UserBeanFinder;
-use Base\Authentication\User\UserBeanProcessor;
-use Backoffice\Mvc\Base\BaseModel;
-use Base\Authentication\UserState\UserStateBeanFinder;
-use Base\Localization\Locale\LocaleBeanFinder;
+use Pars\Backoffice\Mvc\Base\CrudModel;
+use Pars\Base\Authentication\User\UserBeanFinder;
+use Pars\Base\Authentication\User\UserBeanProcessor;
+use Pars\Base\Authentication\UserState\UserStateBeanFinder;
+use Pars\Base\Localization\Locale\LocaleBeanFinder;
 
 /**
  * Class UserModel
- * @package Backoffice\Mvc\Model
- * @method UserBeanFinder getFinder() : BeanFinderInterface
+ * @package Pars\Backoffice\Mvc\Model
+ * @method UserBeanFinder getBeanFinder() : BeanFinderInterface
  * @method UserBeanProcessor getProcessor() : BeanProcessorInterface
  */
-class UserModel extends BaseModel
+class UserModel extends CrudModel
 {
 
-    public function init()
+    public function initialize()
     {
-        $this->setFinder(new UserBeanFinder($this->getDbAdpater()));
-        $this->setProcessor(new UserBeanProcessor($this->getDbAdpater()));
+        $this->setBeanFinder(new UserBeanFinder($this->getDbAdpater()));
+        $this->setBeanProcessor(new UserBeanProcessor($this->getDbAdpater()));
     }
 
 
     /**
      * @return array
      */
-    public function getUserState_Options(): array {
+    public function getUserState_Options(): array
+    {
         $options = [];
         $finder = new UserStateBeanFinder($this->getDbAdpater());
-        $finder->find();
-        foreach ($finder->getBeanGenerator() as $bean) {
+
+        foreach ($finder->getBeanListDecorator() as $bean) {
             $options[$bean->getData('UserState_Code')] = $bean->getData('UserState_Code');
         }
         return $options;
@@ -40,14 +40,14 @@ class UserModel extends BaseModel
 
     /**
      * @return array
-     * @throws \NiceshopsDev\Bean\BeanException
      */
-    public function getLocale_Options(): array {
+    public function getLocale_Options(): array
+    {
         $options = [];
         $finder = new LocaleBeanFinder($this->getDbAdpater());
         $finder->setLocale_Active(true);
-        $finder->find();
-        foreach ($finder->getBeanGenerator() as $bean) {
+
+        foreach ($finder->getBeanListDecorator() as $bean) {
             $options[$bean->getData('Locale_Code')] = $bean->getData('Locale_Name');
         }
         return $options;

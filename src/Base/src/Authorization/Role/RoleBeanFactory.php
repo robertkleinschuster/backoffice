@@ -1,26 +1,23 @@
 <?php
-namespace Base\Authorization\Role;
 
+namespace Pars\Base\Authorization\Role;
 
-use NiceshopsDev\Bean\BeanFactory\BeanFactoryInterface;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanList\BeanListInterface;
-use NiceshopsDev\NiceCore\Attribute\AttributeTrait;
-use NiceshopsDev\NiceCore\Option\OptionTrait;
+use Niceshops\Bean\Factory\AbstractBeanFactory;
 
-class RoleBeanFactory implements BeanFactoryInterface
+/**
+ * Class RoleBeanFactory
+ * @package Pars\Base\Authorization\Role
+ */
+class RoleBeanFactory extends AbstractBeanFactory
 {
-    use OptionTrait;
-    use AttributeTrait;
 
-    public function createBean(): BeanInterface
+    protected function getBeanClass(array $data): string
     {
-        return new RoleBean();
+        return RoleBean::class;
     }
 
-    public function createBeanList(): BeanListInterface
+    protected function getBeanListClass(): string
     {
-        return new RoleBeanList();
+        return RoleBeanList::class;
     }
-
 }

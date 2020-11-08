@@ -1,27 +1,25 @@
 <?php
 
+namespace Pars\Backoffice\Mvc\Cms\Site;
 
-namespace Backoffice\Mvc\Cms\Site;
-
-
-use Backoffice\Mvc\Base\BackofficeBeanFormatter;
-use Mvc\Helper\PathHelper;
-use Mvc\View\ComponentDataBean;
-use Mvc\View\Components\Detail\Detail;
-use Mvc\View\Components\Detail\Fields\Link;
-use Mvc\View\Components\Edit\Edit;
-use Mvc\View\Components\Edit\Fields\File;
-use Mvc\View\Components\Edit\Fields\Wysiwyg;
-use Mvc\View\Components\Overview\Overview;
-use Mvc\View\Components\Toolbar\Toolbar;
-use NiceshopsDev\Bean\BeanInterface;
+use Niceshops\Bean\Type\Base\BeanInterface;
+use Pars\Backoffice\Mvc\Base\CrudController;
+use Pars\Mvc\Helper\PathHelper;
+use Pars\Mvc\Parameter\IdParameter;
+use Pars\Mvc\Parameter\MoveParameter;
+use Pars\Mvc\View\Components\Detail\Detail;
+use Pars\Mvc\View\Components\Detail\Fields\Link;
+use Pars\Mvc\View\Components\Edit\Edit;
+use Pars\Mvc\View\Components\Edit\Fields\Wysiwyg;
+use Pars\Mvc\View\Components\Overview\Overview;
+use Pars\Mvc\View\Components\Toolbar\Toolbar;
 
 /**
  * Class CmsSiteController
- * @package Backoffice\Mvc\Cms\Site
+ * @package Pars\Backoffice\Mvc\Cms\Site
  * @method CmsSiteModel getModel()
  */
-class CmsSiteController extends \Backoffice\Mvc\Base\BaseController
+class CmsSiteController extends CrudController
 {
     protected function initModel()
     {
@@ -34,15 +32,10 @@ class CmsSiteController extends \Backoffice\Mvc\Base\BaseController
         return $this->checkPermission('cmssite');
     }
 
-    public function indexAction()
-    {
-        $overview = $this->initOverviewTemplate(new BackofficeBeanFormatter());
-        $overview->setBeanList($this->getModel()->getFinder()->getBeanGenerator());
-    }
 
     public function detailAction()
     {
-        $bean = $this->getModel()->getFinder()->getBean();
+        $bean = $this->getModel()->getBean();
 
         $toolbar = new Toolbar();
         $toolbar->addButton('{ArticleTranslation_Code}', $this->translate('site.toolbar.frontend'))
@@ -54,91 +47,81 @@ class CmsSiteController extends \Backoffice\Mvc\Base\BaseController
         $detail->setBean($bean);
 
         $toolbar = new Toolbar($this->translate('cmssiteparagraph.overview.title'));
-        $toolbar->addButton($this->getPathHelper()->setController('cmssiteparagraph')->setAction('create')->setViewIdMap($this->getControllerRequest()->getViewIdMap())->getPath(), $this->translate('cmssiteparagraph.create'));
+        $toolbar->addButton($this->getPathHelper()
+            ->setController('cmssiteparagraph')
+            ->setAction('create')
+            ->setId($this->getControllerRequest()->getId())
+            ->getPath(), $this->translate('cmssiteparagraph.create'));
         $this->getView()->addComponent($toolbar);
         $overview = new Overview();
-        $overview->addDetailIcon($this->getPathHelper()->setController('cmsparagraph')->setAction('detail')->setViewIdMap(['CmsParagraph_ID' => '{CmsParagraph_ID}'])->getPath())->setWidth(122);
-        $overview->addEditIcon($this->getPathHelper()->setController('cmsparagraph')->setAction('edit')->setViewIdMap(['CmsParagraph_ID' => '{CmsParagraph_ID}'])->getPath());
-        $overview->addDeleteIcon($this->getPathHelper()->setController('cmssiteparagraph')->setAction('delete')->setViewIdMap(['CmsParagraph_ID' => '{CmsParagraph_ID}', 'CmsSite_ID' => '{CmsSite_ID}'])->getPath());
+        $overview->addDetailIcon(
+            $this->getPathHelper()
+                ->setController('cmsparagraph')
+                ->setAction('detail')
+                ->setId((new IdParameter())->addId('CmsParagraph_ID'))
+                ->getPath()
+        )->setWidth(122);
+        $overview->addEditIcon(
+            $this->getPathHelper()
+                ->setController('cmsparagraph')
+                ->setAction('edit')
+                ->setId((new IdParameter())->addId('CmsParagraph_ID'))
+                ->getPath()
+        );
+        $overview->addDeleteIcon(
+            $this->getPathHelper()
+                ->setController('cmssiteparagraph')
+                ->setAction('delete')
+                ->setId((new IdParameter())->addId('CmsParagraph_ID')->addId('CmsSite_ID'))
+                ->getPath()
+        );
 
-        $overview->addLink('', '')
-            ->setLink($this->getDetailPath()->setController('cmssiteparagraph')->setAction('order')->setParams(['order' => 'up'])->setViewIdMap(['CmsParagraph_ID' => '{CmsParagraph_ID}', 'CmsSite_ID' => '{CmsSite_ID}'])->getPath())
-            ->setValue('')
-            ->setIcon(Link::ICON_ARROW_UP)
-            ->setStyle(Link::STYLE_INFO)
-            ->setOutline(true)
-            ->addOption(Link::OPTION_TEXT_DECORATION_NONE)
-            ->addOption(Link::OPTION_BUTTON_STYLE)
-            ->setSize(Link::SIZE_SMALL)
-            ->setChapter('order')
-            ->setWidth(85)
-            ->setShow(function (BeanInterface $b) {
-                return $b->hasData('CmsSite_CmsParagraph_Order') && $b->getData('CmsSite_CmsParagraph_Order') > 1;
-
-            });
         $beanList = $bean->getData('CmsParagraph_BeanList')->toBeanList();
-        $overview->addLink('', '')
-            ->setLink($this->getDetailPath()->setController('cmssiteparagraph')->setAction('order')->setParams(['order' => 'down'])->setViewIdMap(['CmsParagraph_ID' => '{CmsParagraph_ID}', 'CmsSite_ID' => '{CmsSite_ID}'])->getPath())
-            ->setValue('')
-            ->setIcon(Link::ICON_ARROW_DOWN)
-            ->setStyle(Link::STYLE_INFO)
-            ->setOutline(true)
-            ->addOption(Link::OPTION_TEXT_DECORATION_NONE)
-            ->addOption(Link::OPTION_BUTTON_STYLE)
-            ->setSize(Link::SIZE_SMALL)
-            ->setChapter('order')->setShow(function (BeanInterface $b) use($bean, $beanList){
-                return $b->hasData('CmsSite_CmsParagraph_Order') && $b->getData('CmsSite_CmsParagraph_Order') < $beanList->count();
-            });
+
+        $overview->addMoveDownIcon($this->getPathHelper()
+            ->setController('cmssiteparagraph')
+            ->setController('index')
+            ->setId((new IdParameter())->addId('CmsParagraph_ID')->addId('CmsSite_ID'))
+            ->addParameter((new MoveParameter())
+                ->setDown('CmsSite_CmsParagraph_Order')
+                ->setReferenceField('CmsSite_ID')
+                ->setReferenceValue('{CmsSite_ID}')))->setShow(function (BeanInterface $b) use ($bean, $beanList) {
+                    return $b->hasData('CmsSite_CmsParagraph_Order') && $b->getData('CmsSite_CmsParagraph_Order') < $beanList->count();
+                });
+
+        $overview->addMoveUpIcon($this->getPathHelper()
+            ->setController('cmssiteparagraph')
+            ->setController('index')
+            ->setId((new IdParameter())->addId('CmsParagraph_ID')->addId('CmsSite_ID'))
+            ->addParameter((new MoveParameter())
+                ->setUp('CmsSite_CmsParagraph_Order')
+                ->setReferenceField('CmsSite_ID')
+                ->setReferenceValue('{CmsSite_ID}')))->setShow(function (BeanInterface $b) {
+                    return $b->hasData('CmsSite_CmsParagraph_Order') && $b->getData('CmsSite_CmsParagraph_Order') > 1;
+                });
+
 
         $overview->addText('Article_Code', $this->translate('article.code'))->setWidth(150);
         $overview->addText('ArticleTranslation_Name', $this->translate('articletranslation.name'));
 
         $overview->setBeanList($beanList);
         $this->getView()->addComponent($overview);
-
     }
-
-    public function createAction()
-    {
-        $create = $this->initCreateTemplate();
-        $create->setBean($this->getModel()->getFinder()->getFactory()->createBean());
-        foreach ($create->getFieldList() as $item) {
-            $create->getBean()->setData($item->getKey(), $this->getControllerRequest()->getAttribute($item->getKey()));
-        }
-        $create->getBean()->setFromArray($this->getPreviousAttributes());
-    }
-
-    public function editAction()
-    {
-        $edit = $this->initEditTemplate();
-        $edit->setBean($this->getModel()->getFinder()->getBean());
-        $edit->getBean()->setFromArray($this->getPreviousAttributes());
-    }
-
-    public function deleteAction()
-    {
-        $delete = $this->initDeleteTemplate();
-        $delete->setBean($this->getModel()->getFinder()->getBean());
-    }
-
 
     protected function getDetailPath(): PathHelper
     {
-        return $this->getPathHelper()->setViewIdMap(['CmsSite_ID' => '{CmsSite_ID}']);
+        return $this->getPathHelper()->setId((new IdParameter())->addId('CmsSite_ID'));
     }
 
     protected function addOverviewFields(Overview $overview): void
     {
-        parent::addOverviewFields($overview);
         $overview->addText('Article_Code', $this->translate('article.code'))->setWidth(150);
         $overview->addText('ArticleTranslation_Name', $this->translate('articletranslation.name'));
         $overview->addText('ArticleTranslation_Code', $this->translate('articletranslation.code'));
-
     }
 
     protected function addDetailFields(Detail $detail): void
     {
-        parent::addDetailFields($detail);
 
         $detail->setCols(2);
         $detail->addText('ArticleTranslation_Title', $this->translate('articletranslation.title'))
@@ -179,7 +162,6 @@ class CmsSiteController extends \Backoffice\Mvc\Base\BaseController
 
     protected function addEditFields(Edit $edit): void
     {
-        parent::addEditFields($edit);
         $edit->setCols(2);
         $edit->addText('ArticleTranslation_Title', $this->translate('articletranslation.title'))
             ->setChapter($this->translate('article.edit.content'));
@@ -221,5 +203,4 @@ class CmsSiteController extends \Backoffice\Mvc\Base\BaseController
             ->setSelectOptions($this->getModel()->getCmsSiteState_Options())
             ->setAppendToColumnPrevious(true);
     }
-
 }

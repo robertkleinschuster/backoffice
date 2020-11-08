@@ -1,12 +1,14 @@
 <?php
 
+namespace Pars\Base\File\Type;
 
-namespace Base\File\Type;
+use Niceshops\Bean\Type\Base\AbstractBaseBean;
 
-
-use NiceshopsDev\Bean\JsonSerializable\AbstractJsonSerializableBean;
-
-class FileTypeBean extends AbstractJsonSerializableBean
+/**
+ * Class FileTypeBean
+ * @package Pars\Base\File\Type
+ */
+class FileTypeBean extends AbstractBaseBean
 {
 
     /**

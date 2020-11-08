@@ -1,16 +1,10 @@
 <?php
 
+namespace Pars\Backoffice\Mvc\Index;
 
-namespace Backoffice\Mvc\Index;
-
-
-use Backoffice\Mvc\Base\BaseModel;
+use Pars\Backoffice\Mvc\Base\BaseModel;
 
 class IndexModel extends BaseModel
 {
-    public function init()
-    {
-        // TODO: Implement init() method.
-    }
 
 }

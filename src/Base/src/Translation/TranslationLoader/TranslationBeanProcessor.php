@@ -1,14 +1,16 @@
 <?php
 
+namespace Pars\Base\Translation\TranslationLoader;
 
-namespace Base\Translation\TranslationLoader;
-
-
-use Base\Database\DatabaseBeanSaver;
+use Pars\Base\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
+use Niceshops\Bean\Processor\AbstractBeanProcessor;
+use Niceshops\Bean\Type\Base\BeanInterface;
 
+/**
+ * Class TranslationBeanProcessor
+ * @package Pars\Base\Translation\TranslationLoader
+ */
 class TranslationBeanProcessor extends AbstractBeanProcessor
 {
     public function __construct(Adapter $adapter)
@@ -32,5 +34,4 @@ class TranslationBeanProcessor extends AbstractBeanProcessor
     {
         return true;
     }
-
 }

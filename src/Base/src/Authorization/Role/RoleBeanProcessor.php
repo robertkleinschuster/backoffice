@@ -1,15 +1,20 @@
 <?php
-namespace Base\Authorization\Role;
 
-use Base\Database\DatabaseBeanSaver;
+namespace Pars\Base\Authorization\Role;
+
+use Pars\Base\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\I18n\Translator\TranslatorAwareInterface;
 use Laminas\I18n\Translator\TranslatorAwareTrait;
-use Mvc\Helper\ValidationHelperAwareInterface;
-use Mvc\Helper\ValidationHelperAwareTrait;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
+use Niceshops\Bean\Processor\AbstractBeanProcessor;
+use Niceshops\Bean\Type\Base\BeanInterface;
+use Pars\Mvc\Helper\ValidationHelperAwareInterface;
+use Pars\Mvc\Helper\ValidationHelperAwareTrait;
 
+/**
+ * Class RoleBeanProcessor
+ * @package Pars\Base\Authorization\Role
+ */
 class RoleBeanProcessor extends AbstractBeanProcessor implements ValidationHelperAwareInterface, TranslatorAwareInterface
 {
     use ValidationHelperAwareTrait;
@@ -32,7 +37,8 @@ class RoleBeanProcessor extends AbstractBeanProcessor implements ValidationHelpe
      * @param string $code
      * @return string
      */
-    protected function translate(string $code) {
+    protected function translate(string $code)
+    {
         if ($this->hasTranslator()) {
             return $this->getTranslator()->translate($code, 'validation');
         }
@@ -49,7 +55,6 @@ class RoleBeanProcessor extends AbstractBeanProcessor implements ValidationHelpe
         if ($bean->hasData('UserRole_ID')) {
             $finder->setUserRole_ID($bean->getData('UserRole_ID'), true);
         }
-        $finder->find();
         if ($finder->count() !== 0) {
             $this->getValidationHelper()->addError('UserRole_Code', $this->translate('userrole.code.unique'));
         }
@@ -60,5 +65,4 @@ class RoleBeanProcessor extends AbstractBeanProcessor implements ValidationHelpe
     {
         return true;
     }
-
 }

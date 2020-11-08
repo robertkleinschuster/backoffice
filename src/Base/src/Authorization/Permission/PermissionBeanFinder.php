@@ -1,12 +1,10 @@
 <?php
 
+namespace Pars\Base\Authorization\Permission;
 
-namespace Base\Authorization\Permission;
-
-
-use Base\Database\DatabaseBeanLoader;
+use Pars\Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
+use Niceshops\Bean\Finder\AbstractBeanFinder;
 
 class PermissionBeanFinder extends AbstractBeanFinder
 {
@@ -23,18 +21,19 @@ class PermissionBeanFinder extends AbstractBeanFinder
      * @param string $userPermission_code
      * @return $this
      */
-    public function setUserPermission_Code(string $userPermission_code): self {
-        $this->getLoader()->filterValue('UserPermission_Code', $userPermission_code);
+    public function setUserPermission_Code(string $userPermission_code): self
+    {
+        $this->getBeanLoader()->filterValue('UserPermission_Code', $userPermission_code);
         return $this;
     }
 
     /**
-     * @param string $userPermission_active
+     * @param bool $userPermission_active
      * @return $this
      */
-    public function setUserPermission_Active(bool $userPermission_active): self {
-        $this->getLoader()->filterValue('UserPermission_Active', $userPermission_active);
+    public function setUserPermission_Active(bool $userPermission_active): self
+    {
+        $this->getBeanLoader()->filterValue('UserPermission_Active', $userPermission_active);
         return $this;
     }
-
 }

@@ -1,16 +1,19 @@
 <?php
 
+namespace Pars\Base\Authorization\UserRole;
 
-namespace Base\Authorization\UserRole;
-
-
-use Base\Database\DatabaseBeanSaver;
+use Pars\Base\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
-use Mvc\Helper\ValidationHelperAwareInterface;
-use Mvc\Helper\ValidationHelperAwareTrait;
-use NiceshopsDev\Bean\BeanInterface;
+use Niceshops\Bean\Processor\AbstractBeanProcessor;
+use Niceshops\Bean\Type\Base\BeanInterface;
+use Pars\Mvc\Helper\ValidationHelperAwareInterface;
+use Pars\Mvc\Helper\ValidationHelperAwareTrait;
 
-class UserRoleBeanProcessor extends \NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor implements ValidationHelperAwareInterface
+/**
+ * Class UserRoleBeanProcessor
+ * @package Pars\Base\Authorization\UserRole
+ */
+class UserRoleBeanProcessor extends AbstractBeanProcessor implements ValidationHelperAwareInterface
 {
     use ValidationHelperAwareTrait;
 

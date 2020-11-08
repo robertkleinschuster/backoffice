@@ -1,12 +1,14 @@
 <?php
 
+namespace Pars\Base\File\Directory;
 
-namespace Base\File\Directory;
+use Niceshops\Bean\Type\Base\AbstractBaseBeanList;
 
-
-use NiceshopsDev\Bean\BeanList\JsonSerializable\AbstractJsonSerializableBeanList;
-
-class FileDirectoryBeanList extends AbstractJsonSerializableBeanList
+/**
+ * Class FileDirectoryBeanList
+ * @package Pars\Base\File\Directory
+ */
+class FileDirectoryBeanList extends AbstractBaseBeanList
 {
 
 }

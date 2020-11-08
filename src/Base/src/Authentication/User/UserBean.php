@@ -1,13 +1,15 @@
 <?php
 
+namespace Pars\Base\Authentication\User;
 
-namespace Base\Authentication\User;
-
-
-use Base\Authorization\Role\RoleBeanList;
+use Pars\Base\Authorization\Role\RoleBeanList;
 use Mezzio\Authentication\UserInterface;
-use NiceshopsDev\Bean\JsonSerializable\AbstractJsonSerializableBean;
+use Niceshops\Bean\Type\JsonSerializable\AbstractJsonSerializableBean;
 
+/**
+ * Class UserBean
+ * @package Pars\Base\Authentication\User
+ */
 class UserBean extends AbstractJsonSerializableBean implements UserInterface
 {
 
@@ -51,10 +53,11 @@ class UserBean extends AbstractJsonSerializableBean implements UserInterface
 
     public function getDetails(): array
     {
-        return $this->toArray();
+        return $this->getSerializeData();
     }
 
-    public function getPermission_List(): array {
+    public function getPermission_List(): array
+    {
         return $this->getData('UserRole_BeanList')->getPermission_List();
     }
 }

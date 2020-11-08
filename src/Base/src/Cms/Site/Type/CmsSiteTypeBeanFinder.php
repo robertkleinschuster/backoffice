@@ -1,12 +1,10 @@
 <?php
 
+namespace Pars\Base\Cms\Site\Type;
 
-namespace Base\Cms\Site\Type;
-
-
-use Base\Database\DatabaseBeanLoader;
+use Niceshops\Bean\Finder\AbstractBeanFinder;
+use Pars\Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
 
 class CmsSiteTypeBeanFinder extends AbstractBeanFinder
 {
@@ -20,7 +18,7 @@ class CmsSiteTypeBeanFinder extends AbstractBeanFinder
 
     public function setCmsSiteType_Active(bool $active): self
     {
-        $this->getLoader()->filterValue('CmsSiteType_Active', $active);
+        $this->getBeanLoader()->filterValue('CmsSiteType_Active', $active);
         return $this;
     }
 }

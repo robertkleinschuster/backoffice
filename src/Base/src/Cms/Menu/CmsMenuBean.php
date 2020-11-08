@@ -1,11 +1,13 @@
 <?php
 
+namespace Pars\Base\Cms\Menu;
 
-namespace Base\Cms\Menu;
+use Pars\Base\Article\Translation\ArticleTranslationBean;
 
-
-use Base\Article\Translation\ArticleTranslationBean;
-
+/**
+ * Class CmsMenuBean
+ * @package Pars\Base\Cms\Menu
+ */
 class CmsMenuBean extends ArticleTranslationBean
 {
 
@@ -23,5 +25,4 @@ class CmsMenuBean extends ArticleTranslationBean
         $this->setDataType('CmsMenuType_Code', self::DATA_TYPE_STRING, true);
         $this->setDataType('CmsMenuState_Code', self::DATA_TYPE_STRING, true);
     }
-
 }

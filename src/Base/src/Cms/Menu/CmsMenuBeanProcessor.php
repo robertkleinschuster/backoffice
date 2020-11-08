@@ -1,19 +1,24 @@
 <?php
 
+namespace Pars\Base\Cms\Menu;
 
-namespace Base\Cms\Menu;
-
-
-use Base\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\I18n\Translator\TranslatorAwareInterface;
 use Laminas\I18n\Translator\TranslatorAwareTrait;
-use Mvc\Helper\ValidationHelperAwareInterface;
-use Mvc\Helper\ValidationHelperAwareTrait;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
+use Niceshops\Bean\Finder\BeanFinderInterface;
+use Niceshops\Bean\Processor\AbstractBeanProcessor;
+use Niceshops\Bean\Type\Base\BeanInterface;
+use Pars\Base\Database\DatabaseBeanSaver;
+use Pars\Mvc\Helper\ValidationHelperAwareInterface;
+use Pars\Mvc\Helper\ValidationHelperAwareTrait;
 
-class CmsMenuBeanProcessor extends AbstractBeanProcessor implements ValidationHelperAwareInterface, TranslatorAwareInterface
+/**
+ * Class CmsMenuBeanProcessor
+ * @package Pars\Base\Cms\Menu
+ */
+class CmsMenuBeanProcessor extends AbstractBeanProcessor implements
+    ValidationHelperAwareInterface,
+    TranslatorAwareInterface
 {
     use ValidationHelperAwareTrait;
     use TranslatorAwareTrait;
@@ -38,9 +43,9 @@ class CmsMenuBeanProcessor extends AbstractBeanProcessor implements ValidationHe
         if (!$bean->hasData('CmsMenu_Order') || $bean->getData('CmsMenu_Order') === 0) {
             $order = 1;
             $finder = new CmsMenuBeanFinder($this->adapter);
-            $finder->getLoader()->addOrder('CmsMenu_Order', true);
+            $finder->order(['CmsMenu_Order' => BeanFinderInterface::ORDER_MODE_ASC]);
             $finder->limit(1, 0);
-            if ($finder->find() == 1) {
+            if ($finder->count() == 1) {
                 $lastBean = $finder->getBean();
                 if ($lastBean->hasData('CmsMenu_Order')) {
                     $order = $lastBean->getData('CmsMenu_Order') + 1;
@@ -67,6 +72,4 @@ class CmsMenuBeanProcessor extends AbstractBeanProcessor implements ValidationHe
         }
         return parent::validateForSave($bean);
     }
-
-
 }

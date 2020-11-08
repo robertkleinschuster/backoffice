@@ -1,12 +1,10 @@
 <?php
 
+namespace Pars\Base\File;
 
-namespace Base\File;
-
-
-use Base\Database\DatabaseBeanSaver;
-use Base\File\Directory\FileDirectoryBeanFinder;
-use Base\File\Type\FileTypeBeanFinder;
+use Pars\Base\Database\DatabaseBeanSaver;
+use Pars\Base\File\Directory\FileDirectoryBeanFinder;
+use Pars\Base\File\Type\FileTypeBeanFinder;
 use Cocur\Slugify\Slugify;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Diactoros\UploadedFile;
@@ -14,13 +12,18 @@ use Laminas\I18n\Translator\TranslatorAwareInterface;
 use Laminas\I18n\Translator\TranslatorAwareTrait;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
-use Mvc\Helper\ValidationHelperAwareInterface;
-use Mvc\Helper\ValidationHelperAwareTrait;
-use NiceshopsDev\Bean\BeanInterface;
-use NiceshopsDev\Bean\BeanProcessor\AbstractBeanProcessor;
-use phpDocumentor\Reflection\File;
+use Niceshops\Bean\Processor\AbstractBeanProcessor;
+use Niceshops\Bean\Type\Base\BeanInterface;
+use Pars\Mvc\Helper\ValidationHelperAwareInterface;
+use Pars\Mvc\Helper\ValidationHelperAwareTrait;
 
-class FileBeanProcessor extends AbstractBeanProcessor implements ValidationHelperAwareInterface, TranslatorAwareInterface
+/**
+ * Class FileBeanProcessor
+ * @package Pars\Base\File
+ */
+class FileBeanProcessor extends AbstractBeanProcessor implements
+    ValidationHelperAwareInterface,
+    TranslatorAwareInterface
 {
     use ValidationHelperAwareTrait;
     use TranslatorAwareTrait;
@@ -89,32 +92,33 @@ class FileBeanProcessor extends AbstractBeanProcessor implements ValidationHelpe
         return new Filesystem($filesystemAdapter);
     }
 
-    protected function getDirectoryPath(BeanInterface $bean) {
+    protected function getDirectoryPath(BeanInterface $bean)
+    {
         $path = implode(DIRECTORY_SEPARATOR, [
             $_SERVER["DOCUMENT_ROOT"], 'upload'
         ]);
         if ($bean->hasData('FileDirectory_ID')) {
             $finder = new FileDirectoryBeanFinder($this->adapter);
             $finder->setFileDirectory_ID($bean->getData('FileDirectory_ID'));
-            if ($finder->find() === 1) {
+            if ($finder->count() === 1) {
                 $directory = $finder->getBean();
                 $path = implode(DIRECTORY_SEPARATOR, [
                     $_SERVER["DOCUMENT_ROOT"], 'upload', $directory->getData('FileDirectory_Code')
                 ]);
-
             }
         }
         return $path;
     }
 
-    protected function getFilePath(BeanInterface $bean) {
+    protected function getFilePath(BeanInterface $bean)
+    {
         $path = implode(DIRECTORY_SEPARATOR, [
             $_SERVER["DOCUMENT_ROOT"], 'upload', $bean->getData('File_Code')
         ]);
         if ($bean->hasData('FileDirectory_ID')) {
             $finder = new FileDirectoryBeanFinder($this->adapter);
             $finder->setFileDirectory_ID($bean->getData('FileDirectory_ID'));
-            if ($finder->find() === 1) {
+            if ($finder->count() === 1) {
                 $directory = $finder->getBean();
                 $path = implode(DIRECTORY_SEPARATOR, [
                     $_SERVER["DOCUMENT_ROOT"], 'upload', $directory->getData('FileDirectory_Code'), $bean->getData('File_Code')
@@ -161,6 +165,4 @@ class FileBeanProcessor extends AbstractBeanProcessor implements ValidationHelpe
         }
         return !$this->getValidationHelper()->hasError();
     }
-
-
 }

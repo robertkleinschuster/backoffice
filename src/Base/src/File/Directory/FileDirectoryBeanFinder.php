@@ -1,14 +1,16 @@
 <?php
 
+namespace Pars\Base\File\Directory;
 
-namespace Base\File\Directory;
-
-
-use Base\Database\DatabaseBeanLoader;
-use Base\File\FileBeanFinder;
+use Pars\Base\Database\DatabaseBeanLoader;
+use Pars\Base\File\FileBeanFinder;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
+use Niceshops\Bean\Finder\AbstractBeanFinder;
 
+/**
+ * Class FileDirectoryBeanFinder
+ * @package Pars\Base\File\Directory
+ */
 class FileDirectoryBeanFinder extends AbstractBeanFinder
 {
     public function __construct(Adapter $adapter)
@@ -19,20 +21,19 @@ class FileDirectoryBeanFinder extends AbstractBeanFinder
         $loader->addColumn('FileDirectory_Name', 'FileDirectory_Name', 'FileDirectory', 'FileDirectory_ID');
         $loader->addColumn('FileDirectory_Active', 'FileDirectory_Active', 'FileDirectory', 'FileDirectory_ID');
         parent::__construct($loader, new FileDirectoryBeanFactory());
-        $this->linkBeanFinder(new FileBeanFinder($adapter), 'File_BeanList', 'FileDirectory_ID', 'FileDirectory_ID');
+        $this->addLinkedFinder(new FileBeanFinder($adapter), 'File_BeanList', 'FileDirectory_ID', 'FileDirectory_ID');
     }
 
     public function setFileDirectory_Active(bool $active): self
     {
-        $this->getLoader()->filterValue('FileDirectory_Active', $active);
+        $this->getBeanLoader()->filterValue('FileDirectory_Active', $active);
         return $this;
     }
 
 
     public function setFileDirectory_ID(int $id): self
     {
-        $this->getLoader()->filterValue('FileDirectory_ID', $id);
+        $this->getBeanLoader()->filterValue('FileDirectory_ID', $id);
         return $this;
     }
-
 }

@@ -1,14 +1,12 @@
 <?php
 
+namespace Pars\Base\Article\Translation;
 
-namespace Base\Article\Translation;
-
-
-use Base\Article\ArticleBeanProcessor;
-use Base\Database\DatabaseBeanSaver;
 use Cocur\Slugify\Slugify;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanInterface;
+use Niceshops\Bean\Type\Base\BeanInterface;
+use Pars\Base\Article\ArticleBeanProcessor;
+use Pars\Base\Database\DatabaseBeanSaver;
 
 class ArticleTranslationBeanProcessor extends ArticleBeanProcessor
 {
@@ -21,7 +19,7 @@ class ArticleTranslationBeanProcessor extends ArticleBeanProcessor
     {
         parent::__construct($adapter);
         $this->adapter = $adapter;
-        $saver = $this->getSaver();
+        $saver = $this->getBeanSaver();
         if ($saver instanceof DatabaseBeanSaver) {
             $saver->addColumn('Article_ID', 'Article_ID', 'Article', 'Article_ID', true, null, ['ArticleTranslation']);
             $saver->addColumn('Locale_Code', 'Locale_Code', 'ArticleTranslation', 'Article_ID', true);
@@ -89,6 +87,4 @@ class ArticleTranslationBeanProcessor extends ArticleBeanProcessor
     {
         return parent::validateForDelete($bean) && $bean->hasData('Article_ID');
     }
-
-
 }

@@ -1,13 +1,15 @@
 <?php
 
+namespace Pars\Base\Cms\Menu\Type;
 
-namespace Base\Cms\Menu\Type;
-
-
-use Base\Database\DatabaseBeanLoader;
+use Pars\Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
-use NiceshopsDev\Bean\BeanFinder\AbstractBeanFinder;
+use Niceshops\Bean\Finder\AbstractBeanFinder;
 
+/**
+ * Class CmsMenuTypeBeanFinder
+ * @package Pars\Base\Cms\Menu\Type
+ */
 class CmsMenuTypeBeanFinder extends AbstractBeanFinder
 {
     public function __construct(Adapter $adapter)
@@ -20,7 +22,7 @@ class CmsMenuTypeBeanFinder extends AbstractBeanFinder
 
     public function setCmsMenuType_Active(bool $active): self
     {
-        $this->getLoader()->filterValue('CmsMenuType_Active', $active);
+        $this->getBeanLoader()->filterValue('CmsMenuType_Active', $active);
         return $this;
     }
 }
