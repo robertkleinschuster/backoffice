@@ -1,19 +1,18 @@
 <?php
 
-namespace Pars\Backoffice\Mvc\Cms\SiteParagraph;
+namespace Pars\Backoffice\Mvc\Cms\PageParagraph;
 
-use Pars\Backoffice\Mvc\Base\BaseModel;
 use Pars\Backoffice\Mvc\Base\CrudModel;
 use Pars\Base\Cms\Paragraph\CmsParagraphBeanFinder;
-use Pars\Base\Cms\SiteParagraph\CmsSiteParagraphBeanFinder;
-use Pars\Base\Cms\SiteParagraph\CmsSiteParagraphBeanProcessor;
+use Pars\Base\Cms\PageParagraph\CmsPageParagraphBeanFinder;
+use Pars\Base\Cms\PageParagraph\CmsPageParagraphBeanProcessor;
 
-class CmsSiteParagraphModel extends CrudModel
+class CmsPageParagraphModel extends CrudModel
 {
     public function initialize()
     {
-        $this->setBeanFinder(new CmsSiteParagraphBeanFinder($this->getDbAdpater()));
-        $this->setBeanProcessor(new CmsSiteParagraphBeanProcessor($this->getDbAdpater()));
+        $this->setBeanFinder(new CmsPageParagraphBeanFinder($this->getDbAdpater()));
+        $this->setBeanProcessor(new CmsPageParagraphBeanProcessor($this->getDbAdpater()));
         $this->getBeanFinder()->setLocale_Code($this->getTranslator()->getLocale());
     }
 

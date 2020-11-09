@@ -1,31 +1,31 @@
 <?php
 
-namespace Pars\Base\Cms\Site;
+namespace Pars\Base\Cms\Page;
 
 use Pars\Base\Article\Translation\ArticleTranslationBeanFinder;
-use Pars\Base\Cms\SiteParagraph\CmsSiteParagraphBeanFinder;
+use Pars\Base\Cms\PageParagraph\CmsPageParagraphBeanFinder;
 use Laminas\Db\Adapter\Adapter;
 use Pars\Base\Database\DatabaseBeanLoader;
 
 /**
- * Class CmsSiteBeanFinder
- * @package Pars\Base\Cms\Site
+ * Class CmsPageBeanFinder
+ * @package Pars\Base\Cms\Page
  * @method DatabaseBeanLoader getBeanLoader() : BeanLoaderInterface
  */
-class CmsSiteBeanFinder extends ArticleTranslationBeanFinder
+class CmsPageBeanFinder extends ArticleTranslationBeanFinder
 {
     public function __construct(Adapter $adapter)
     {
-        parent::__construct($adapter, new CmsSiteBeanFactory());
+        parent::__construct($adapter, new CmsPageBeanFactory());
         $loader = $this->getBeanLoader();
         if ($loader instanceof  DatabaseBeanLoader) {
-            $loader->addColumn('CmsSite_ID', 'CmsSite_ID', 'CmsSite', 'CmsSite_ID', true);
-            $loader->addColumn('CmsSiteType_Code', 'CmsSiteType_Code', 'CmsSite', 'CmsSite_ID');
-            $loader->addColumn('CmsSiteType_Template', 'CmsSiteType_Template', 'CmsSiteType', 'CmsSiteType_Code');
-            $loader->addColumn('CmsSiteState_Code', 'CmsSiteState_Code', 'CmsSite', 'CmsSite_ID');
-            $loader->addColumn('Article_ID', 'Article_ID', 'CmsSite', 'CmsSite_ID', false, null, ['Article', 'ArticleTranslation']);
+            $loader->addColumn('CmsPage_ID', 'CmsPage_ID', 'CmsPage', 'CmsPage_ID', true);
+            $loader->addColumn('CmsPageType_Code', 'CmsPageType_Code', 'CmsPage', 'CmsPage_ID');
+            $loader->addColumn('CmsPageType_Template', 'CmsPageType_Template', 'CmsPageType', 'CmsPageType_Code');
+            $loader->addColumn('CmsPageState_Code', 'CmsPageState_Code', 'CmsPage', 'CmsPage_ID');
+            $loader->addColumn('Article_ID', 'Article_ID', 'CmsPage', 'CmsPage_ID', false, null, ['Article', 'ArticleTranslation']);
         }
-        $this->addLinkedFinder(new CmsSiteParagraphBeanFinder($adapter), 'CmsParagraph_BeanList', 'CmsSite_ID', 'CmsSite_ID');
+        $this->addLinkedFinder(new CmsPageParagraphBeanFinder($adapter), 'CmsParagraph_BeanList', 'CmsPage_ID', 'CmsPage_ID');
     }
 
 

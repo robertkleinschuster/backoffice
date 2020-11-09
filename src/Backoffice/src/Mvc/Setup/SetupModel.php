@@ -2,6 +2,7 @@
 
 namespace Pars\Backoffice\Mvc\Setup;
 
+use Pars\Backoffice\Mvc\Base\BackofficeBeanConverter;
 use Pars\Base\Authorization\Permission\PermissionBeanFinder;
 use Pars\Base\Authorization\Role\RoleBeanFinder;
 use Pars\Base\Authorization\Role\RoleBeanProcessor;

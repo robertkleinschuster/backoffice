@@ -1,19 +1,19 @@
 <?php
 
-namespace Pars\Base\Cms\SiteParagraph;
+namespace Pars\Base\Cms\PageParagraph;
 
 use Niceshops\Bean\Finder\AbstractBeanFinder;
 use Pars\Base\Database\DatabaseBeanLoader;
 use Laminas\Db\Adapter\Adapter;
 
-class CmsSiteParagraphBeanFinder extends AbstractBeanFinder
+class CmsPageParagraphBeanFinder extends AbstractBeanFinder
 {
     public function __construct(Adapter $adapter)
     {
         $loader = new DatabaseBeanLoader($adapter);
-        $loader->addColumn('CmsSite_ID', 'CmsSite_ID', 'CmsSite_CmsParagraph', 'CmsSite_ID', true);
-        $loader->addColumn('CmsParagraph_ID', 'CmsParagraph_ID', 'CmsSite_CmsParagraph', 'CmsParagraph_ID', true);
-        $loader->addColumn('CmsSite_CmsParagraph_Order', 'CmsSite_CmsParagraph_Order', 'CmsSite_CmsParagraph', 'CmsParagraph_ID', true);
+        $loader->addColumn('CmsPage_ID', 'CmsPage_ID', 'CmsPage_CmsParagraph', 'CmsPage_ID', true);
+        $loader->addColumn('CmsParagraph_ID', 'CmsParagraph_ID', 'CmsPage_CmsParagraph', 'CmsParagraph_ID', true);
+        $loader->addColumn('CmsPage_CmsParagraph_Order', 'CmsPage_CmsParagraph_Order', 'CmsPage_CmsParagraph', 'CmsParagraph_ID', true);
         $loader->addColumn('Article_ID', 'Article_ID', 'CmsParagraph', 'CmsParagraph_ID', false, null, ['Article']);
         $loader->addColumn('Article_Code', 'Article_Code', 'Article', 'Article_ID', false, null, [], 'CmsParagraph');
         $loader->addColumn('ArticleTranslation_Name', 'ArticleTranslation_Name', 'ArticleTranslation', 'Article_ID', false, null, [], 'Article');
@@ -25,8 +25,8 @@ class CmsSiteParagraphBeanFinder extends AbstractBeanFinder
         $loader->addColumn('ArticleTranslation_Text', 'ArticleTranslation_Text', 'ArticleTranslation', 'Article_ID', false, null, [], 'Article');
         $loader->addColumn('ArticleTranslation_Footer', 'ArticleTranslation_Footer', 'ArticleTranslation', 'Article_ID', false, null, [], 'Article');
         $loader->addColumn('Locale_Code', 'Locale_Code', 'ArticleTranslation', 'Article_ID', false, null, [], 'Article');
-        $loader->addOrder('CmsSite_CmsParagraph_Order');
-        parent::__construct($loader, new CmsSiteParagraphBeanFactory());
+        $loader->addOrder('CmsPage_CmsParagraph_Order');
+        parent::__construct($loader, new CmsPageParagraphBeanFactory());
     }
 
 
@@ -43,16 +43,16 @@ class CmsSiteParagraphBeanFinder extends AbstractBeanFinder
     /**
      * @param int $order
      */
-    public function setCmsSite_CmsParagraph_Order(int $order): self
+    public function setCmsPage_CmsParagraph_Order(int $order): self
     {
-        $this->getBeanLoader()->filterValue('CmsSite_CmsParagraph_Order', $order);
+        $this->getBeanLoader()->filterValue('CmsPage_CmsParagraph_Order', $order);
         return $this;
     }
 
 
-    public function setCmsSite_ID(int $cmsSite_Id): self
+    public function setCmsPage_ID(int $CmsPage_Id): self
     {
-        $this->getBeanLoader()->filterValue('CmsSite_ID', $cmsSite_Id);
+        $this->getBeanLoader()->filterValue('CmsPage_ID', $CmsPage_Id);
         return $this;
     }
 }

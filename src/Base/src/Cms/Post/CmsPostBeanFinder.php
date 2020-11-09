@@ -8,8 +8,8 @@ use Laminas\Db\Adapter\Adapter;
 
 
 /**
- * Class CmsSiteBeanFinder
- * @package Pars\Base\Cms\Site
+ * Class CmsPageBeanFinder
+ * @package Pars\Base\Cms\Page
  * @method DatabaseBeanLoader getBeanLoader() : BeanLoaderInterface
  */
 class CmsPostBeanFinder extends ArticleTranslationBeanFinder

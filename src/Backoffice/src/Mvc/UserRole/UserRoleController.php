@@ -3,46 +3,44 @@
 namespace Pars\Backoffice\Mvc\UserRole;
 
 
-use Pars\Backoffice\Mvc\Base\CrudController;
+use Pars\Backoffice\Mvc\Role\RoleController;
 use Pars\Mvc\Helper\PathHelper;
-use Pars\Mvc\View\Components\Detail\Detail;
 use Pars\Mvc\View\Components\Edit\Edit;
-use Pars\Mvc\View\Components\Overview\Overview;
 
-class UserRoleController extends CrudController
+class UserRoleController extends RoleController
 {
-    protected function initView()
+    protected function initModel()
     {
-        parent::initView();
-        $this->setPermissions('userrole.create', 'userrole.edit', 'userrole.delete');
-        if (!$this->checkPermission('userrole')) {
-            throw new \Exception('Unauthorized');
-        }
+        parent::initModel();
+        $this->setPermissions('userrole.create', 'disabled', 'userrole.delete');
     }
 
-    protected function addOverviewFields(Overview $overview): void
+    public function isAuthorized(): bool
     {
-        // TODO: Implement addOverviewFields() method.
-    }
-
-    protected function addDetailFields(Detail $detail): void
-    {
-        // TODO: Implement addDetailFields() method.
+        return $this->checkPermission('userrole');
     }
 
 
     protected function addEditFields(Edit $edit): void
     {
         $edit->addSelect('UserRole_ID', 'Rolle')
-            ->setSelectOptions($this->getModel()->getRoleList($this->getUser()->getPermission_List(), $this->getControllerRequest()->getViewIdMap()));
+            ->setSelectOptions($this->getModel()->getRoleList($this->getUser()->getPermission_List(), $this->getControllerRequest()->getId()));
     }
 
-    public function deleteAction()
+    protected function getCreatePath(): PathHelper
     {
-        $viewId = $this->getControllerRequest()->getId();
-        $viewId->unsetAttribute('UserRole_ID');
-        $edit = $this->initDeleteTemplate($this->getRoleDetailRedirectPath()->setId($viewId)->getPath());
-        $edit->setBean($this->getModel()->getBeanFinder()->getBean());
+        return parent::getCreatePath()->setId($this->getControllerRequest()->getId());
+    }
+
+
+    protected function getDetailPath(): PathHelper
+    {
+        return $this->getPathHelper()->setController('userrole')->setId($this->getControllerRequest()->getId()->addId('UserRole_ID'));
+    }
+
+    protected function getIndexPath(): PathHelper
+    {
+        return parent::getIndexPath()->setController('user')->setAction('detail')->setId($this->getControllerRequest()->getId()->unsetAttribute('UserRole_ID'));
     }
 
     protected function getRoleDetailRedirectPath(): PathHelper

@@ -10,10 +10,10 @@ use Pars\Backoffice\Mvc\Cms\Menu\CmsMenuController;
 use Pars\Backoffice\Mvc\Cms\Menu\CmsMenuModel;
 use Pars\Backoffice\Mvc\Cms\Paragraph\CmsParagraphController;
 use Pars\Backoffice\Mvc\Cms\Paragraph\CmsParagraphModel;
-use Pars\Backoffice\Mvc\Cms\Site\CmsSiteController;
-use Pars\Backoffice\Mvc\Cms\Site\CmsSiteModel;
-use Pars\Backoffice\Mvc\Cms\SiteParagraph\CmsSiteParagraphController;
-use Pars\Backoffice\Mvc\Cms\SiteParagraph\CmsSiteParagraphModel;
+use Pars\Backoffice\Mvc\Cms\Page\CmsPageController;
+use Pars\Backoffice\Mvc\Cms\Page\CmsPageModel;
+use Pars\Backoffice\Mvc\Cms\PageParagraph\CmsPageParagraphController;
+use Pars\Backoffice\Mvc\Cms\PageParagraph\CmsPageParagraphModel;
 use Pars\Backoffice\Mvc\File\Directory\FileDirectoryController;
 use Pars\Backoffice\Mvc\File\Directory\FileDirectoryModel;
 use Pars\Backoffice\Mvc\File\FileController;
@@ -106,9 +106,9 @@ class ConfigProvider
                         'translation' => TranslationController::class,
                         'locale' => LocaleController::class,
                         'cmsmenu' => CmsMenuController::class,
-                        'cmssite' => CmsSiteController::class,
+                        'CmsPage' => CmsPageController::class,
                         'cmsparagraph' => CmsParagraphController::class,
-                        'cmssiteparagraph' => CmsSiteParagraphController::class,
+                        'CmsPageparagraph' => CmsPageParagraphController::class,
                         'filedirectory' => FileDirectoryController::class,
                         'file' => FileController::class,
                     ],
@@ -124,9 +124,9 @@ class ConfigProvider
                         'translation' => TranslationModel::class,
                         'locale' => LocaleModel::class,
                         'cmsmenu' => CmsMenuModel::class,
-                        'cmssite' => CmsSiteModel::class,
+                        'CmsPage' => CmsPageModel::class,
                         'cmsparagraph' => CmsParagraphModel::class,
-                        'cmssiteparagraph' => CmsSiteParagraphModel::class,
+                        'CmsPageparagraph' => CmsPageParagraphModel::class,
                         'filedirectory' => FileDirectoryModel::class,
                         'file' => FileModel::class,
                     ],

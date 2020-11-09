@@ -50,7 +50,7 @@ class ConfigProvider
         return [
             'paths' => [
                 'cmserror'    => [__DIR__ . '/../templates/error'],
-                'cmssite'    => [__DIR__ . '/../templates/site'],
+                'CmsPage'    => [__DIR__ . '/../templates/site'],
                 'cmsmenu'    => [__DIR__ . '/../templates/menu'],
                 'cmsparagraph'    => [__DIR__ . '/../templates/paragraph'],
                 'cmspost'    => [__DIR__ . '/../templates/post'],

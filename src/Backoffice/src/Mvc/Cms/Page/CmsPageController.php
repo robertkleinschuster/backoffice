@@ -1,6 +1,6 @@
 <?php
 
-namespace Pars\Backoffice\Mvc\Cms\Post;
+namespace Pars\Backoffice\Mvc\Cms\Page;
 
 use Pars\Backoffice\Mvc\Article\ArticleController;
 use Pars\Mvc\Helper\PathHelper;
@@ -8,37 +8,37 @@ use Pars\Mvc\Parameter\IdParameter;
 use Pars\Mvc\View\Components\Detail\Detail;
 use Pars\Mvc\View\Components\Edit\Edit;
 
+
 /**
- * Class CmsPostController
- * @package Pars\Backoffice\Mvc\Cms\Post
- * @method CmsPostModel getModel()
+ * Class CmsPageController
+ * @package Pars\Backoffice\Mvc\Cms\Page
+ * @method CmsPageModel getModel()
  */
-class CmsPostController extends ArticleController
+class CmsPageController extends ArticleController
 {
     protected function initModel()
     {
         parent::initModel();
-        $this->setPermissions('cmspost.create', 'cmspost.edit', 'cmspost.delete');
+        $this->setPermissions('cmspage.create', 'cmspage.edit', 'cmspage.delete');
     }
 
     public function isAuthorized(): bool
     {
-        return $this->checkPermission('cmspost');
+        return $this->checkPermission('cmspage');
     }
 
     protected function getDetailPath(): PathHelper
     {
-        return $this->getPathHelper()->setId((new IdParameter())->addId('CmsPost_ID'));
+        return $this->getPathHelper()->setId((new IdParameter())->addId('CmsPage_ID'));
     }
-
 
     protected function addDetailFields(Detail $detail): void
     {
-       parent::addDetailFields($detail);
-        $detail->addText('CmsPostType_Code', $this->translate('cmsposttype.code'))
+        parent::addDetailFields($detail);
+        $detail->addText('CmsPageType_Code', $this->translate('CmsPagetype.code'))
             ->setChapter($this->translate('article.detail.general'))
             ->setAppendToColumnPrevious(true);
-        $detail->addText('CmsPostState_Code', $this->translate('cmspoststate.code'))
+        $detail->addText('CmsPageState_Code', $this->translate('CmsPagestate.code'))
             ->setChapter($this->translate('article.detail.general'))
             ->setAppendToColumnPrevious(true);
     }
@@ -46,13 +46,13 @@ class CmsPostController extends ArticleController
     protected function addEditFields(Edit $edit): void
     {
         parent::addEditFields($edit);
-        $edit->addSelect('CmsPostType_Code', $this->translate('cmsposttype.code'))
+        $edit->addSelect('CmsPageType_Code', $this->translate('CmsPagetype.code'))
             ->setChapter($this->translate('article.edit.general'))
-            ->setSelectOptions($this->getModel()->getCmsPostType_Options())
+            ->setSelectOptions($this->getModel()->getCmsPageType_Options())
             ->setAppendToColumnPrevious(true);
-        $edit->addSelect('CmsPostState_Code', $this->translate('cmspoststate.code'))
+        $edit->addSelect('CmsPageState_Code', $this->translate('CmsPagestate.code'))
             ->setChapter($this->translate('article.edit.general'))
-            ->setSelectOptions($this->getModel()->getCmsPostState_Options())
+            ->setSelectOptions($this->getModel()->getCmsPageState_Options())
             ->setAppendToColumnPrevious(true);
     }
 }

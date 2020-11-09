@@ -64,8 +64,8 @@ class CmsMenuController extends CrudController
 
     protected function addEditFields(Edit $edit): void
     {
-        $edit->addSelect('CmsSite_ID', $this->translate('articletranslation.name'))
-            ->setSelectOptions($this->getModel()->getCmsSite_Options());
+        $edit->addSelect('CmsPage_ID', $this->translate('articletranslation.name'))
+            ->setSelectOptions($this->getModel()->getCmsPage_Options());
         $edit->addSelect('CmsMenuState_Code', $this->translate('articlestate.code'))
             ->setSelectOptions($this->getModel()->getCmsMenuState_Options());
         $edit->addSubmitAttribute('CmsMenuType_Code', 'header');

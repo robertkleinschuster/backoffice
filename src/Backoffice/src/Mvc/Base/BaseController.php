@@ -40,6 +40,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
     use AttributeAwareTrait;
     use OptionAwareTrait;
 
+
     public const ATTRIBUTE_CREATE_PERMISSION = 'create_permission';
     public const ATTRIBUTE_EDIT_PERMISSION = 'edit_permission';
     public const ATTRIBUTE_DELETE_PERMISSION = 'delete_permission';
@@ -235,14 +236,14 @@ abstract class BaseController extends AbstractController implements AttributeAwa
         $navigation->addElement($element);
 
         $element = new Element(
-            $this->translate('navigation.content.cmssite'),
+            $this->translate('navigation.content.cmspage'),
             $this->getPathHelper()
-                ->setController('cmssite')
+                ->setController('CmsPage')
                 ->setAction('index')
                 ->addParameter((new NavParameter())->setId($navigation->getId())->setIndex(1))
                 ->getPath()
         );
-        $element->setPermission('cmssite');
+        $element->setPermission('cmspage');
         $navigation->addElement($element);
 
         $element = new Element(
@@ -425,7 +426,7 @@ abstract class BaseController extends AbstractController implements AttributeAwa
             foreach ($profiles as $profile) {
                 $alert->addText('sql', '')->setValue($profile['sql'] . "<br>{$profile['elapse']} ms");
             }
-            $this->getView()->addComponent($alert, true);
+         #   $this->getView()->addComponent($alert, true);
         }
     }
 

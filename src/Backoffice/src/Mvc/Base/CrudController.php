@@ -12,6 +12,7 @@ use Pars\Mvc\View\Components\Detail\Detail;
 use Pars\Mvc\View\Components\Edit\Edit;
 use Pars\Mvc\View\Components\Overview\Overview;
 use Pars\Mvc\View\Components\Pagination\Pagination;
+use Pars\Mvc\View\Components\Toolbar\Fields\Link;
 use Pars\Mvc\View\Components\Toolbar\Toolbar;
 
 abstract class CrudController extends BaseController
@@ -22,7 +23,7 @@ abstract class CrudController extends BaseController
         $this->getView()->setHeading($this->translate('overview.title'));
         $toolbar = new Toolbar();
         $button = $toolbar
-            ->addButton($this->getPathHelper()->setAction('create')->getPath(), $this->translate('overview.create'));
+            ->addButton($this->getCreatePath()->getPath(), $this->translate('overview.create'));
         if ($this->hasAttribute(self::ATTRIBUTE_CREATE_PERMISSION)) {
             $button->setPermission($this->getAttribute(self::ATTRIBUTE_CREATE_PERMISSION));
         }
@@ -72,6 +73,9 @@ abstract class CrudController extends BaseController
         if (!$this->getControllerRequest()->hasId()) {
             $this->getControllerResponse()->setRedirect($this->getPathHelper()->setAction('index')->getPath());
         }
+        $toolbar = new Toolbar();
+        $toolbar->addButton($this->getIndexPath()->getPath(),$this->translate('detail.back'))->setIcon(Link::ICON_ARROW_LEFT)->setStyle(Link::STYLE_INFO);
+        $this->getView()->addComponent($toolbar);
         $detail = new Detail();
         $detail->setBeanConverter(new BackofficeBeanConverter());
         $this->addDetailFields($detail);
@@ -79,15 +83,11 @@ abstract class CrudController extends BaseController
         return $detail;
     }
 
-    protected function getIndexRedirectLink()
-    {
-        return $this->getPathHelper()->setAction('index')->getPath();
-    }
 
     protected function initCreateTemplate(string $redirect = null)
     {
         if (null === $redirect) {
-            $redirect = $this->getIndexRedirectLink();
+            $redirect = $this->getIndexPath()->getPath();
         }
         $this->getView()->setHeading($this->translate('create.title'));
         $edit = new Edit();
@@ -118,7 +118,7 @@ abstract class CrudController extends BaseController
     protected function initEditTemplate(string $redirect = null)
     {
         if (null === $redirect) {
-            $redirect = $this->getIndexRedirectLink();
+            $redirect = $this->getIndexPath()->getPath();
         }
         $this->addLocaleButtons();
         $this->getView()->setHeading($this->translate('edit.title'));
@@ -135,7 +135,7 @@ abstract class CrudController extends BaseController
     public function initDeleteTemplate(string $redirect = null)
     {
         if (null === $redirect) {
-            $redirect = $this->getIndexRedirectLink();
+            $redirect = $this->getIndexPath()->getPath();
         }
         $this->getView()->setHeading($this->translate('delete.title'));
         $alert = new Alert();
@@ -151,7 +151,22 @@ abstract class CrudController extends BaseController
 
     protected function getDetailPath(): PathHelper
     {
-        return $this->getPathHelper();
+        return $this->getPathHelper()->setAction('detail');
+    }
+
+    protected function getCreatePath(): PathHelper
+    {
+        return $this->getDetailPath()->setAction('create')->resetId();
+    }
+
+    protected function getEditPath(): PathHelper
+    {
+        return $this->getDetailPath()->setAction('edit');
+    }
+
+    protected function getIndexPath(): PathHelper
+    {
+        return $this->getPathHelper()->setAction('index');
     }
 
     public function indexAction()
@@ -171,7 +186,7 @@ abstract class CrudController extends BaseController
         $create = $this->initCreateTemplate();
         $create->setBean($this->getModel()->getEmptyBean());
         foreach ($create->getFieldList() as $item) {
-            $create->getBean()->setData($item->getKey(), $this->getControllerRequest()->getAttribute($item->getKey()));
+            $create->getBean()->setData($item->getKey(), $this->getControllerRequest()->getAttribute($item->getKey(), true));
         }
         $create->setBean(
             $this->getModel()->getBeanConverter()

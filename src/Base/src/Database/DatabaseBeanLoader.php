@@ -434,6 +434,9 @@ class DatabaseBeanLoader extends AbstractBeanLoader implements AdapterAwareInter
 
     public function search(string $search, array $field_List = null)
     {
+        if (null === $field_List) {
+            $field_List = $this->getField_List();
+        }
         $this->addLike($search, ...$field_List);
         return $this;
     }

@@ -2,13 +2,14 @@
 
 namespace Pars\Base\Cms\Paragraph\State;
 
-use Niceshops\Bean\Type\Base\AbstractBaseBean;
+
+use Niceshops\Bean\Type\Base\AbstractBaseBeanList;
 
 /**
  * Class CmsParagraphStateBeanList
  * @package Pars\Base\Cms\Paragraph\State
  */
-class CmsParagraphStateBeanList extends AbstractBaseBean
+class CmsParagraphStateBeanList extends AbstractBaseBeanList
 {
 
 }

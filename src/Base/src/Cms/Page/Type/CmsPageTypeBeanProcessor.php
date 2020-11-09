@@ -1,6 +1,6 @@
 <?php
 
-namespace Pars\Base\Cms\Site\State;
+namespace Pars\Base\Cms\Page\Type;
 
 use Pars\Base\Database\DatabaseBeanSaver;
 use Laminas\Db\Adapter\Adapter;
@@ -8,21 +8,20 @@ use Niceshops\Bean\Type\Base\BeanInterface;
 use Niceshops\Bean\Processor\AbstractBeanProcessor;
 
 /**
- * Class CmsSiteStateBeanProcessor
- * @package Pars\Base\Cms\Site\State
+ * Class CmsPageTypeBeanProcessor
+ * @package Pars\Base\Cms\Page\Type
  */
-class CmsSiteStateBeanProcessor extends AbstractBeanProcessor
+class CmsPageTypeBeanProcessor extends AbstractBeanProcessor
 {
 
-
     /**
-     * CmsSiteStateBeanProcessor constructor.
+     * CmsPageStateBeanProcessor constructor.
      */
     public function __construct(Adapter $adapter)
     {
         $saver = new DatabaseBeanSaver($adapter);
-        $saver->addColumn('CmsSiteState_Code', 'CmsSiteState_Code', 'CmsSiteState', 'CmsSiteState_Code', true);
-        $saver->addColumn('CmsSiteState_Active', 'CmsSiteState_Active', 'CmsSiteState', 'CmsSiteState_Code');
+        $saver->addColumn('CmsPageType_Code', 'CmsPageType_Code', 'CmsPageType', 'CmsPageType_Code', true);
+        $saver->addColumn('CmsPageType_Active', 'CmsPageType_Active', 'CmsPageType', 'CmsPageType_Code');
         parent::__construct($saver);
     }
 

@@ -18,13 +18,13 @@ class CmsMenuBeanFinder extends ArticleTranslationBeanFinder
         $loader->resetDbInfo();
         $loader->addColumn('CmsMenu_ID', 'CmsMenu_ID', 'CmsMenu', 'CmsMenu_ID', true);
         $loader->addColumn('CmsMenu_ID_Parent', 'CmsMenu_ID_Parent', 'CmsMenu', 'CmsMenu_ID');
-        $loader->addColumn('CmsSite_ID_Parent', 'CmsSite_ID_Parent', 'CmsMenu', 'CmsMenu_ID');
+        $loader->addColumn('CmsPage_ID_Parent', 'CmsPage_ID_Parent', 'CmsMenu', 'CmsMenu_ID');
         $loader->addColumn('CmsMenu_Order', 'CmsMenu_Order', 'CmsMenu', 'CmsMenu_ID');
         $loader->addColumn('CmsMenuType_Code', 'CmsMenuType_Code', 'CmsMenu', 'CmsMenu_ID');
         $loader->addColumn('CmsMenuState_Code', 'CmsMenuState_Code', 'CmsMenu', 'CmsMenu_ID');
-        $loader->addColumn('CmsSite_ID', 'CmsSite_ID', 'CmsMenu', 'CmsMenu_ID', false, null, ['CmsSite']);
-        $loader->addColumn('Article_ID', 'Article_ID', 'CmsSite', 'CmsSite_ID', false, null, ['Article']);
-        $loader->addColumn('Article_Code', 'Article_Code', 'Article', 'Article_ID', false, null, [], 'CmsSite');
+        $loader->addColumn('CmsPage_ID', 'CmsPage_ID', 'CmsMenu', 'CmsMenu_ID', false, null, ['CmsPage']);
+        $loader->addColumn('Article_ID', 'Article_ID', 'CmsPage', 'CmsPage_ID', false, null, ['Article']);
+        $loader->addColumn('Article_Code', 'Article_Code', 'Article', 'Article_ID', false, null, [], 'CmsPage');
         $loader->addColumn('ArticleTranslation_Name', 'ArticleTranslation_Name', 'ArticleTranslation', 'Article_ID', false, null, [], 'Article');
         $loader->addColumn('ArticleTranslation_Code', 'ArticleTranslation_Code', 'ArticleTranslation', 'Article_ID', false, null, [], 'Article');
         $loader->addColumn('Locale_Code', 'Locale_Code', 'ArticleTranslation', 'Article_ID', false, null, [], 'Article');
@@ -44,9 +44,9 @@ class CmsMenuBeanFinder extends ArticleTranslationBeanFinder
         return $this;
     }
 
-    public function setCmsSite_ID_Parent(int $parent): self
+    public function setCmsPage_ID_Parent(int $parent): self
     {
-        $this->getBeanLoader()->filterValue('CmsSite_ID_Parent', $parent);
+        $this->getBeanLoader()->filterValue('CmsPage_ID_Parent', $parent);
         return $this;
     }
 

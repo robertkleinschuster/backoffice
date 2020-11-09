@@ -12,8 +12,8 @@ class RolePermissionBean extends AbstractJsonSerializableBean
 {
     public function __construct()
     {
-        $this->setDataType('UserRole_ID', self::DATA_TYPE_INT);
-        $this->setDataType('UserPermission_Code', self::DATA_TYPE_STRING);
-        $this->setDataType('UserPermission_Active', self::DATA_TYPE_BOOL);
+        $this->setDataType('UserRole_ID', self::DATA_TYPE_INT, true);
+        $this->setDataType('UserPermission_Code', self::DATA_TYPE_STRING, true);
+        $this->setDataType('UserPermission_Active', self::DATA_TYPE_BOOL, true);
     }
 }

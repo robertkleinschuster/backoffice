@@ -240,23 +240,23 @@ class SchemaUpdater extends AbstractUpdater
         return $this->query($table);
     }
 
-    public function updateTableCmsSiteState()
+    public function updateTableCmsPageState()
     {
-        $table = $this->getTableStatement('CmsSiteState');
-        $this->addColumnToTable($table, new Varchar('CmsSiteState_Code', 255));
-        $this->addColumnToTable($table, new Boolean('CmsSiteState_Active'));
-        $this->addConstraintToTable($table, new PrimaryKey('CmsSiteState_Code'));
+        $table = $this->getTableStatement('CmsPageState');
+        $this->addColumnToTable($table, new Varchar('CmsPageState_Code', 255));
+        $this->addColumnToTable($table, new Boolean('CmsPageState_Active'));
+        $this->addConstraintToTable($table, new PrimaryKey('CmsPageState_Code'));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);
     }
 
-    public function updateTableCmsSiteType()
+    public function updateTableCmsPageType()
     {
-        $table = $this->getTableStatement('CmsSiteType');
-        $this->addColumnToTable($table, new Varchar('CmsSiteType_Code', 255));
-        $this->addColumnToTable($table, new Varchar('CmsSiteType_Template', 255));
-        $this->addColumnToTable($table, new Boolean('CmsSiteType_Active'));
-        $this->addConstraintToTable($table, new PrimaryKey('CmsSiteType_Code'));
+        $table = $this->getTableStatement('CmsPageType');
+        $this->addColumnToTable($table, new Varchar('CmsPageType_Code', 255));
+        $this->addColumnToTable($table, new Varchar('CmsPageType_Template', 255));
+        $this->addColumnToTable($table, new Boolean('CmsPageType_Active'));
+        $this->addConstraintToTable($table, new PrimaryKey('CmsPageType_Code'));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);
     }
@@ -302,17 +302,17 @@ class SchemaUpdater extends AbstractUpdater
         return $this->query($table);
     }
 
-    public function updateTableCmsSite()
+    public function updateTableCmsPage()
     {
-        $table = $this->getTableStatement('CmsSite');
-        $this->addColumnToTable($table, new Integer('CmsSite_ID'))
+        $table = $this->getTableStatement('CmsPage');
+        $this->addColumnToTable($table, new Integer('CmsPage_ID'))
             ->setOption('AUTO_INCREMENT', true);
         $this->addColumnToTable($table, new Integer('Article_ID'));
-        $this->addColumnToTable($table, new Varchar('CmsSiteState_Code', 255));
-        $this->addColumnToTable($table, new Varchar('CmsSiteType_Code', 255));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsSiteState_Code', 'CmsSiteState', 'CmsSiteState_Code'));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsSiteType_Code', 'CmsSiteType', 'CmsSiteType_Code'));
-        $this->addConstraintToTable($table, new PrimaryKey('CmsSite_ID'));
+        $this->addColumnToTable($table, new Varchar('CmsPageState_Code', 255));
+        $this->addColumnToTable($table, new Varchar('CmsPageType_Code', 255));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsPageState_Code', 'CmsPageState', 'CmsPageState_Code'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsPageType_Code', 'CmsPageType', 'CmsPageType_Code'));
+        $this->addConstraintToTable($table, new PrimaryKey('CmsPage_ID'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'Article_ID', 'Article', 'Article_ID'));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);
@@ -335,14 +335,14 @@ class SchemaUpdater extends AbstractUpdater
         return $this->query($table);
     }
 
-    public function updateTableCmsSite_CmsParagraph()
+    public function updateTableCmsPage_CmsParagraph()
     {
-        $table = $this->getTableStatement('CmsSite_CmsParagraph');
-        $this->addColumnToTable($table, new Integer('CmsSite_ID'));
+        $table = $this->getTableStatement('CmsPage_CmsParagraph');
+        $this->addColumnToTable($table, new Integer('CmsPage_ID'));
         $this->addColumnToTable($table, new Integer('CmsParagraph_ID'));
-        $this->addColumnToTable($table, new Integer('CmsSite_CmsParagraph_Order'));
-        $this->addConstraintToTable($table, new PrimaryKey(['CmsSite_ID', 'CmsParagraph_ID']));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsSite_ID', 'CmsSite', 'CmsSite_ID', 'CASCADE'));
+        $this->addColumnToTable($table, new Integer('CmsPage_CmsParagraph_Order'));
+        $this->addConstraintToTable($table, new PrimaryKey(['CmsPage_ID', 'CmsParagraph_ID']));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsPage_ID', 'CmsPage', 'CmsPage_ID', 'CASCADE'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'CmsParagraph_ID', 'CmsParagraph', 'CmsParagraph_ID', 'CASCADE'));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);
@@ -353,7 +353,7 @@ class SchemaUpdater extends AbstractUpdater
         $table = $this->getTableStatement('CmsPost');
         $this->addColumnToTable($table, new Integer('CmsPost_ID'))
             ->setOption('AUTO_INCREMENT', true);
-        $this->addColumnToTable($table, new Integer('CmsSite_ID'));
+        $this->addColumnToTable($table, new Integer('CmsPage_ID'));
         $this->addColumnToTable($table, new Integer('Article_ID'));
         $this->addColumnToTable($table, new Varchar('CmsPostState_Code', 255));
         $this->addColumnToTable($table, new Varchar('CmsPostType_Code', 255));
@@ -361,7 +361,7 @@ class SchemaUpdater extends AbstractUpdater
         $this->addConstraintToTable($table, new ForeignKey(null, 'CmsPostType_Code', 'CmsPostType', 'CmsPostType_Code'));
         $this->addConstraintToTable($table, new PrimaryKey('CmsPost_ID'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'Article_ID', 'Article', 'Article_ID', 'CASCADE'));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsSite_ID', 'CmsSite', 'CmsSite_ID', 'CASCADE'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsPage_ID', 'CmsPage', 'CmsPage_ID', 'CASCADE'));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);
     }
@@ -373,16 +373,16 @@ class SchemaUpdater extends AbstractUpdater
         $this->addColumnToTable($table, new Integer('CmsMenu_ID'))
             ->setOption('AUTO_INCREMENT', true);
         $this->addColumnToTable($table, new Integer('CmsMenu_ID_Parent', true));
-        $this->addColumnToTable($table, new Integer('CmsSite_ID'));
-        $this->addColumnToTable($table, new Integer('CmsSite_ID_Parent', true));
+        $this->addColumnToTable($table, new Integer('CmsPage_ID'));
+        $this->addColumnToTable($table, new Integer('CmsPage_ID_Parent', true));
         $this->addColumnToTable($table, new Integer('CmsMenu_Order', false, 0));
         $this->addColumnToTable($table, new Varchar('CmsMenuState_Code', 255));
         $this->addColumnToTable($table, new Varchar('CmsMenuType_Code', 255));
         $this->addConstraintToTable($table, new ForeignKey(null, 'CmsMenuState_Code', 'CmsMenuState', 'CmsMenuState_Code'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'CmsMenuType_Code', 'CmsMenuType', 'CmsMenuType_Code'));
         $this->addConstraintToTable($table, new PrimaryKey('CmsMenu_ID'));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsSite_ID', 'CmsSite', 'CmsSite_ID', 'CASCADE'));
-        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsSite_ID_Parent', 'CmsSite', 'CmsSite_ID', 'CASCADE'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsPage_ID', 'CmsPage', 'CmsPage_ID', 'CASCADE'));
+        $this->addConstraintToTable($table, new ForeignKey(null, 'CmsPage_ID_Parent', 'CmsPage', 'CmsPage_ID', 'CASCADE'));
         $this->addConstraintToTable($table, new ForeignKey(null, 'CmsMenu_ID_Parent', 'CmsMenu', 'CmsMenu_ID', 'CASCADE'));
         $this->addDefaultColumnsToTable($table);
         return $this->query($table);

@@ -36,7 +36,7 @@ class UserController extends CrudController
 
     protected function getDetailPath(): PathHelper
     {
-        return $this->getPathHelper()->setId((new IdParameter())->addId('Person_ID'));
+        return $this->getPathHelper()->setController('user')->setId((new IdParameter())->addId('Person_ID'));
     }
 
     protected function addOverviewFields(Overview $overview): void
@@ -69,6 +69,8 @@ class UserController extends CrudController
         $detail->addText('User_Displayname', $this->translate('user.displayname'));
         $detail->addText('Person_Firstname', $this->translate('person.firstname'));
         $detail->addText('Person_Lastname', $this->translate('person.lastname'));
+
+        $this->addSubController('userrole', 'index');
     }
 
     protected function addEditFields(Edit $edit): void

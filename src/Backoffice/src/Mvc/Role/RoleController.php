@@ -29,8 +29,6 @@ class RoleController extends CrudController
         return $this->checkPermission('role');
     }
 
-
-
     protected function getDetailPath(): PathHelper
     {
         return $this->getPathHelper()->setId((new IdParameter())->addId('UserRole_ID'));
@@ -62,5 +60,6 @@ class RoleController extends CrudController
     protected function addDetailFields(Detail $detail): void
     {
         $detail->addText('UserRole_Code', $this->translate('userrole.code'));
+        $this->addSubController('rolepermission', 'index');
     }
 }

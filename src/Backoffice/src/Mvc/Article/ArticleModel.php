@@ -2,9 +2,9 @@
 
 namespace Pars\Backoffice\Mvc\Article;
 
-use Pars\Backoffice\Mvc\Base\BaseModel;
+use Pars\Backoffice\Mvc\Base\CrudModel;
 
-class ArticleModel extends BaseModel
+abstract class ArticleModel extends CrudModel
 {
 
 }

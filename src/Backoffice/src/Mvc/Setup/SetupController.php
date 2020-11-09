@@ -2,6 +2,7 @@
 
 namespace Pars\Backoffice\Mvc\Setup;
 
+use Pars\Backoffice\Mvc\Base\BackofficeBeanConverter;
 use Pars\Backoffice\Mvc\Base\BaseController;
 use Pars\Base\Authentication\User\UserBean;
 use Pars\Base\Database\DatabaseMiddleware;
@@ -31,6 +32,8 @@ class SetupController extends BaseController
 
     protected function initModel()
     {
+        $this->getModel()->setBeanConverter(new BackofficeBeanConverter());
+
         $this->getModel()
             ->setDbAdapter($this->getControllerRequest()->getServerRequest()->getAttribute(DatabaseMiddleware::ADAPTER_ATTRIBUTE));
         $this->getModel()->initialize();
@@ -73,7 +76,7 @@ class SetupController extends BaseController
         $edit->setBean($bean);
         $bean->setData('User_Password', '');
         foreach ($edit->getFieldList() as $item) {
-            $bean->setData($item->getKey(), $this->getControllerRequest()->getAttribute($item->getKey()));
+            $bean->setData($item->getKey(), $this->getControllerRequest()->getAttribute($item->getKey(), true));
         }
     }
 

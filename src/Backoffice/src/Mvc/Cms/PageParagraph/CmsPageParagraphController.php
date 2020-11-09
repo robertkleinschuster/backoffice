@@ -1,23 +1,23 @@
 <?php
 
-namespace Pars\Backoffice\Mvc\Cms\SiteParagraph;
+namespace Pars\Backoffice\Mvc\Cms\PageParagraph;
 
 use Pars\Backoffice\Mvc\Base\CrudController;
 use Pars\Mvc\View\Components\Detail\Detail;
 use Pars\Mvc\View\Components\Edit\Edit;
 use Pars\Mvc\View\Components\Overview\Overview;
 
-class CmsSiteParagraphController extends CrudController
+class CmsPageParagraphController extends CrudController
 {
     protected function initModel()
     {
         parent::initModel();
-        $this->setPermissions('cmssiteparagraph.create', 'cmssiteparagraph.edit', 'cmssiteparagraph.delete');
+        $this->setPermissions('CmsPageparagraph.create', 'CmsPageparagraph.edit', 'CmsPageparagraph.delete');
     }
 
     public function isAuthorized(): bool
     {
-        return $this->checkPermission('cmssiteparagraph');
+        return $this->checkPermission('CmsPageparagraph');
     }
 
 
@@ -40,6 +40,6 @@ class CmsSiteParagraphController extends CrudController
 
     protected function getSiteRedirectPath()
     {
-        return $this->getPathHelper()->setController('cmssite')->setAction('detail')->setViewIdMap($this->getControllerRequest()->getViewIdMap());
+        return $this->getPathHelper()->setController('CmsPage')->setAction('detail')->setViewIdMap($this->getControllerRequest()->getViewIdMap());
     }
 }

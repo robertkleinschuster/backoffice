@@ -4,6 +4,7 @@ namespace Pars\Backoffice\Mvc\RolePermission;
 
 use Pars\Backoffice\Mvc\Base\CrudController;
 use Pars\Mvc\Helper\PathHelper;
+use Pars\Mvc\Parameter\IdParameter;
 use Pars\Mvc\View\Components\Detail\Detail;
 use Pars\Mvc\View\Components\Edit\Edit;
 use Pars\Mvc\View\Components\Overview\Overview;
@@ -40,27 +41,32 @@ class RolePermissionController extends CrudController
 
     protected function addOverviewFields(Overview $overview): void
     {
-        // TODO: Implement addOverviewFields() method.
+        $overview->addText('UserPermission_Code', $this->translate('userpermission.code'));
     }
 
     protected function addDetailFields(Detail $detail): void
     {
-        // TODO: Implement addDetailFields() method.
+        $detail->addText('UserPermission_Code', $this->translate('userpermission.code'));
     }
 
-    public function deleteAction()
+    protected function getDetailPath(): PathHelper
     {
-        $idParameter = $this->getControllerRequest()->getId();
-        $idParameter->unsetAttribute('UserPermission_Code');
-        $edit = $this->initDeleteTemplate($this->getRoleDetailRedirectPath()->setId($idParameter)->getPath());
-        $edit->setBean($this->getModel()->getBeanFinder()->getBean());
+        return parent::getDetailPath()->setController('rolepermission')->setId($this->getControllerRequest()->getId()->addId('UserPermission_Code')->addId('UserRole_ID'));
     }
 
-    protected function getRoleDetailRedirectPath(): PathHelper
+    protected function getCreatePath(): PathHelper
     {
-        return $this->getPathHelper()
-            ->setController('role')
-            ->setAction('detail')
-            ->setId($this->getControllerRequest()->getId());
+        return parent::getCreatePath()->setController('rolepermission')->setId($this->getControllerRequest()->getId());
     }
+
+    protected function getIndexPath(): PathHelper
+    {
+        if ($this->getControllerRequest()->getId()->hasAttribute('Person_ID')) {
+            return parent::getIndexPath()->setController('userrole')->setAction('detail')->setId($this->getControllerRequest()->getId()->unsetAttribute('UserPermission_Code'));
+        } else {
+            return parent::getIndexPath()->setController('role')->setAction('detail')->setId($this->getControllerRequest()->getId()->unsetAttribute('UserPermission_Code'));
+        }
+    }
+
+
 }

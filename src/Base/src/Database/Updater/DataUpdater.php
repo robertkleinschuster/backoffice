@@ -220,55 +220,55 @@ class DataUpdater extends AbstractUpdater
         return $this->saveDataMap('CmsPostType', 'CmsPostType_Code', $data_Map);
     }
 
-    public function updateDataCmsSiteState()
+    public function updateDataCmsPageState()
     {
         $data_Map = [];
         $data_Map[] = [
-            'CmsSiteState_Code' => 'active',
-            'CmsSiteState_Active' => true,
+            'CmsPageState_Code' => 'active',
+            'CmsPageState_Active' => true,
         ];
         $data_Map[] = [
-            'CmsSiteState_Code' => 'inactive',
-            'CmsSiteState_Active' => true,
+            'CmsPageState_Code' => 'inactive',
+            'CmsPageState_Active' => true,
         ];
-        return $this->saveDataMap('CmsSiteState', 'CmsSiteState_Code', $data_Map);
+        return $this->saveDataMap('CmsPageState', 'CmsPageState_Code', $data_Map);
     }
 
 
-    public function updateDataCmsSiteType()
+    public function updateDataCmsPageType()
     {
         $data_Map = [];
         $data_Map[] = [
-            'CmsSiteType_Code' => 'home',
-            'CmsSiteType_Template' => 'cmssite::home',
-            'CmsSiteType_Active' => true,
+            'CmsPageType_Code' => 'home',
+            'CmsPageType_Template' => 'CmsPage::home',
+            'CmsPageType_Active' => true,
         ];
         $data_Map[] = [
-            'CmsSiteType_Code' => 'about',
-            'CmsSiteType_Template' => 'cmssite::about',
-            'CmsSiteType_Active' => true,
+            'CmsPageType_Code' => 'about',
+            'CmsPageType_Template' => 'CmsPage::about',
+            'CmsPageType_Active' => true,
         ];
         $data_Map[] = [
-            'CmsSiteType_Code' => 'contact',
-            'CmsSiteType_Template' => 'cmssite::contact',
-            'CmsSiteType_Active' => true,
+            'CmsPageType_Code' => 'contact',
+            'CmsPageType_Template' => 'CmsPage::contact',
+            'CmsPageType_Active' => true,
         ];
         $data_Map[] = [
-            'CmsSiteType_Code' => 'blog',
-            'CmsSiteType_Template' => 'cmssite::blog',
-            'CmsSiteType_Active' => true,
+            'CmsPageType_Code' => 'blog',
+            'CmsPageType_Template' => 'CmsPage::blog',
+            'CmsPageType_Active' => true,
         ];
         $data_Map[] = [
-            'CmsSiteType_Code' => 'post',
-            'CmsSiteType_Template' => 'cmssite::post',
-            'CmsSiteType_Active' => true,
+            'CmsPageType_Code' => 'post',
+            'CmsPageType_Template' => 'CmsPage::post',
+            'CmsPageType_Active' => true,
         ];
         $data_Map[] = [
-            'CmsSiteType_Code' => 'faq',
-            'CmsSiteType_Template' => 'cmssite::faq',
-            'CmsSiteType_Active' => true,
+            'CmsPageType_Code' => 'faq',
+            'CmsPageType_Template' => 'CmsPage::faq',
+            'CmsPageType_Active' => true,
         ];
-        return $this->saveDataMap('CmsSiteType', 'CmsSiteType_Code', $data_Map);
+        return $this->saveDataMap('CmsPageType', 'CmsPageType_Code', $data_Map);
     }
 
     public function updateDataCmsParagraphState()
@@ -402,19 +402,19 @@ class DataUpdater extends AbstractUpdater
 
 
         $data_Map[] = [
-            'UserPermission_Code' => 'cmssite',
+            'UserPermission_Code' => 'cmspage',
             'UserPermission_Active' => true,
         ];
         $data_Map[] = [
-            'UserPermission_Code' => 'cmssite.delete',
+            'UserPermission_Code' => 'cmspage.delete',
             'UserPermission_Active' => true,
         ];
         $data_Map[] = [
-            'UserPermission_Code' => 'cmssite.create',
+            'UserPermission_Code' => 'cmspage.create',
             'UserPermission_Active' => true,
         ];
         $data_Map[] = [
-            'UserPermission_Code' => 'cmssite.edit',
+            'UserPermission_Code' => 'cmspage.edit',
             'UserPermission_Active' => true,
         ];
 
@@ -455,19 +455,19 @@ class DataUpdater extends AbstractUpdater
         ];
 
         $data_Map[] = [
-            'UserPermission_Code' => 'cmssiteparagraph',
+            'UserPermission_Code' => 'cmspageparagraph',
             'UserPermission_Active' => true,
         ];
         $data_Map[] = [
-            'UserPermission_Code' => 'cmssiteparagraph.delete',
+            'UserPermission_Code' => 'cmspageparagraph.delete',
             'UserPermission_Active' => true,
         ];
         $data_Map[] = [
-            'UserPermission_Code' => 'cmssiteparagraph.create',
+            'UserPermission_Code' => 'cmspageparagraph.create',
             'UserPermission_Active' => true,
         ];
         $data_Map[] = [
-            'UserPermission_Code' => 'cmssiteparagraph.edit',
+            'UserPermission_Code' => 'cmspageparagraph.edit',
             'UserPermission_Active' => true,
         ];
 

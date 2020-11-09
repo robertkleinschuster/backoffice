@@ -6,6 +6,7 @@ use Pars\Backoffice\Mvc\Base\CrudModel;
 use Pars\Base\Authorization\Role\RoleBeanFinder;
 use Pars\Base\Authorization\UserRole\UserRoleBeanFinder;
 use Pars\Base\Authorization\UserRole\UserRoleBeanProcessor;
+use Pars\Mvc\Parameter\IdParameter;
 
 class UserRoleModel extends CrudModel
 {
@@ -17,10 +18,10 @@ class UserRoleModel extends CrudModel
     }
 
 
-    public function getRoleList(array $userPermissions, array $viewId): array
+    public function getRoleList(array $userPermissions, IdParameter $idParameter): array
     {
         $finder = new UserRoleBeanFinder($this->getDbAdpater());
-        $finder->getBeanLoader()->initByIdMap($viewId);
+        $finder->getBeanLoader()->initByIdMap($idParameter->getAttribute_List());
 
         $beanList = $finder->getBeanList();
         $existing = $beanList->getData('UserRole_Code');
